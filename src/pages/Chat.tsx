@@ -16,6 +16,7 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -160,8 +161,12 @@ const Chat = () => {
     await streamChat(userMessage);
     setIsLoading(false);
     
-    // Scroll to bottom after response
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Scroll to bottom after response completes (with small delay to ensure DOM updates)
+    setTimeout(() => {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      }
+    }, 100);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -186,9 +191,9 @@ const Chat = () => {
   return (
     <div className="journal-gradient min-h-screen flex flex-col items-center pt-[150px] pb-[168px] px-[420px] gap-[100px]">
       {/* Chat Container */}
-      <div className="w-[600px] h-[535px] flex flex-col">
+      <div className="w-[600px] h-[400px] flex flex-col">
         {/* Messages Container */}
-        <div className="w-[600px] h-[467px] flex flex-col p-5 gap-2.5 bg-chat-bg border border-foreground border-b-0 rounded-t-lg overflow-y-auto">
+        <div ref={messagesContainerRef} className="w-[600px] h-[332px] flex flex-col p-5 gap-2.5 bg-chat-bg border border-foreground border-b-0 rounded-t-lg overflow-y-auto">
           {messages.map((msg, idx) => (
             <div key={idx} className="w-full min-h-[16px] flex flex-row items-start gap-2.5">
               <span
