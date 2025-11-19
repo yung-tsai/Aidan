@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import TypingIndicator from "@/components/TypingIndicator";
+import { useTypewriter } from "@/hooks/useTypewriter";
 
 interface Message {
   role: "user" | "assistant";
@@ -19,6 +20,14 @@ const Chat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  
+  // Get the last message for typewriter effect
+  const lastMessage = messages[messages.length - 1];
+  const shouldAnimate = isLoading && lastMessage?.role === "assistant";
+  const animatedContent = useTypewriter(
+    shouldAnimate ? lastMessage.content : "",
+    30
+  );
 
   useEffect(() => {
     // Create a new session on mount
@@ -195,23 +204,29 @@ const Chat = () => {
       <div className="w-[600px] h-[400px] flex flex-col">
         {/* Messages Container */}
         <div ref={messagesContainerRef} className="w-[600px] h-[332px] flex flex-col p-5 gap-2.5 bg-chat-bg border border-foreground border-b-0 rounded-t-lg overflow-y-auto">
-          {messages.map((msg, idx) => (
-            <div key={idx} className="w-full min-h-[16px] flex flex-row items-start gap-2.5">
-              <span
-                className={`font-mono text-xs leading-4 ${
-                  msg.role === "assistant"
-                    ? "text-text-secondary font-normal"
-                    : "text-text-primary font-medium"
-                }`}
-              >
-                {msg.role === "assistant" && msg.content === "" && isLoading ? (
-                  <TypingIndicator />
-                ) : (
-                  msg.content
-                )}
-              </span>
-            </div>
-          ))}
+          {messages.map((msg, idx) => {
+            const isLastMessage = idx === messages.length - 1;
+            const showTypewriter = isLastMessage && shouldAnimate;
+            const displayContent = showTypewriter ? animatedContent : msg.content;
+            
+            return (
+              <div key={idx} className="w-full min-h-[16px] flex flex-row items-start gap-2.5">
+                <span
+                  className={`font-mono text-xs leading-4 ${
+                    msg.role === "assistant"
+                      ? "text-text-secondary font-normal"
+                      : "text-text-primary font-medium"
+                  }`}
+                >
+                  {msg.role === "assistant" && displayContent === "" && isLoading ? (
+                    <TypingIndicator />
+                  ) : (
+                    displayContent
+                  )}
+                </span>
+              </div>
+            );
+          })}
           <div ref={messagesEndRef} />
         </div>
 
