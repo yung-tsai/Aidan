@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import TypingIndicator from "@/components/TypingIndicator";
 import { useTypewriter } from "@/hooks/useTypewriter";
 
 interface Message {
@@ -218,11 +217,7 @@ const Chat = () => {
                       : "text-text-primary font-medium"
                   }`}
                 >
-                  {msg.role === "assistant" && displayContent === "" && isLoading ? (
-                    <TypingIndicator />
-                  ) : (
-                    displayContent
-                  )}
+                  {displayContent}
                 </span>
               </div>
             );
