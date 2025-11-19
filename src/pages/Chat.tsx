@@ -50,9 +50,6 @@ const Chat = () => {
     createSession();
   }, []);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
 
   const streamChat = async (userMessage: string) => {
     if (!sessionId) return;
@@ -162,6 +159,9 @@ const Chat = () => {
     // Stream AI response
     await streamChat(userMessage);
     setIsLoading(false);
+    
+    // Scroll to bottom after response
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
