@@ -26,7 +26,7 @@ const Chat = () => {
   const shouldAnimate = isLoading && lastMessage?.role === "assistant";
   const animatedContent = useTypewriter(
     shouldAnimate ? lastMessage.content : "",
-    30
+    45
   );
 
   useEffect(() => {
