@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowUp, Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useTypewriter } from "@/hooks/useTypewriter";
-import WindowHeader from "@/components/WindowHeader";
 
 interface Message {
   role: "user" | "assistant";
@@ -199,27 +198,25 @@ const Chat = () => {
   };
 
   return (
-    <div className="journal-gradient min-h-screen flex items-center justify-center">
-      {/* Chat Window Container */}
-      <div className="w-[450px] h-[325px] flex flex-col shadow-lg">
-        {/* Window Header */}
-        <WindowHeader />
-        
+    <div className="journal-gradient min-h-screen flex flex-col items-center pt-[150px] pb-[168px] px-[420px] gap-[100px]">
+      {/* Chat Container */}
+      <div className="w-[600px] h-[400px] flex flex-col">
         {/* Messages Container */}
-        <div 
-          ref={messagesContainerRef} 
-          className="w-[450px] h-[270px] bg-chat-messages-bg border-l border-r border-chat-input-border overflow-y-auto"
-        >
+        <div ref={messagesContainerRef} className="w-[600px] h-[332px] flex flex-col p-5 gap-2.5 bg-chat-bg border border-foreground border-b-0 rounded-t-lg overflow-y-auto">
           {messages.map((msg, idx) => {
             const isLastMessage = idx === messages.length - 1;
             const showTypewriter = isLastMessage && shouldAnimate;
             const displayContent = showTypewriter ? animatedContent : msg.content;
-            const label = msg.role === "assistant" ? "Aiden: " : "Me: ";
             
             return (
-              <div key={idx} className="px-3 py-2.5">
-                <span className="font-ibm text-xs leading-5 text-chat-text font-medium">
-                  <span className="font-medium">{label}</span>
+              <div key={idx} className="w-full min-h-[16px] flex flex-row items-start gap-2.5">
+                <span
+                  className={`font-mono text-xs leading-4 ${
+                    msg.role === "assistant"
+                      ? "text-text-secondary font-normal"
+                      : "text-text-primary font-medium"
+                  }`}
+                >
                   {displayContent}
                 </span>
               </div>
@@ -228,41 +225,29 @@ const Chat = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Container - 3 sections */}
-        <div className="flex w-[450px] h-[35px]">
-          {/* Text input section */}
-          <div className="flex-1 flex items-center px-5 bg-white border border-chat-input-border shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]">
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Say anything"
-              disabled={isLoading}
-              className="flex-1 font-mono text-xs font-light text-[#4B5563] bg-transparent border-none outline-none resize-none placeholder:text-[#4B5563]"
-              rows={1}
-            />
-          </div>
-          
-          {/* Send button */}
-          <button
-            onClick={handleSend}
-            disabled={!input.trim() || isLoading}
-            className="w-[38px] h-[35px] flex items-center justify-center bg-white border-y border-r border-chat-input-border shadow-[0px_-2px_4px_rgba(80,80,80,0.25)] disabled:opacity-50"
-          >
-            <ArrowUp className="w-[18px] h-[18px]" />
-          </button>
-          
-          {/* Save button - triggers journal generation */}
-          <button
-            onClick={handleGenerateSummary}
-            disabled={messages.length < 3}
-            className="w-[38px] h-[35px] flex items-center justify-center bg-white border-y border-r border-chat-input-border shadow-[0px_-2px_4px_rgba(80,80,80,0.25)] disabled:opacity-50"
-          >
-            <Save className="w-[18px] h-[18px]" />
-          </button>
+        {/* Input Container */}
+        <div className="w-[600px] h-[68px] flex flex-row items-center px-5 py-2.5 bg-input-bg border border-foreground rounded-b-lg">
+          <textarea
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Say anything"
+            disabled={isLoading}
+            className="flex-1 font-mono text-xs text-text-secondary bg-transparent border-none outline-none resize-none placeholder:text-text-secondary"
+            rows={2}
+          />
         </div>
       </div>
+
+      {/* Generate Summary Button */}
+      <Button
+        onClick={handleGenerateSummary}
+        disabled={messages.length < 3}
+        className="font-mono text-sm"
+      >
+        Generate Journal Summary
+      </Button>
     </div>
   );
 };

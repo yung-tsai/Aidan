@@ -28,14 +28,6 @@ export default {
         "text-muted": "hsl(var(--text-muted))",
         "text-divider": "hsl(var(--text-divider))",
         "text-icon": "hsl(var(--text-icon))",
-        "chat-header": "#FFFFFF",
-        "chat-border": "#2C2C2C",
-        "chat-messages-bg": "#F7F7F7",
-        "chat-input-border": "#374151",
-        "chat-text": "#363636",
-        "traffic-red": "#FF5F56",
-        "traffic-yellow": "#FFBD2E",
-        "traffic-green": "#27C93F",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -67,8 +59,6 @@ export default {
       },
       fontFamily: {
         mono: ['Reddit Mono', 'monospace'],
-        ibm: ['IBM Plex Mono', 'monospace'],
-        rasa: ['Rasa', 'serif'],
       },
       borderRadius: {
         lg: "var(--radius)",
