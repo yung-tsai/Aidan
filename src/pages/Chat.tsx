@@ -252,16 +252,16 @@ const Chat = () => {
         </div>
         
         {/* Messages Container */}
-        <div ref={messagesContainerRef} className="w-[450px] h-[270px] flex flex-col p-5 gap-2.5 bg-[#F7F7F7] border-l border-r border-foreground overflow-y-auto">
+        <div ref={messagesContainerRef} className="w-[450px] h-[270px] flex flex-col p-0 gap-[10px] bg-[#F7F7F7] border-l border-r border-foreground overflow-y-auto">
           {messages.map((msg, idx) => {
             const isLastMessage = idx === messages.length - 1;
             const showTypewriter = isLastMessage && shouldAnimate;
             const displayContent = showTypewriter ? animatedContent : msg.content;
             
             return (
-              <div key={idx} className="w-full min-h-[16px] flex flex-col gap-0">
-                <p className="font-['IBM_Plex_Mono'] text-xs leading-5 m-0 break-words w-full">
-                  <span className={`font-medium ${msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}`}>
+              <div key={idx} className="w-[450px] flex flex-row items-start pt-[10px] px-3 pb-0 gap-[5px]">
+                <p className="w-[426px] font-['IBM_Plex_Mono'] font-medium text-xs leading-5 block whitespace-pre-wrap m-0">
+                  <span className={msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}>
                     {msg.role === "assistant" ? "Aiden: " : "Me: "}
                   </span>
                   <span className={`font-normal ${msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}`}>
