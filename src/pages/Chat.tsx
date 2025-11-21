@@ -252,7 +252,7 @@ const Chat = () => {
         </div>
         
         {/* Messages Container */}
-        <div ref={messagesContainerRef} className="w-[450px] h-[270px] flex flex-col p-0 gap-[10px] bg-[#F7F7F7] border-l border-r border-foreground overflow-y-auto">
+        <div ref={messagesContainerRef} className="w-[450px] h-[270px] flex flex-col p-0 gap-[10px] bg-[#F7F7F7] border-l border-r border-foreground overflow-y-auto overflow-x-hidden">
           {messages.map((msg, idx) => {
             const isLastMessage = idx === messages.length - 1;
             const showTypewriter = isLastMessage && shouldAnimate;
@@ -260,7 +260,7 @@ const Chat = () => {
             
             return (
               <div key={idx} className="w-[450px] flex flex-row items-start pt-[10px] px-3 pb-0 gap-[5px]">
-                <p className="w-[426px] font-['IBM_Plex_Mono'] font-medium text-xs leading-5 block whitespace-pre-wrap m-0">
+                <p className="w-full font-['IBM_Plex_Mono'] font-medium text-xs leading-5 block whitespace-normal break-words m-0">
                   <span className={msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}>
                     {msg.role === "assistant" ? "Aiden: " : "Me: "}
                   </span>
