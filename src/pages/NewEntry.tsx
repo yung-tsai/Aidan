@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -18,6 +19,8 @@ import {
 } from "lucide-react";
 
 const NewEntry = () => {
+  const [searchParams] = useSearchParams();
+  const existingEntryId = searchParams.get('id');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [entryId, setEntryId] = useState<string | null>(null);
@@ -41,8 +44,33 @@ const NewEntry = () => {
   });
 
   useEffect(() => {
-    const createEntry = async () => {
+    const loadOrCreateEntry = async () => {
       try {
+        // If ID is provided, load existing entry
+        if (existingEntryId) {
+          const { data: existingEntry, error } = await supabase
+            .from("journal_entries")
+            .select("*")
+            .eq("id", existingEntryId)
+            .maybeSingle();
+
+          if (error) throw error;
+
+          if (existingEntry) {
+            setEntryId(existingEntry.id);
+            setTitle(existingEntry.title);
+            editor?.commands.setContent(existingEntry.content);
+            setDateString(new Date(existingEntry.created_at).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            }));
+            setIsLoading(false);
+            return;
+          }
+        }
+
+        // Create new entry if no ID or entry not found
         const { data: newEntry, error } = await supabase
           .from("journal_entries")
           .insert({
@@ -63,15 +91,15 @@ const NewEntry = () => {
           year: "numeric",
         }));
       } catch (error) {
-        console.error("Error creating entry:", error);
-        toast.error("Failed to create journal entry");
+        console.error("Error loading/creating entry:", error);
+        toast.error("Failed to load journal entry");
       } finally {
         setIsLoading(false);
       }
     };
 
-    createEntry();
-  }, []);
+    loadOrCreateEntry();
+  }, [existingEntryId, editor]);
 
   const handleSave = async () => {
     if (!entryId || !editor) return;
