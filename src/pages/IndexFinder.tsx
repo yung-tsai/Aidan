@@ -1,12 +1,27 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import filingCabinet from "@/assets/filing-cabinet.png";
 import arrowBtn from "@/assets/arrow-btn.png";
 
 const IndexFinder = () => {
   const navigate = useNavigate();
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setShowContent(true), 100);
+  }, []);
+
+  const handleNavigateToHome = () => {
+    setShowContent(false);
+    setIsAnimating(true);
+    setTimeout(() => {
+      navigate("/");
+    }, 300);
+  };
 
   return (
-    <div className="journal-gradient min-h-screen flex flex-col items-center justify-center">
+    <div className="bg-white min-h-screen flex flex-col items-center justify-center">
       {/* Container */}
       <div className="flex flex-col justify-center items-center gap-5 w-[302px]">
         {/* Title */}
@@ -18,7 +33,7 @@ const IndexFinder = () => {
         <div className="flex flex-row items-center gap-5 w-[302px]">
           {/* Left Arrow Button */}
           <button
-            onClick={() => navigate("/")}
+            onClick={handleNavigateToHome}
             className="w-10 h-10 flex-shrink-0 relative flex items-center justify-center"
           >
             <img 
@@ -32,7 +47,9 @@ const IndexFinder = () => {
           <img 
             src={filingCabinet} 
             alt="Filing Cabinet" 
-            className="w-[182px] h-[271.71px] object-contain"
+            className={`w-[182px] h-[271.71px] object-contain transition-all duration-300 ${
+              isAnimating ? '-translate-x-full opacity-0' : 'translate-x-0 opacity-100'
+            }`}
           />
 
           {/* Right Arrow Button (hidden) */}
@@ -43,7 +60,9 @@ const IndexFinder = () => {
         </div>
 
         {/* Options Container */}
-        <div className="flex flex-row justify-center items-start w-[210px]">
+        <div className={`flex flex-row justify-center items-start w-[210px] transition-opacity duration-300 ${
+          showContent ? 'opacity-100' : 'opacity-0'
+        }`}>
           {/* Option */}
           <div className="flex flex-col justify-center items-center gap-5 w-[210px]">
             {/* Option Info */}
