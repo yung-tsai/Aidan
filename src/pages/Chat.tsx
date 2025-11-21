@@ -155,6 +155,7 @@ const Chat = () => {
 
     const userMessage = input.trim();
     setInput("");
+    inputRef.current?.focus(); // Refocus immediately so user can continue typing
     setIsLoading(true);
 
     // Add user message
@@ -176,8 +177,6 @@ const Chat = () => {
       if (messagesContainerRef.current) {
         messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
       }
-      // Refocus the input field so user can continue typing
-      inputRef.current?.focus();
     }, 100);
   };
 
@@ -245,7 +244,7 @@ const Chat = () => {
             const displayContent = showTypewriter ? animatedContent : msg.content;
             
             return (
-              <div key={idx} className="w-[550px] flex flex-row items-start pt-[10px] px-3 pb-0 gap-[5px]">
+              <div key={idx} className="w-[550px] flex flex-row items-start pt-[10px] pl-3 pr-8 pb-0 gap-[5px]">
                 <p className="w-full font-ibm font-medium text-xs leading-5 block whitespace-normal break-words m-0">
                   <span className={msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}>
                     {msg.role === "assistant" ? "Aiden: " : "Me: "}
