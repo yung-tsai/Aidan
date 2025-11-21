@@ -1,12 +1,27 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import classicMac from "@/assets/classic-mac.png";
 import arrowBtn from "@/assets/arrow-btn.png";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setShowContent(true), 100);
+  }, []);
+
+  const handleNavigateToIndex = () => {
+    setShowContent(false);
+    setIsAnimating(true);
+    setTimeout(() => {
+      navigate("/index");
+    }, 300);
+  };
 
   return (
-    <div className="journal-gradient min-h-screen flex flex-col items-center justify-center">
+    <div className="bg-white min-h-screen flex flex-col items-center justify-center">
       {/* Container */}
       <div className="flex flex-col justify-center items-center gap-5 w-[460px]">
         {/* Title */}
@@ -25,12 +40,14 @@ const Home = () => {
             <img 
               src={classicMac} 
               alt="Classic Mac" 
-              className="w-[280px] h-[262px] object-contain"
+              className={`w-[280px] h-[262px] object-contain transition-all duration-300 ${
+                isAnimating ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'
+              }`}
             />
 
             {/* Right Arrow Button */}
             <button
-              onClick={() => navigate("/index")}
+              onClick={handleNavigateToIndex}
               className="w-10 h-10 flex-shrink-0 relative flex items-center justify-center"
               style={{ transform: "rotate(180deg)" }}
             >
@@ -44,13 +61,15 @@ const Home = () => {
         </div>
 
         {/* Options Container */}
-        <div className="flex flex-row items-start gap-10 w-[460px]">
+        <div className={`flex flex-row items-start gap-10 w-[460px] transition-opacity duration-300 ${
+          showContent ? 'opacity-100' : 'opacity-0'
+        }`}>
           {/* Classic Option */}
           <div className="flex flex-col justify-center items-end gap-5 w-[210px]">
             {/* Option Info */}
             <div className="flex flex-col items-start gap-2.5 w-full">
               {/* Title */}
-              <h2 className="w-full font-mono font-medium text-[18px] leading-4 flex items-center text-right text-[#010101]">
+              <h2 className="w-full font-mono font-medium text-[18px] leading-4 text-right text-[#010101]">
                 Classic
               </h2>
               {/* Description */}
