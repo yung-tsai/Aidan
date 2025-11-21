@@ -179,9 +179,31 @@ const Journal = () => {
   return (
     <div className="journal-gradient min-h-screen flex flex-col items-center pt-[150px] pb-[168px] px-[420px] gap-[100px]">
       {/* Journal Container */}
-      <div className="w-[600px] bg-chat-bg border border-foreground rounded-lg flex flex-col">
+      <div className="w-[600px] flex flex-col shadow-lg">
+        {/* Window-Style Header */}
+        <div className="w-[600px] h-[20px] flex flex-row items-center px-3 py-0.5 bg-white border border-[#2C2C2C] relative">
+          {/* Control Buttons */}
+          <div className="flex flex-row items-center gap-[5px] h-4">
+            {/* Close Button */}
+            <div className="w-[11.33px] h-[11.33px] border border-[#2C2C2C] flex items-center justify-center relative">
+              <div className="absolute w-[4.66px] h-[1px] bg-[#2C2C2C] rotate-45" />
+              <div className="absolute w-[4.66px] h-[1px] bg-[#2C2C2C] -rotate-45" />
+            </div>
+            {/* Minimize Button */}
+            <div className="w-[11.33px] h-[11.3px] border border-[#2C2C2C] flex items-center justify-center">
+              <div className="w-[5px] h-[1px] bg-[#2C2C2C]" />
+            </div>
+          </div>
+          {/* Divider */}
+          <div className="flex-1 h-3" />
+          {/* Title */}
+          <span className="font-['Rasa'] font-medium text-xs leading-4 text-[#2C2C2C]">
+            Edit Entry
+          </span>
+        </div>
+
         {/* Inner Wrapper */}
-        <div className="w-[600px] flex flex-col gap-5">
+        <div className="w-[600px] flex flex-col gap-5 bg-chat-bg border-l border-r border-b border-foreground">
           {/* Header */}
           <div className="w-[600px] h-[71px] flex flex-col">
             {/* Header Info */}
