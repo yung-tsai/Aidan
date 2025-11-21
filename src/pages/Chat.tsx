@@ -178,23 +178,48 @@ const Chat = () => {
     }, 100);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
+  const handleSendAndNavigate = async () => {
+    if (!input.trim() || isLoading || !sessionId) return;
 
-  const handleGenerateSummary = async () => {
-    if (!sessionId) return;
+    const userMessage = input.trim();
+    setInput("");
+    setIsLoading(true);
+
+    // Add user message
+    setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
+
+    // Save user message to database
+    await supabase.from("messages").insert({
+      session_id: sessionId,
+      role: "user",
+      content: userMessage,
+    });
+
+    // Stream AI response
+    await streamChat(userMessage);
+    setIsLoading(false);
     
-    // Mark session as completed
+    // Scroll to bottom after response completes (with small delay to ensure DOM updates)
+    setTimeout(() => {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      }
+    }, 100);
+
+    // Mark session as completed and navigate
     await supabase
       .from("sessions")
       .update({ completed: true })
       .eq("id", sessionId);
 
     navigate(`/journal/${sessionId}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
   return (
@@ -261,9 +286,9 @@ const Chat = () => {
               className="flex-1 font-['Reddit_Mono'] font-light text-xs leading-4 text-[#4B5563] bg-transparent border-none outline-none placeholder:text-[#4B5563]"
             />
           </div>
-          {/* Send Button */}
+          {/* Arrow Button - Send and Navigate */}
           <button
-            onClick={handleSend}
+            onClick={handleSendAndNavigate}
             disabled={isLoading || !input.trim()}
             className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
           >
@@ -272,10 +297,8 @@ const Chat = () => {
               <path d="M4.5 9H13.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          {/* Save Button */}
+          {/* Save Button - Non-functional */}
           <button
-            onClick={handleGenerateSummary}
-            disabled={messages.length < 3}
             className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
