@@ -229,21 +229,21 @@ const Chat = () => {
   return (
     <div className="journal-gradient min-h-screen flex flex-col items-center pt-[150px] pb-[168px] px-[420px] gap-[100px]">
       {/* Chat Container */}
-      <div className="w-[450px] h-[325px] flex flex-col shadow-lg">
+      <div className="w-[550px] h-[325px] flex flex-col shadow-lg">
         {/* Header */}
-        <div className="w-[450px] h-[20px] rounded-t-[5px] overflow-hidden">
+        <div className="w-[550px] h-[20px] rounded-t-[5px] overflow-hidden">
           <img src={headerChat} alt="Aiden Chat" className="w-full h-full object-cover" />
         </div>
         
         {/* Messages Container */}
-        <div ref={messagesContainerRef} className="w-[450px] h-[270px] flex flex-col p-0 gap-[10px] bg-[#F7F7F7] border-l border-r border-foreground overflow-y-auto overflow-x-hidden">
+        <div ref={messagesContainerRef} className="w-[550px] h-[270px] flex flex-col p-0 gap-[10px] bg-[#F7F7F7] border-l border-r border-foreground overflow-y-auto overflow-x-hidden">
           {messages.map((msg, idx) => {
             const isLastMessage = idx === messages.length - 1;
             const showTypewriter = isLastMessage && shouldAnimate;
             const displayContent = showTypewriter ? animatedContent : msg.content;
             
             return (
-              <div key={idx} className="w-[450px] flex flex-row items-start pt-[10px] px-3 pb-0 gap-[5px]">
+              <div key={idx} className="w-[550px] flex flex-row items-start pt-[10px] px-3 pb-0 gap-[5px]">
                 <p className="w-full font-['IBM_Plex_Mono'] font-medium text-xs leading-5 block whitespace-normal break-words m-0">
                   <span className={msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}>
                     {msg.role === "assistant" ? "Aiden: " : "Me: "}
@@ -259,7 +259,7 @@ const Chat = () => {
         </div>
 
         {/* Input Container */}
-        <div className="w-[450px] h-[35px] flex flex-row items-stretch">
+        <div className="w-[550px] h-[35px] flex flex-row items-stretch">
           {/* Text Input */}
           <div className="flex-1 flex items-center px-5 bg-white border border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]">
             <input
