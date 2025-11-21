@@ -155,7 +155,7 @@ const Chat = () => {
 
     const userMessage = input.trim();
     setInput("");
-    inputRef.current?.focus(); // Refocus immediately so user can continue typing
+    setTimeout(() => inputRef.current?.focus(), 0); // Refocus after React re-renders
     setIsLoading(true);
 
     // Add user message
