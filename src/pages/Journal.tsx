@@ -28,7 +28,6 @@ const Journal = () => {
   const [entryId, setEntryId] = useState<string | null>(null);
   const [title, setTitle] = useState("Untitled");
   const [dateString, setDateString] = useState("");
-  const [chatInput, setChatInput] = useState("");
 
   const editor = useEditor({
     extensions: [
@@ -309,14 +308,8 @@ const Journal = () => {
 
         {/* Input Container */}
         <div className="w-[600px] h-[35px] flex flex-row items-stretch">
-          {/* Text Input */}
-          <div className="flex-1 flex items-center px-5 bg-white border border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]">
-            <input
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              placeholder=""
-              className="flex-1 font-['Reddit_Mono'] font-light text-xs leading-4 text-[#4B5563] bg-transparent border-none outline-none"
-            />
+          {/* Empty Container */}
+          <div className="flex-1 bg-white border border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]">
           </div>
           {/* Bubble Chat Button - Navigate to Chat */}
           <button
