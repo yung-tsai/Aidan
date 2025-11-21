@@ -243,12 +243,12 @@ const Chat = () => {
             const displayContent = showTypewriter ? animatedContent : msg.content;
             
             return (
-              <div key={idx} className="w-[550px] flex flex-row items-start pt-[10px] px-3 pb-0 gap-[5px]">
-                <p className="w-full font-['IBM_Plex_Mono'] font-medium text-xs leading-5 block whitespace-normal break-words m-0">
-                  <span className={msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}>
+              <div key={idx} className="w-[450px] flex flex-col items-start pt-[10px] px-3 pb-0 gap-[5px]">
+                <p className="w-[426px] font-['IBM_Plex_Mono'] font-medium text-xs leading-5 flex items-center whitespace-normal break-words m-0">
+                  <span className="text-[#363636]">
                     {msg.role === "assistant" ? "Aiden: " : "Me: "}
                   </span>
-                  <span className={`font-normal ${msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}`}>
+                  <span className="font-normal text-[#363636]">
                     {displayContent}
                   </span>
                 </p>
