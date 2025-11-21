@@ -59,6 +59,7 @@ export default {
       },
       fontFamily: {
         mono: ['Reddit Mono', 'monospace'],
+        'ibm': ['IBM Plex Mono', 'monospace'],
       },
       borderRadius: {
         lg: "var(--radius)",
