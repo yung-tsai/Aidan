@@ -244,7 +244,7 @@ const Chat = () => {
             
             return (
               <div key={idx} className="w-[550px] flex flex-row items-start pt-[10px] px-3 pb-0 gap-[5px]">
-                <p className="w-full font-['IBM_Plex_Mono'] font-medium text-xs leading-5 block whitespace-normal break-words m-0">
+                <p className="w-full font-ibm font-medium text-xs leading-5 block whitespace-normal break-words m-0">
                   <span className={msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}>
                     {msg.role === "assistant" ? "Aiden: " : "Me: "}
                   </span>
