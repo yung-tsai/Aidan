@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import bubbleChatIcon from "@/assets/bubble-chat.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   Bold,
@@ -20,9 +17,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-const Journal = () => {
-  const { sessionId } = useParams();
-  const navigate = useNavigate();
+const NewEntry = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [entryId, setEntryId] = useState<string | null>(null);
@@ -37,7 +32,7 @@ const Journal = () => {
       }),
       Underline,
     ],
-    content: "<p>Loading...</p>",
+    content: "<p></p>",
     editorProps: {
       attributes: {
         class: "font-mono text-xs text-text-secondary leading-4 outline-none min-h-[304px] prose prose-sm max-w-none",
@@ -46,74 +41,14 @@ const Journal = () => {
   });
 
   useEffect(() => {
-    const loadOrCreateEntry = async () => {
-      if (!sessionId) return;
-
+    const createEntry = async () => {
       try {
-        // Check if entry already exists
-        const { data: existingEntry } = await supabase
-          .from("journal_entries")
-          .select("*")
-          .eq("session_id", sessionId)
-          .maybeSingle();
-
-        if (existingEntry) {
-          setEntryId(existingEntry.id);
-          setTitle(existingEntry.title);
-          editor?.commands.setContent(existingEntry.content);
-          setDateString(new Date(existingEntry.created_at).toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          }));
-          setIsLoading(false);
-          return;
-        }
-
-        // Generate new summary
-        const { data: messagesData } = await supabase
-          .from("messages")
-          .select("*")
-          .eq("session_id", sessionId)
-          .order("created_at", { ascending: true });
-
-        if (!messagesData || messagesData.length === 0) {
-          toast.error("No conversation found");
-          setIsLoading(false);
-          return;
-        }
-
-        // Call summary generation function
-        const response = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-summary`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            },
-            body: JSON.stringify({
-              messages: messagesData.map((m) => ({
-                role: m.role,
-                content: m.content,
-              })),
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to generate summary");
-        }
-
-        const { summary } = await response.json();
-
-        // Create journal entry
         const { data: newEntry, error } = await supabase
           .from("journal_entries")
           .insert({
-            session_id: sessionId,
+            session_id: null,
             title: "Untitled",
-            content: summary,
+            content: "<p></p>",
           })
           .select()
           .single();
@@ -122,22 +57,21 @@ const Journal = () => {
 
         setEntryId(newEntry.id);
         setTitle(newEntry.title);
-        editor?.commands.setContent(summary);
         setDateString(new Date(newEntry.created_at).toLocaleDateString("en-US", {
           month: "long",
           day: "numeric",
           year: "numeric",
         }));
       } catch (error) {
-        console.error("Error loading entry:", error);
-        toast.error("Failed to load journal entry");
+        console.error("Error creating entry:", error);
+        toast.error("Failed to create journal entry");
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadOrCreateEntry();
-  }, [sessionId, editor]);
+    createEntry();
+  }, []);
 
   const handleSave = async () => {
     if (!entryId || !editor) return;
@@ -170,10 +104,6 @@ const Journal = () => {
     }
   };
 
-  const handleNavigateToChat = () => {
-    navigate("/chat");
-  };
-
   if (isLoading) {
     return (
       <div className="journal-gradient min-h-screen flex items-center justify-center">
@@ -204,7 +134,7 @@ const Journal = () => {
           <div className="flex-1 h-3" />
           {/* Title */}
           <span className="font-['Rasa'] font-medium text-xs leading-4 text-[#2C2C2C]">
-            Edit Entry
+            New Entry
           </span>
         </div>
 
@@ -306,18 +236,11 @@ const Journal = () => {
           </div>
         </div>
 
-        {/* Input Container */}
+        {/* Input Container - Save Button Only */}
         <div className="w-[600px] h-[35px] flex flex-row items-stretch">
           {/* Empty Container */}
           <div className="flex-1 bg-white border border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]">
           </div>
-          {/* Bubble Chat Button - Navigate to Chat */}
-          <button
-            onClick={handleNavigateToChat}
-            className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
-          >
-            <img src={bubbleChatIcon} alt="Chat" className="w-[18px] h-[18px]" />
-          </button>
           {/* Save Button */}
           <button
             onClick={handleSave}
@@ -336,4 +259,4 @@ const Journal = () => {
   );
 };
 
-export default Journal;
+export default NewEntry;
