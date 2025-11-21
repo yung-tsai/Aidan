@@ -179,32 +179,35 @@ const Chat = () => {
   };
 
   const handleSendAndNavigate = async () => {
-    if (!input.trim() || isLoading || !sessionId) return;
+    if (isLoading || !sessionId) return;
 
-    const userMessage = input.trim();
-    setInput("");
-    setIsLoading(true);
+    // Only send message if there's input
+    if (input.trim()) {
+      const userMessage = input.trim();
+      setInput("");
+      setIsLoading(true);
 
-    // Add user message
-    setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
+      // Add user message
+      setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
 
-    // Save user message to database
-    await supabase.from("messages").insert({
-      session_id: sessionId,
-      role: "user",
-      content: userMessage,
-    });
+      // Save user message to database
+      await supabase.from("messages").insert({
+        session_id: sessionId,
+        role: "user",
+        content: userMessage,
+      });
 
-    // Stream AI response
-    await streamChat(userMessage);
-    setIsLoading(false);
-    
-    // Scroll to bottom after response completes (with small delay to ensure DOM updates)
-    setTimeout(() => {
-      if (messagesContainerRef.current) {
-        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
-      }
-    }, 100);
+      // Stream AI response
+      await streamChat(userMessage);
+      setIsLoading(false);
+      
+      // Scroll to bottom after response completes (with small delay to ensure DOM updates)
+      setTimeout(() => {
+        if (messagesContainerRef.current) {
+          messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
+      }, 100);
+    }
 
     // Mark session as completed and navigate
     await supabase
@@ -288,7 +291,7 @@ const Chat = () => {
           {/* Save Button - Send and Navigate to Edit Entry */}
           <button
             onClick={handleSendAndNavigate}
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading}
             className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
