@@ -231,8 +231,8 @@ const Chat = () => {
       {/* Chat Container */}
       <div className="w-[550px] h-[325px] flex flex-col shadow-lg">
         {/* Header */}
-        <div className="w-[550px] h-[20px] rounded-t-[5px] overflow-hidden">
-          <img src={headerChat} alt="Aiden Chat" className="w-full h-full object-cover" />
+        <div className="w-[550px] h-[20px]">
+          <img src={headerChat} alt="Aiden Chat" className="w-full h-full object-contain" />
         </div>
         
         {/* Messages Container */}
