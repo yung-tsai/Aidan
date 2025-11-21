@@ -286,19 +286,10 @@ const Chat = () => {
               className="flex-1 font-['Reddit_Mono'] font-light text-xs leading-4 text-[#4B5563] bg-transparent border-none outline-none placeholder:text-[#4B5563]"
             />
           </div>
-          {/* Arrow Button - Send and Navigate */}
+          {/* Save Button - Send and Navigate to Edit Entry */}
           <button
             onClick={handleSendAndNavigate}
             disabled={isLoading || !input.trim()}
-            className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M9 13.5L13.5 9L9 4.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M4.5 9H13.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-          {/* Save Button - Non-functional */}
-          <button
             className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
