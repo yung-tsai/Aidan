@@ -256,16 +256,15 @@ const Chat = () => {
             const displayContent = showTypewriter ? animatedContent : msg.content;
             
             return (
-              <div key={idx} className="w-full min-h-[16px] flex flex-row items-start gap-2.5">
-                <span
-                  className={`font-mono text-xs leading-4 ${
-                    msg.role === "assistant"
-                      ? "text-text-secondary font-normal"
-                      : "text-text-primary font-medium"
-                  }`}
-                >
-                  {displayContent}
-                </span>
+              <div key={idx} className="w-full min-h-[16px] flex flex-col gap-0">
+                <p className="font-['IBM_Plex_Mono'] text-xs leading-5 m-0">
+                  <span className={`font-medium ${msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}`}>
+                    {msg.role === "assistant" ? "Aiden: " : "Me: "}
+                  </span>
+                  <span className={`font-normal ${msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}`}>
+                    {displayContent}
+                  </span>
+                </p>
               </div>
             );
           })}
