@@ -18,7 +18,7 @@ const Chat = () => {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   
   // Get the last message for typewriter effect
   const lastMessage = messages[messages.length - 1];
@@ -178,7 +178,7 @@ const Chat = () => {
     }, 100);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -200,9 +200,31 @@ const Chat = () => {
   return (
     <div className="journal-gradient min-h-screen flex flex-col items-center pt-[150px] pb-[168px] px-[420px] gap-[100px]">
       {/* Chat Container */}
-      <div className="w-[600px] h-[400px] flex flex-col">
+      <div className="w-[450px] h-[325px] flex flex-col shadow-lg">
+        {/* Header */}
+        <div className="w-[450px] h-[20px] flex flex-row items-center px-3 py-0.5 bg-white border border-[#2C2C2C] relative">
+          {/* Control Buttons */}
+          <div className="flex flex-row items-center gap-[5px] h-4">
+            {/* Close Button */}
+            <div className="w-[11.33px] h-[11.33px] border border-[#2C2C2C] flex items-center justify-center relative">
+              <div className="absolute w-[4.66px] h-[1px] bg-[#2C2C2C] rotate-45" />
+              <div className="absolute w-[4.66px] h-[1px] bg-[#2C2C2C] -rotate-45" />
+            </div>
+            {/* Minimize Button */}
+            <div className="w-[11.33px] h-[11.3px] border border-[#2C2C2C] flex items-center justify-center">
+              <div className="w-[5px] h-[1px] bg-[#2C2C2C]" />
+            </div>
+          </div>
+          {/* Divider */}
+          <div className="flex-1 h-3" />
+          {/* Title */}
+          <span className="font-['Rasa'] font-medium text-xs leading-4 text-[#2C2C2C]">
+            Aiden Chat
+          </span>
+        </div>
+        
         {/* Messages Container */}
-        <div ref={messagesContainerRef} className="w-[600px] h-[332px] flex flex-col p-5 gap-2.5 bg-chat-bg border border-foreground border-b-0 rounded-t-lg overflow-y-auto">
+        <div ref={messagesContainerRef} className="w-[450px] h-[270px] flex flex-col p-5 gap-2.5 bg-[#F7F7F7] border-l border-r border-foreground overflow-y-auto">
           {messages.map((msg, idx) => {
             const isLastMessage = idx === messages.length - 1;
             const showTypewriter = isLastMessage && shouldAnimate;
@@ -226,28 +248,45 @@ const Chat = () => {
         </div>
 
         {/* Input Container */}
-        <div className="w-[600px] h-[68px] flex flex-row items-center px-5 py-2.5 bg-input-bg border border-foreground rounded-b-lg">
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Say anything"
-            disabled={isLoading}
-            className="flex-1 font-mono text-xs text-text-secondary bg-transparent border-none outline-none resize-none placeholder:text-text-secondary"
-            rows={2}
-          />
+        <div className="w-[450px] h-[35px] flex flex-row items-stretch">
+          {/* Text Input */}
+          <div className="flex-1 flex items-center px-5 bg-white border border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]">
+            <input
+              ref={inputRef as any}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Say anything"
+              disabled={isLoading}
+              className="flex-1 font-['Reddit_Mono'] font-light text-xs leading-4 text-[#4B5563] bg-transparent border-none outline-none placeholder:text-[#4B5563]"
+            />
+          </div>
+          {/* Send Button */}
+          <button
+            onClick={handleSend}
+            disabled={isLoading || !input.trim()}
+            className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M9 13.5L13.5 9L9 4.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M4.5 9H13.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          {/* Save Button */}
+          <button
+            onClick={handleGenerateSummary}
+            disabled={messages.length < 3}
+            className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M14.25 15.75H3.75C3.33579 15.75 3 15.4142 3 15V3C3 2.58579 3.33579 2.25 3.75 2.25H10.5L15 6.75V15C15 15.4142 14.6642 15.75 14.25 15.75Z" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 15.75V10.5H6V15.75" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M6 2.25V6.75H10.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
         </div>
       </div>
 
-      {/* Generate Summary Button */}
-      <Button
-        onClick={handleGenerateSummary}
-        disabled={messages.length < 3}
-        className="font-mono text-sm"
-      >
-        Generate Journal Summary
-      </Button>
     </div>
   );
 };
