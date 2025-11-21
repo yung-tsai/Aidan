@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import bubbleChatIcon from "@/assets/bubble-chat.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -21,11 +22,13 @@ import {
 
 const Journal = () => {
   const { sessionId } = useParams();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [entryId, setEntryId] = useState<string | null>(null);
   const [title, setTitle] = useState("Untitled");
   const [dateString, setDateString] = useState("");
+  const [chatInput, setChatInput] = useState("");
 
   const editor = useEditor({
     extensions: [
@@ -168,6 +171,10 @@ const Journal = () => {
     }
   };
 
+  const handleNavigateToChat = () => {
+    navigate("/");
+  };
+
   if (isLoading) {
     return (
       <div className="journal-gradient min-h-screen flex items-center justify-center">
@@ -297,14 +304,41 @@ const Journal = () => {
             <div className="w-[560px]">
               <EditorContent editor={editor} />
             </div>
+
+            {/* Input Container */}
+            <div className="w-[550px] h-[35px] flex flex-row items-stretch">
+              {/* Text Input */}
+              <div className="flex-1 flex items-center px-5 bg-white border border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]">
+                <input
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder=""
+                  className="flex-1 font-['Reddit_Mono'] font-light text-xs leading-4 text-[#4B5563] bg-transparent border-none outline-none"
+                />
+              </div>
+              {/* Bubble Chat Button - Navigate to Chat */}
+              <button
+                onClick={handleNavigateToChat}
+                className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
+              >
+                <img src={bubbleChatIcon} alt="Chat" className="w-[18px] h-[18px]" />
+              </button>
+              {/* Save Button */}
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M14.25 15.75H3.75C3.33579 15.75 3 15.4142 3 15V3C3 2.58579 3.33579 2.25 3.75 2.25H10.5L15 6.75V15C15 15.4142 14.6642 15.75 14.25 15.75Z" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 15.75V10.5H6V15.75" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M6 2.25V6.75H10.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Save Button */}
-      <Button onClick={handleSave} disabled={isSaving} className="font-mono text-sm">
-        {isSaving ? "Saving..." : "Save Entry"}
-      </Button>
     </div>
   );
 };
