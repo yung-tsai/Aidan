@@ -176,6 +176,8 @@ const Chat = () => {
       if (messagesContainerRef.current) {
         messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
       }
+      // Refocus the input field so user can continue typing
+      inputRef.current?.focus();
     }, 100);
   };
 
