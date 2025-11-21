@@ -229,9 +229,9 @@ const Chat = () => {
   return (
     <div className="journal-gradient min-h-screen flex flex-col items-center pt-[150px] pb-[168px] px-[420px] gap-[100px]">
       {/* Chat Container */}
-      <div className="w-[550px] h-[325px] flex flex-col shadow-lg">
+      <div className="w-[550px] h-[329px] flex flex-col shadow-lg">
         {/* Header */}
-        <div className="w-[550px] h-[20px]">
+        <div className="w-[550px] h-[24px]">
           <img src={headerChat} alt="Aiden Chat" className="w-full h-full object-contain" />
         </div>
         
