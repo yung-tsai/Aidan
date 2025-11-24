@@ -183,11 +183,11 @@ const Journal = () => {
   }
 
   return (
-    <div className="journal-gradient min-h-screen flex flex-col items-center pt-[150px] pb-[168px] px-4 gap-[100px]">
+    <div className="journal-gradient min-h-screen flex flex-col items-center pt-20 sm:pt-[100px] md:pt-[150px] pb-20 sm:pb-[100px] md:pb-[168px] px-4 gap-[50px] sm:gap-[75px] md:gap-[100px]">
       {/* Journal Container */}
-      <div className="w-[600px] flex flex-col shadow-lg">
+      <div className="w-full max-w-[600px] flex flex-col shadow-lg">
         {/* Window-Style Header */}
-        <div className="w-[600px] h-[20px] flex flex-row items-center px-3 py-0.5 bg-white border border-[#2C2C2C] relative">
+        <div className="w-full h-[20px] flex flex-row items-center px-3 py-0.5 bg-white border border-[#2C2C2C] relative">
           {/* Control Buttons */}
           <div className="flex flex-row items-center gap-[5px] h-4">
             {/* Close Button */}
@@ -209,13 +209,13 @@ const Journal = () => {
         </div>
 
         {/* Inner Wrapper */}
-        <div className="w-[600px] flex flex-col gap-5 bg-chat-bg border-l border-r border-foreground">
+        <div className="w-full flex flex-col gap-5 bg-chat-bg border-l border-r border-foreground">
           {/* Header */}
-          <div className="w-[600px] h-[71px] flex flex-col">
+          <div className="w-full h-[71px] flex flex-col">
             {/* Header Info */}
-            <div className="w-[600px] h-[41px] border-b border-text-primary flex flex-row justify-between">
+            <div className="w-full h-[41px] border-b border-text-primary flex flex-row justify-between">
               {/* Title */}
-              <div className="w-[300px] h-[41px] pt-[15px] pb-2.5 pl-5">
+              <div className="flex-1 min-w-0 h-[41px] pt-[15px] pb-2.5 pl-5">
                 <input
                   type="text"
                   value={title}
@@ -224,7 +224,7 @@ const Journal = () => {
                 />
               </div>
               {/* Date */}
-              <div className="w-[300px] h-[41px] pt-[15px] pb-2.5 pr-5 text-right">
+              <div className="flex-1 min-w-0 h-[41px] pt-[15px] pb-2.5 pr-5 text-right">
                 <span className="font-mono font-medium text-xs text-text-muted">
                   {dateString}
                 </span>
@@ -232,7 +232,7 @@ const Journal = () => {
             </div>
 
             {/* Command Bar */}
-            <div className="w-[598px] h-[30px] px-[11px] py-[3px] gap-2 bg-toolbar-bg border-b border-text-primary flex flex-row items-center">
+            <div className="w-full h-[30px] px-[11px] py-[3px] gap-2 bg-toolbar-bg border-b border-text-primary flex flex-row flex-wrap items-center">
               <button className="flex items-center gap-1 px-2 py-1 hover:bg-gray-200 rounded font-['Segoe_UI'] text-xs">
                 Format <ChevronDown className="w-3 h-3" />
               </button>
@@ -299,15 +299,15 @@ const Journal = () => {
           </div>
 
           {/* Content Container */}
-          <div className="w-[599px] px-5 flex flex-col items-center gap-[15px] pb-5">
-            <div className="w-[560px]">
+          <div className="w-full px-5 flex flex-col items-center gap-[15px] pb-5">
+            <div className="w-full">
               <EditorContent editor={editor} />
             </div>
           </div>
         </div>
 
         {/* Input Container */}
-        <div className="w-[600px] h-[35px] flex flex-row items-stretch">
+        <div className="w-full h-[35px] flex flex-row items-stretch">
           {/* Empty Container */}
           <div className="flex-1 bg-white border border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]">
           </div>
