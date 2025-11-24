@@ -183,7 +183,7 @@ const Journal = () => {
   }
 
   return (
-    <div className="journal-gradient min-h-screen flex flex-col items-center pt-[150px] pb-[168px] px-[420px] gap-[100px]">
+    <div className="journal-gradient min-h-screen flex flex-col items-center pt-[150px] pb-[168px] px-4 gap-[100px]">
       {/* Journal Container */}
       <div className="w-[600px] flex flex-col shadow-lg">
         {/* Window-Style Header */}

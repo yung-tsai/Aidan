@@ -228,7 +228,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="journal-gradient min-h-screen flex flex-col items-center pt-[150px] pb-[168px] px-[420px] gap-[100px]">
+    <div className="journal-gradient min-h-screen flex flex-col items-center pt-[150px] pb-[168px] px-4 gap-[100px]">
       {/* Chat Container */}
       <div className="w-[550px] h-[329px] flex flex-col shadow-lg">
         {/* Header */}
