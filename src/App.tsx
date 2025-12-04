@@ -8,6 +8,7 @@ import Chat from "./pages/Chat";
 import Journal from "./pages/Journal";
 import NewEntry from "./pages/NewEntry";
 import IndexFinder from "./pages/IndexFinder";
+import Insights from "./pages/Insights";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/journal/:sessionId" element={<Journal />} />
           <Route path="/new-entry" element={<NewEntry />} />
           <Route path="/index" element={<IndexFinder />} />
+          <Route path="/insights" element={<Insights />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
