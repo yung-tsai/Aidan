@@ -20,7 +20,7 @@ const InsightCard = ({
   return (
     <div 
       className={`
-        relative w-full p-5 rounded
+        relative w-full p-3 sm:p-4 md:p-5 rounded
         ${isDark ? "bg-insights-dark" : "bg-insights-bg insights-dither"}
         ${dashed ? "border border-dashed border-insights-gray-mid" : "border border-insights-border"}
         transition-colors hover:bg-insights-hover
@@ -29,11 +29,11 @@ const InsightCard = ({
     >
       {isDark && <div className="absolute inset-0 insights-scanlines rounded" />}
       <div className="relative z-10">
-        <h2 className={`font-mono font-medium text-lg mb-1 ${isDark ? "text-white" : "text-insights-dark"}`}>
+        <h2 className={`font-mono font-medium text-base sm:text-lg mb-1 ${isDark ? "text-white" : "text-insights-dark"}`}>
           {title}
         </h2>
         {subtitle && (
-          <p className={`font-ibm text-xs mb-4 ${isDark ? "text-insights-gray-light" : "text-insights-gray-light"}`}>
+          <p className={`font-ibm text-xs mb-3 sm:mb-4 ${isDark ? "text-insights-gray-light" : "text-insights-gray-light"}`}>
             {subtitle}
           </p>
         )}

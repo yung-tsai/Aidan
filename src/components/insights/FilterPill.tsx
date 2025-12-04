@@ -12,7 +12,7 @@ const FilterPill = ({ label, active, onClick, variant = "light" }: FilterPillPro
     <button
       onClick={onClick}
       className={`
-        px-3 py-1 font-ibm text-xs transition-all
+        px-2 sm:px-3 py-1 font-ibm text-[10px] sm:text-xs transition-all
         ${active 
           ? isDark 
             ? "bg-white text-insights-dark" 

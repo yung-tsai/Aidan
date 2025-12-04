@@ -27,16 +27,16 @@ const MoodOscilloscope = () => {
   const data = generateMockData(getDays());
   
   return (
-    <div className="relative w-full p-5 rounded bg-insights-dark border border-dashed border-insights-gray-mid">
+    <div className="relative w-full p-3 sm:p-4 md:p-5 rounded bg-insights-dark border border-dashed border-insights-gray-mid">
       {/* Scanlines overlay */}
       <div className="absolute inset-0 insights-scanlines rounded pointer-events-none" />
       
       <div className="relative z-10">
-        <h2 className="font-mono font-medium text-lg text-white mb-1">Mood Over Time</h2>
-        <p className="font-ibm text-xs text-insights-gray-light mb-4">Past {getDays()} days</p>
+        <h2 className="font-mono font-medium text-base sm:text-lg text-white mb-1">Mood Over Time</h2>
+        <p className="font-ibm text-xs text-insights-gray-light mb-3 sm:mb-4">Past {getDays()} days</p>
         
         {/* Chart */}
-        <div className="h-[240px] w-full">
+        <div className="h-[180px] sm:h-[200px] md:h-[240px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <XAxis 
@@ -75,9 +75,9 @@ const MoodOscilloscope = () => {
         </div>
         
         {/* Controls */}
-        <div className="flex flex-wrap items-center justify-between mt-4 gap-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-3 sm:mt-4 gap-2 sm:gap-3">
           {/* Time filters */}
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             {(["7d", "30d", "90d", "all"] as const).map((range) => (
               <FilterPill
                 key={range}
@@ -90,7 +90,7 @@ const MoodOscilloscope = () => {
           </div>
           
           {/* Metric toggle */}
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             <FilterPill
               label="Mood"
               active={metric === "mood"}
