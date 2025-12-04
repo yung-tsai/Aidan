@@ -22,12 +22,12 @@ const TimeHeatmap = () => {
       {/* Grid */}
       <div className="flex gap-1">
         {/* Time labels column */}
-        <div className="flex flex-col gap-1 mr-2">
-          <div className="h-[18px]" /> {/* Spacer for day labels */}
+        <div className="flex flex-col gap-1 mr-1 sm:mr-2">
+          <div className="h-6 sm:h-5 md:h-[18px]" /> {/* Spacer for day labels */}
           {times.map((time, i) => (
             <div 
               key={time} 
-              className="h-[18px] flex items-center font-ibm text-[10px] text-insights-gray-light"
+              className="h-6 sm:h-5 md:h-[18px] flex items-center font-ibm text-[9px] sm:text-[10px] text-insights-gray-light"
               title={timeLabels[i]}
             >
               {time}
@@ -42,7 +42,7 @@ const TimeHeatmap = () => {
             {days.map((day) => (
               <div 
                 key={day} 
-                className="w-[18px] font-ibm text-[10px] text-insights-gray-light text-center"
+                className="w-6 sm:w-5 md:w-[18px] font-ibm text-[9px] sm:text-[10px] text-insights-gray-light text-center"
               >
                 {day.charAt(0)}
               </div>
@@ -55,7 +55,7 @@ const TimeHeatmap = () => {
               {row.map((value, colIndex) => (
                 <div
                   key={`${rowIndex}-${colIndex}`}
-                  className="w-[18px] h-[18px] border border-insights-border transition-colors hover:scale-110"
+                  className="w-6 h-6 sm:w-5 sm:h-5 md:w-[18px] md:h-[18px] border border-insights-border transition-colors hover:scale-110"
                   style={{ backgroundColor: getIntensityColor(value) }}
                   title={`${days[colIndex]} ${timeLabels[rowIndex]}: ${value}%`}
                 />
@@ -66,7 +66,7 @@ const TimeHeatmap = () => {
       </div>
       
       {/* Caption */}
-      <p className="font-ibm text-xs text-insights-gray-light mt-4 italic">
+      <p className="font-ibm text-[10px] sm:text-xs text-insights-gray-light mt-3 sm:mt-4 italic">
         Sunday late nights trend anxious. Sunday mornings are your peak.
       </p>
     </div>

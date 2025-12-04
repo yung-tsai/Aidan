@@ -49,26 +49,26 @@ const Insights = () => {
   // Dashboard View
   if (viewMode === "dashboard") {
     return (
-      <div className="bg-insights-bg min-h-screen py-12">
-        <div className="max-w-[760px] mx-auto px-6">
+      <div className="bg-insights-bg min-h-screen py-6 sm:py-8 md:py-12">
+        <div className="max-w-[760px] mx-auto px-4 sm:px-6">
           {/* Header */}
-          <header className="mb-10">
-            <div className="flex items-center gap-4 mb-2">
+          <header className="mb-6 sm:mb-8 md:mb-10">
+            <div className="flex items-center gap-3 sm:gap-4 mb-2">
               <button
                 onClick={handleBackToLanding}
                 className="w-8 h-8 flex-shrink-0 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity"
               >
                 <img src={arrowBtn} alt="Back" className="w-full h-full" />
               </button>
-              <h1 className="font-mono font-medium text-2xl text-insights-dark">Insights</h1>
+              <h1 className="font-mono font-medium text-xl sm:text-2xl text-insights-dark">Insights</h1>
             </div>
-            <p className="font-ibm text-sm text-insights-gray-light ml-12">
+            <p className="font-ibm text-xs sm:text-sm text-insights-gray-light ml-11 sm:ml-12">
               AI-generated patterns from your recent journal entries.
             </p>
           </header>
 
           {/* Section 2: Summary Card */}
-          <section className="mb-12">
+          <section className="mb-8 sm:mb-10 md:mb-12">
             <InsightCard title="This Month's Story">
               <p className="font-ibm text-sm text-insights-gray-mid leading-relaxed mb-4">
                 {mockSummary.text}
@@ -88,31 +88,31 @@ const Insights = () => {
           </section>
 
           {/* Section 3: Mood Oscilloscope */}
-          <section className="mb-12">
+          <section className="mb-8 sm:mb-10 md:mb-12">
             <MoodOscilloscope />
           </section>
 
           {/* Section 4: Theme Stacks */}
-          <section className="mb-12">
+          <section className="mb-8 sm:mb-10 md:mb-12">
             <InsightCard title="What You Write About Most">
               <ThemeStacksChart />
             </InsightCard>
           </section>
 
           {/* Section 5: Likes vs Drains Matrix */}
-          <section className="mb-12">
+          <section className="mb-8 sm:mb-10 md:mb-12">
             <LikesDrainsMatrix />
           </section>
 
           {/* Section 6: Time Heatmap */}
-          <section className="mb-12">
+          <section className="mb-8 sm:mb-10 md:mb-12">
             <InsightCard title="When Your Mood Peaks & Drops">
               <TimeHeatmap />
             </InsightCard>
           </section>
 
           {/* Section 7: People Radar */}
-          <section className="mb-12">
+          <section className="mb-8 sm:mb-10 md:mb-12">
             <InsightCard title="People You Mention Most">
               <PeopleRadar />
             </InsightCard>
