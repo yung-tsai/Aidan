@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import FilterPill from "./FilterPill";
 
 // Mock data for the mood chart
@@ -51,7 +51,7 @@ const MoodOscilloscope = () => {
                 axisLine={{ stroke: "#333" }}
                 domain={[0, 100]}
               />
-              <Tooltip
+              <RechartsTooltip
                 contentStyle={{
                   backgroundColor: "#111",
                   border: "1px solid #333",
