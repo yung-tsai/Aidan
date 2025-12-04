@@ -108,3 +108,24 @@
 .ProseMirror li p {
   margin: 0;
 }
+
+/* Insights page styles */
+.insights-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+.insights-neon-glow {
+  filter: drop-shadow(0 0 4px rgba(107, 255, 250, 0.6)) drop-shadow(0 0 8px rgba(107, 255, 250, 0.4));
+}
+
+.insights-dither {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='1' height='1' fill='%23000' fill-opacity='0.02'/%3E%3Crect x='2' y='2' width='1' height='1' fill='%23000' fill-opacity='0.02'/%3E%3C/svg%3E");
+  background-size: 4px 4px;
+}

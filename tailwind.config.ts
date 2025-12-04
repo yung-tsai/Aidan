@@ -28,6 +28,14 @@ export default {
         "text-muted": "hsl(var(--text-muted))",
         "text-divider": "hsl(var(--text-divider))",
         "text-icon": "hsl(var(--text-icon))",
+        // Insights page grayscale palette
+        "insights-bg": "hsl(0 0% 97%)",
+        "insights-dark": "hsl(0 0% 7%)",
+        "insights-border": "hsl(0 0% 16%)",
+        "insights-gray-dark": "hsl(0 0% 13%)",
+        "insights-gray-mid": "hsl(0 0% 27%)",
+        "insights-gray-light": "hsl(0 0% 40%)",
+        "insights-hover": "hsl(0 0% 94%)",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

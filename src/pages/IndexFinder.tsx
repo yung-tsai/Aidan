@@ -205,11 +205,24 @@ const IndexFinder = () => {
             }`}
           />
 
-          {/* Right Arrow Button (hidden) */}
-          <div 
-            className="w-10 h-10 flex-shrink-0 opacity-0"
+          {/* Right Arrow Button - navigates to Insights */}
+          <button
+            onClick={() => {
+              setShowContent(false);
+              setIsAnimating(true);
+              setTimeout(() => {
+                navigate("/insights");
+              }, 300);
+            }}
+            className="w-10 h-10 flex-shrink-0 relative flex items-center justify-center"
             style={{ transform: "rotate(-180deg)" }}
-          />
+          >
+            <img 
+              src={arrowBtn} 
+              alt="Next" 
+              className="w-full h-full"
+            />
+          </button>
         </div>
 
         {/* Options Container */}
