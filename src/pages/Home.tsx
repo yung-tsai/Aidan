@@ -1,116 +1,73 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import classicMac from "@/assets/classic-mac.png";
-import arrowBtn from "@/assets/arrow-btn.png";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [showContent, setShowContent] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => setShowContent(true), 100);
-  }, []);
-
-  const handleNavigateToIndex = () => {
-    setShowContent(false);
-    setIsAnimating(true);
-    setTimeout(() => {
-      navigate("/index");
-    }, 300);
-  };
+  const options = [
+    {
+      title: "Classic",
+      description: "Type out an entry the classic way",
+      route: "/new-entry",
+    },
+    {
+      title: "Aiden",
+      description: "Chat with Aiden to get a summary entry",
+      route: "/chat",
+    },
+    {
+      title: "Index",
+      description: "Browse your past journal entries",
+      route: "/index",
+    },
+    {
+      title: "Insights",
+      description: "View patterns from your entries",
+      route: "/insights",
+    },
+  ];
 
   return (
-    <div className="bg-white min-h-screen flex flex-col items-center justify-center">
-      {/* Container */}
-      <div className="flex flex-col justify-center items-center gap-5 w-[460px]">
+    <div className="bg-white min-h-screen flex flex-col items-center justify-center px-4">
+      <div className="flex flex-col justify-center items-center gap-5 w-full max-w-[700px]">
         {/* Title */}
-        <h1 className="w-full font-mono font-medium text-[22px] leading-4 flex items-center justify-center text-[#1F2A37]">
+        <h1 className="font-mono font-medium text-[22px] leading-4 text-[#1F2A37]">
           Journal Entry
         </h1>
 
-        {/* Image Section */}
-        <div className="flex flex-col items-center w-[460px]">
-          {/* Controls Row */}
-          <div className="flex flex-row justify-center items-center w-[360px] h-[262px]">
-            {/* Left Arrow Button (hidden) */}
-            <div className="w-10 h-10 opacity-0 flex-shrink-0" />
+        {/* Mac Computer Image */}
+        <img 
+          src={classicMac} 
+          alt="Classic Mac" 
+          className="w-[200px] sm:w-[240px] md:w-[280px] h-auto object-contain"
+        />
 
-            {/* Mac Computer Image */}
-            <img 
-              src={classicMac} 
-              alt="Classic Mac" 
-              className={`w-[280px] h-[262px] object-contain transition-all duration-300 ${
-                isAnimating ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'
-              }`}
-            />
-
-            {/* Right Arrow Button */}
-            <button
-              onClick={handleNavigateToIndex}
-              className="w-10 h-10 flex-shrink-0 relative flex items-center justify-center"
-              style={{ transform: "rotate(180deg)" }}
+        {/* Options Row */}
+        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center gap-6 sm:gap-4 md:gap-6 w-full">
+          {options.map((option) => (
+            <div 
+              key={option.title}
+              className="flex flex-col items-center gap-3 w-[160px] sm:w-[140px] md:w-[150px]"
             >
-              <img 
-                src={arrowBtn} 
-                alt="Next" 
-                className="w-full h-full"
-              />
-            </button>
-          </div>
-        </div>
-
-        {/* Options Container */}
-        <div className={`flex flex-row items-start gap-10 w-[460px] transition-opacity duration-300 ${
-          showContent ? 'opacity-100' : 'opacity-0'
-        }`}>
-          {/* Classic Option */}
-          <div className="flex flex-col justify-center items-end gap-5 w-[210px]">
-            {/* Option Info */}
-            <div className="flex flex-col items-start gap-2.5 w-full">
               {/* Title */}
-              <h2 className="w-full font-mono font-medium text-[18px] leading-4 text-right text-[#010101]">
-                Classic
+              <h2 className="font-mono font-medium text-[16px] sm:text-[18px] leading-4 text-center text-[#010101]">
+                {option.title}
               </h2>
               {/* Description */}
-              <p className="w-full font-ibm font-extralight text-sm leading-[19px] flex items-center text-right text-[#010101]">
-                Type out an entry the classic way
+              <p className="font-ibm font-extralight text-xs sm:text-sm leading-[17px] sm:leading-[19px] text-center text-[#010101] min-h-[34px] sm:min-h-[38px]">
+                {option.description}
               </p>
+              {/* Button */}
+              <button
+                onClick={() => navigate(option.route)}
+                className="flex flex-row justify-center items-center px-2.5 py-[5px] pb-2 w-[71px] h-[29px] bg-white border border-black shadow-[4px_4px_0px_#000000] hover:shadow-[2px_2px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+              >
+                <span className="font-ibm font-medium text-sm leading-4 text-black">
+                  {option.title === "Index" || option.title === "Insights" ? "Enter" : "Select"}
+                </span>
+              </button>
             </div>
-            {/* Button */}
-            <button
-              onClick={() => navigate("/new-entry")}
-              className="flex flex-row justify-center items-center px-2.5 py-[5px] pb-2 w-[71px] h-[29px] bg-white border border-black shadow-[4px_4px_0px_#000000] hover:shadow-[2px_2px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-            >
-              <span className="font-ibm font-medium text-sm leading-4 text-black">
-                Select
-              </span>
-            </button>
-          </div>
-
-          {/* Aiden Option */}
-          <div className="flex flex-col justify-center items-start gap-5 w-[210px]">
-            {/* Option Info */}
-            <div className="flex flex-col items-start gap-2.5 w-full">
-              {/* Title */}
-              <h2 className="w-full font-mono font-medium text-[18px] leading-4 flex items-center text-[#010101]">
-                Aiden
-              </h2>
-              {/* Description */}
-              <p className="w-full font-ibm font-extralight text-sm leading-[19px] flex items-center text-[#010101]">
-                Chat with Aiden to get a summary entry.
-              </p>
-            </div>
-            {/* Button */}
-            <button
-              onClick={() => navigate("/chat")}
-              className="flex flex-row justify-center items-center px-2.5 py-[5px] pb-2 w-[71px] h-[29px] bg-white border border-black shadow-[4px_4px_0px_#000000] hover:shadow-[2px_2px_0px_#000000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-            >
-              <span className="font-ibm font-medium text-sm leading-4 text-black">
-                Select
-              </span>
-            </button>
-          </div>
+          ))}
         </div>
       </div>
     </div>
