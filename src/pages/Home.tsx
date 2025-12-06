@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import classicMac from "@/assets/classic-mac.png";
 import filingCabinet from "@/assets/filing-cabinet.png";
 import bubbleChat from "@/assets/bubble-chat.png";
+import insightsChart from "@/assets/insights-chart.png";
+
 const Home = () => {
   const navigate = useNavigate();
 
@@ -28,7 +30,7 @@ const Home = () => {
       title: "Insights",
       description: "View patterns from your entries",
       route: "/insights",
-      image: null, // No illustration yet
+      image: insightsChart,
     },
   ];
 
