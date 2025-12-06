@@ -39,7 +39,7 @@ const Journal = () => {
     content: "<p>Loading...</p>",
     editorProps: {
       attributes: {
-        class: "font-typewriter text-paper-text text-base leading-8 outline-none min-h-[304px] prose prose-sm max-w-none paper-lines",
+        class: "font-ibm text-chat-text text-sm leading-6 outline-none min-h-[304px] prose prose-sm max-w-none",
       },
     },
     onUpdate: ({ editor }) => {
@@ -186,8 +186,8 @@ const Journal = () => {
   if (isLoading) {
     return (
       <div className="journal-gradient min-h-screen flex items-center justify-center">
-        <div className="font-typewriter text-paper-text text-lg">
-          Loading manuscript...
+        <div className="font-vt323 text-chat-text text-lg">
+          Loading entry...
         </div>
       </div>
     );
@@ -195,98 +195,116 @@ const Journal = () => {
 
   return (
     <div className="journal-gradient min-h-screen flex flex-col items-center pt-20 sm:pt-[100px] md:pt-[150px] pb-20 sm:pb-[100px] md:pb-[168px] px-4 gap-[50px] sm:gap-[75px] md:gap-[100px]">
-      {/* Paper Window */}
-      <div className="w-full max-w-[640px] retro-window paper-edge">
-        {/* Title Bar - Typewriter style */}
-        <div className="h-10 flex items-center px-4 bg-gradient-to-b from-[#e8dcc8] to-[#d4c4a8] border-b-2 border-[#a89070]">
-          {/* Window Controls */}
+      {/* Journal Window - Matches Chat UI structure */}
+      <div className="w-full max-w-[550px] retro-window">
+        {/* Title Bar - Same as Chat */}
+        <div className="h-6 flex items-center px-3 bg-gradient-to-b from-[#4a4a4a] to-[#2a2a2a] rounded-t-sm">
+          {/* Window Controls - Traffic lights */}
           <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-[#8b7355] border border-[#6d5a45] retro-button" />
-            <div className="w-3 h-3 rounded-sm bg-[#8b7355] border border-[#6d5a45] retro-button" />
+            <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
+            <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
+            <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
           </div>
           {/* Title */}
           <div className="flex-1 text-center">
-            <span className="font-typewriter text-base text-[#3d3225] tracking-wide">
+            <span className="font-vt323 text-sm text-gray-300 tracking-wider">
               JOURNAL ENTRY
             </span>
           </div>
-          {/* Date Stamp */}
-          <div className="px-2 py-0.5 bg-[#fdf6e3] border border-[#a89070] rounded-sm">
-            <span className="font-ibm text-xs text-[#6d5a45]">{dateString}</span>
+          {/* Date - Styled like Chat's "ONLINE" */}
+          <div className="flex items-center gap-1.5">
+            <span className="font-ibm text-xs text-gray-400">{dateString}</span>
           </div>
         </div>
 
-        {/* Paper Content Area */}
-        <div className="relative paper-bg">
-          {/* Paper Texture Overlay */}
-          <div className="absolute inset-0 paper-texture" />
-
+        {/* Content Area - Light mode version */}
+        <div className="bg-chat-container border-x border-chat-border">
           {/* Header with Title */}
-          <div className="relative z-10 border-b-2 border-dashed border-paper-lines">
-            <div className="px-6 py-4">
+          <div className="border-b border-chat-border">
+            <div className="px-4 py-3">
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter title..."
-                className="w-full font-typewriter text-2xl text-paper-text bg-transparent border-none outline-none placeholder:text-paper-lines"
+                className="w-full font-vt323 text-xl text-chat-text bg-transparent border-none outline-none placeholder:text-gray-400"
               />
             </div>
           </div>
 
-          {/* Toolbar - Typewriter key style */}
-          <div className="relative z-10 px-4 py-2 flex flex-wrap items-center gap-1 bg-paper-surface border-b border-paper-lines">
+          {/* Toolbar - Retro button style matching Chat */}
+          <div className="px-3 py-2 flex flex-wrap items-center gap-1 bg-chat-container border-b border-chat-border">
             <button
               onClick={() => editor?.chain().focus().toggleBold().run()}
-              className={`typewriter-toolbar-btn ${editor?.isActive("bold") ? "active" : ""}`}
+              className={`w-8 h-8 flex items-center justify-center rounded-sm border transition-all ${
+                editor?.isActive("bold")
+                  ? "bg-gray-700 text-gray-100 border-gray-600"
+                  : "bg-gray-100 text-chat-text border-chat-border hover:bg-gray-200"
+              } retro-button`}
               title="Bold"
             >
               <Bold className="w-4 h-4" />
             </button>
             <button
               onClick={() => editor?.chain().focus().toggleItalic().run()}
-              className={`typewriter-toolbar-btn ${editor?.isActive("italic") ? "active" : ""}`}
+              className={`w-8 h-8 flex items-center justify-center rounded-sm border transition-all ${
+                editor?.isActive("italic")
+                  ? "bg-gray-700 text-gray-100 border-gray-600"
+                  : "bg-gray-100 text-chat-text border-chat-border hover:bg-gray-200"
+              } retro-button`}
               title="Italic"
             >
               <Italic className="w-4 h-4" />
             </button>
             <button
               onClick={() => editor?.chain().focus().toggleUnderline().run()}
-              className={`typewriter-toolbar-btn ${editor?.isActive("underline") ? "active" : ""}`}
+              className={`w-8 h-8 flex items-center justify-center rounded-sm border transition-all ${
+                editor?.isActive("underline")
+                  ? "bg-gray-700 text-gray-100 border-gray-600"
+                  : "bg-gray-100 text-chat-text border-chat-border hover:bg-gray-200"
+              } retro-button`}
               title="Underline"
             >
               <UnderlineIcon className="w-4 h-4" />
             </button>
             
-            <div className="w-px h-6 bg-paper-lines mx-1" />
+            <div className="w-px h-6 bg-chat-border mx-1" />
             
             <button
               onClick={setLink}
-              className="typewriter-toolbar-btn"
+              className="w-8 h-8 flex items-center justify-center rounded-sm border bg-gray-100 text-chat-text border-chat-border hover:bg-gray-200 retro-button"
               title="Add Link"
             >
               <LinkIcon className="w-4 h-4" />
             </button>
             <button
               onClick={() => editor?.chain().focus().unsetLink().run()}
-              className="typewriter-toolbar-btn"
+              className="w-8 h-8 flex items-center justify-center rounded-sm border bg-gray-100 text-chat-text border-chat-border hover:bg-gray-200 retro-button"
               title="Remove Link"
             >
               <Link2Off className="w-4 h-4 opacity-60" />
             </button>
             
-            <div className="w-px h-6 bg-paper-lines mx-1" />
+            <div className="w-px h-6 bg-chat-border mx-1" />
             
             <button
               onClick={() => editor?.chain().focus().toggleBulletList().run()}
-              className={`typewriter-toolbar-btn ${editor?.isActive("bulletList") ? "active" : ""}`}
+              className={`w-8 h-8 flex items-center justify-center rounded-sm border transition-all ${
+                editor?.isActive("bulletList")
+                  ? "bg-gray-700 text-gray-100 border-gray-600"
+                  : "bg-gray-100 text-chat-text border-chat-border hover:bg-gray-200"
+              } retro-button`}
               title="Bullet List"
             >
               <List className="w-4 h-4" />
             </button>
             <button
               onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-              className={`typewriter-toolbar-btn ${editor?.isActive("orderedList") ? "active" : ""}`}
+              className={`w-8 h-8 flex items-center justify-center rounded-sm border transition-all ${
+                editor?.isActive("orderedList")
+                  ? "bg-gray-700 text-gray-100 border-gray-600"
+                  : "bg-gray-100 text-chat-text border-chat-border hover:bg-gray-200"
+              } retro-button`}
               title="Numbered List"
             >
               <ListOrdered className="w-4 h-4" />
@@ -294,47 +312,47 @@ const Journal = () => {
           </div>
 
           {/* Editor Content */}
-          <div className="relative z-10 px-6 py-6 min-h-[320px]">
+          <div className="px-4 py-4 min-h-[280px] bg-chat-container">
             <EditorContent editor={editor} />
           </div>
 
-          {/* Status Bar */}
-          <div className="relative z-10 h-7 px-4 flex items-center justify-between bg-paper-surface border-t border-paper-lines">
-            <div className="flex items-center gap-4">
-              <span className="font-ibm text-xs text-[#8b7355]">Page 1</span>
-              <span className="font-ibm text-xs text-[#8b7355]">{wordCount} words</span>
+          {/* Status Bar - Matches Chat structure */}
+          <div className="h-6 px-3 flex items-center justify-between bg-gray-100 border-t border-chat-border">
+            <div className="flex items-center gap-3">
+              <span className="font-ibm text-xs text-gray-500">Page 1</span>
+              <span className="font-ibm text-xs text-gray-500">{wordCount} words</span>
             </div>
             {lastSaved && (
-              <span className="font-ibm text-xs text-[#a89070]">Saved at {lastSaved}</span>
+              <span className="font-ibm text-xs text-gray-400">Saved at {lastSaved}</span>
             )}
           </div>
         </div>
 
-        {/* Bottom Action Bar */}
-        <div className="flex items-stretch bg-gradient-to-b from-[#d4c4a8] to-[#c4b498] border-t-2 border-[#a89070]">
-          {/* Spacer */}
-          <div className="flex-1 retro-inset bg-paper-surface" />
+        {/* Bottom Action Bar - Matches Chat input area */}
+        <div className="h-9 flex items-stretch bg-gradient-to-b from-[#4a4a4a] to-[#3a3a3a] rounded-b-sm border-t border-gray-600">
+          {/* Spacer - Like input field area */}
+          <div className="flex-1 m-1 mr-0 retro-inset bg-chat-container rounded-sm" />
           
           {/* Chat Button */}
           <button
             onClick={handleNavigateToChat}
-            className="w-12 flex items-center justify-center bg-paper-surface border-l border-[#a89070] retro-button hover:bg-paper-bg transition-colors"
+            className="w-10 m-1 ml-1 flex items-center justify-center bg-gray-200 border border-gray-400 rounded-sm retro-button hover:bg-gray-100 transition-colors"
             title="Return to chat"
           >
-            <MessageCircle className="w-5 h-5 text-[#6d5a45]" />
+            <MessageCircle className="w-4 h-4 text-chat-text" />
           </button>
           
           {/* Save Button */}
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="w-12 flex items-center justify-center bg-paper-surface border-l border-[#a89070] retro-button hover:bg-paper-bg transition-colors"
+            className="w-10 m-1 ml-0 flex items-center justify-center bg-gray-200 border border-gray-400 rounded-sm retro-button hover:bg-gray-100 transition-colors disabled:opacity-50"
             title="Save entry"
           >
-            <svg width="20" height="20" viewBox="0 0 18 18" fill="none">
-              <path d="M14.25 15.75H3.75C3.33579 15.75 3 15.4142 3 15V3C3 2.58579 3.33579 2.25 3.75 2.25H10.5L15 6.75V15C15 15.4142 14.6642 15.75 14.25 15.75Z" stroke="#6d5a45" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 15.75V10.5H6V15.75" stroke="#6d5a45" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M6 2.25V6.75H10.5" stroke="#6d5a45" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+              <path d="M14.25 15.75H3.75C3.33579 15.75 3 15.4142 3 15V3C3 2.58579 3.33579 2.25 3.75 2.25H10.5L15 6.75V15C15 15.4142 14.6642 15.75 14.25 15.75Z" stroke="#363636" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 15.75V10.5H6V15.75" stroke="#363636" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M6 2.25V6.75H10.5" stroke="#363636" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
         </div>
