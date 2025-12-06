@@ -1,8 +1,29 @@
 import { useState, useEffect, useRef } from 'react';
 
-export const useTypewriter = (fullText: string, speed: number = 30): string => {
+interface TypewriterResult {
+  text: string;
+  isTyping: boolean;
+  showCursor: boolean;
+}
+
+export const useTypewriter = (fullText: string, speed: number = 30): TypewriterResult => {
   const [displayedText, setDisplayedText] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
   const timeoutRef = useRef<number | null>(null);
+  const cursorIntervalRef = useRef<number | null>(null);
+
+  // Blinking cursor effect
+  useEffect(() => {
+    cursorIntervalRef.current = window.setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 530);
+
+    return () => {
+      if (cursorIntervalRef.current) {
+        clearInterval(cursorIntervalRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     // If displayedText is already caught up with fullText, do nothing
@@ -35,5 +56,7 @@ export const useTypewriter = (fullText: string, speed: number = 30): string => {
     };
   }, [fullText, displayedText, speed]);
 
-  return displayedText;
+  const isTyping = displayedText.length < fullText.length;
+
+  return { text: displayedText, isTyping, showCursor };
 };
