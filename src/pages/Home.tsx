@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import classicMac from "@/assets/classic-mac.png";
-
+import filingCabinet from "@/assets/filing-cabinet.png";
+import bubbleChat from "@/assets/bubble-chat.png";
 const Home = () => {
   const navigate = useNavigate();
 
@@ -9,46 +10,57 @@ const Home = () => {
       title: "Classic",
       description: "Type out an entry the classic way",
       route: "/new-entry",
+      image: classicMac,
     },
     {
       title: "Aiden",
       description: "Chat with Aiden to get a summary entry",
       route: "/chat",
+      image: bubbleChat,
     },
     {
       title: "Index",
       description: "Browse your past journal entries",
       route: "/index",
+      image: filingCabinet,
     },
     {
       title: "Insights",
       description: "View patterns from your entries",
       route: "/insights",
+      image: null, // No illustration yet
     },
   ];
 
   return (
     <div className="bg-white min-h-screen flex flex-col items-center justify-center px-4">
-      <div className="flex flex-col justify-center items-center gap-5 w-full max-w-[700px]">
+      <div className="flex flex-col justify-center items-center gap-8 w-full max-w-[800px]">
         {/* Title */}
         <h1 className="font-mono font-medium text-[22px] leading-4 text-[#1F2A37]">
           Journal Entry
         </h1>
 
-        {/* Mac Computer Image */}
-        <img 
-          src={classicMac} 
-          alt="Classic Mac" 
-          className="w-[200px] sm:w-[240px] md:w-[280px] h-auto object-contain"
-        />
-
         {/* Options Row */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center gap-6 sm:gap-4 md:gap-6 w-full">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center gap-8 sm:gap-4 md:gap-6 w-full">
           {options.map((option) => (
             <div 
               key={option.title}
-              className="flex flex-col items-center gap-3 w-[160px] sm:w-[140px] md:w-[150px]"
+              className="flex flex-col items-center gap-3 w-[160px] sm:w-[140px] md:w-[160px]"
             >
+              {/* Image */}
+              <div className="h-[100px] sm:h-[90px] md:h-[110px] flex items-end justify-center">
+                {option.image ? (
+                  <img 
+                    src={option.image} 
+                    alt={option.title} 
+                    className="w-[80px] sm:w-[70px] md:w-[90px] h-auto object-contain"
+                  />
+                ) : (
+                  <div className="w-[80px] sm:w-[70px] md:w-[90px] h-[80px] sm:h-[70px] md:h-[90px] border border-dashed border-gray-300 flex items-center justify-center">
+                    <span className="text-gray-400 text-xs">TBD</span>
+                  </div>
+                )}
+              </div>
               {/* Title */}
               <h2 className="font-mono font-medium text-[16px] sm:text-[18px] leading-4 text-center text-[#010101]">
                 {option.title}
