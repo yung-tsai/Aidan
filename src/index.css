@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Reddit+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Reddit+Mono:wght@300;400;500;600;700&family=VT323&family=Special+Elite&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -24,6 +24,21 @@
     --text-muted: 215 10% 60%; /* #6B7280 */
     --text-divider: 0 0% 20%; /* #333333 */
     --text-icon: 0 0% 65%; /* #A6A6A6 */
+    
+    /* Terminal theme colors */
+    --terminal-bg: 220 13% 8%; /* #0D1117 */
+    --terminal-surface: 220 13% 12%; /* #161B22 */
+    --terminal-text: 210 14% 83%; /* #C9D1D9 */
+    --terminal-glow: 140 70% 70%; /* #7EE787 phosphor green */
+    --terminal-accent: 140 60% 40%; /* #238636 */
+    --terminal-border: 215 14% 25%; /* #30363D */
+    
+    /* Paper/Journal theme colors */
+    --paper-bg: 44 87% 94%; /* #FDF6E3 cream */
+    --paper-surface: 44 60% 90%; /* #F5ECD7 */
+    --paper-text: 0 0% 10%; /* #1A1A1A warm black */
+    --paper-lines: 35 30% 85%; /* #E8DCC8 */
+    --paper-accent: 45 100% 35%; /* #B58900 sepia gold */
     
     /* Semantic colors */
     --card: 0 0% 100%;
@@ -83,6 +98,200 @@
 /* Custom gradient background */
 .journal-gradient {
   background: linear-gradient(180deg, #E5F1FF 0%, #D3E7FF 100%);
+}
+
+/* ============================================
+   RETRO WINDOW SYSTEM - 3D Beveled Borders
+   ============================================ */
+
+.retro-window {
+  @apply relative;
+  box-shadow: 
+    inset -1px -1px 0 0 hsl(0 0% 30%),
+    inset 1px 1px 0 0 hsl(0 0% 95%),
+    inset -2px -2px 0 0 hsl(0 0% 50%),
+    inset 2px 2px 0 0 hsl(0 0% 85%),
+    4px 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.retro-inset {
+  box-shadow: 
+    inset 1px 1px 0 0 hsl(0 0% 30%),
+    inset -1px -1px 0 0 hsl(0 0% 95%),
+    inset 2px 2px 0 0 hsl(0 0% 50%),
+    inset -2px -2px 0 0 hsl(0 0% 85%);
+}
+
+.retro-button {
+  @apply relative transition-all duration-75;
+  box-shadow: 
+    inset -1px -1px 0 0 hsl(0 0% 40%),
+    inset 1px 1px 0 0 hsl(0 0% 100%),
+    inset -2px -2px 0 0 hsl(0 0% 60%),
+    inset 2px 2px 0 0 hsl(0 0% 90%);
+}
+
+.retro-button:active {
+  box-shadow: 
+    inset 1px 1px 0 0 hsl(0 0% 40%),
+    inset -1px -1px 0 0 hsl(0 0% 100%),
+    inset 2px 2px 0 0 hsl(0 0% 60%),
+    inset -2px -2px 0 0 hsl(0 0% 90%);
+  transform: translate(1px, 1px);
+}
+
+/* ============================================
+   TERMINAL / CRT EFFECTS (Chat)
+   ============================================ */
+
+.terminal-bg {
+  background: hsl(var(--terminal-bg));
+}
+
+.terminal-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+.terminal-glow {
+  text-shadow: 
+    0 0 5px hsl(var(--terminal-glow) / 0.6),
+    0 0 10px hsl(var(--terminal-glow) / 0.4),
+    0 0 20px hsl(var(--terminal-glow) / 0.2);
+}
+
+.terminal-text {
+  color: hsl(var(--terminal-text));
+}
+
+.terminal-input {
+  @apply bg-transparent border-none outline-none;
+  color: hsl(var(--terminal-glow));
+  caret-color: hsl(var(--terminal-glow));
+}
+
+/* Blinking cursor animation */
+@keyframes blink-cursor {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.terminal-cursor {
+  @apply inline-block;
+  animation: blink-cursor 1.06s step-end infinite;
+  color: hsl(var(--terminal-glow));
+}
+
+/* CRT flicker effect */
+@keyframes crt-flicker {
+  0% { opacity: 0.97; }
+  50% { opacity: 1; }
+  100% { opacity: 0.98; }
+}
+
+.crt-flicker {
+  animation: crt-flicker 0.15s infinite;
+}
+
+/* Terminal status indicator */
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 4px hsl(var(--terminal-accent));
+    opacity: 1;
+  }
+  50% { 
+    box-shadow: 0 0 8px hsl(var(--terminal-accent)), 0 0 12px hsl(var(--terminal-glow) / 0.5);
+    opacity: 0.8;
+  }
+}
+
+.status-indicator {
+  @apply w-2 h-2 rounded-full;
+  background: hsl(var(--terminal-accent));
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ============================================
+   PAPER / TYPEWRITER EFFECTS (Journal)
+   ============================================ */
+
+.paper-bg {
+  background: hsl(var(--paper-bg));
+}
+
+.paper-texture {
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-blend-mode: soft-light;
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+.paper-lines {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 27px,
+    hsl(var(--paper-lines)) 28px
+  );
+  background-position: 0 8px;
+}
+
+.paper-text {
+  color: hsl(var(--paper-text));
+  font-family: 'Special Elite', 'IBM Plex Mono', monospace;
+}
+
+.typewriter-toolbar-btn {
+  @apply px-2 py-1 text-xs transition-all duration-75;
+  font-family: 'IBM Plex Mono', monospace;
+  background: hsl(var(--paper-surface));
+  border: 1px solid hsl(var(--paper-lines));
+  box-shadow: 
+    inset -1px -1px 0 0 hsl(0 0% 70%),
+    inset 1px 1px 0 0 hsl(0 0% 100%);
+}
+
+.typewriter-toolbar-btn:hover {
+  background: hsl(var(--paper-bg));
+}
+
+.typewriter-toolbar-btn:active,
+.typewriter-toolbar-btn.active {
+  box-shadow: 
+    inset 1px 1px 0 0 hsl(0 0% 70%),
+    inset -1px -1px 0 0 hsl(0 0% 100%);
+  transform: translate(1px, 1px);
+}
+
+/* Paper edge shadow */
+.paper-edge {
+  box-shadow: 
+    2px 0 8px rgba(0, 0, 0, 0.08),
+    4px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   BOOT SEQUENCE ANIMATION
+   ============================================ */
+
+@keyframes boot-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@keyframes boot-text {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.boot-cursor {
+  animation: boot-blink 0.8s step-end infinite;
 }
 
 /* TipTap Editor List Styles */

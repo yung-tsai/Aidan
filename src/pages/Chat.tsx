@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useTypewriter } from "@/hooks/useTypewriter";
-import headerChat from "@/assets/header-chat.png";
 
 interface Message {
   role: "user" | "assistant";
@@ -17,6 +15,7 @@ const Chat = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [isBooting, setIsBooting] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -24,10 +23,18 @@ const Chat = () => {
   // Get the last message for typewriter effect
   const lastMessage = messages[messages.length - 1];
   const shouldAnimate = isLoading && lastMessage?.role === "assistant";
-  const animatedContent = useTypewriter(
+  const { text: animatedContent, isTyping, showCursor } = useTypewriter(
     shouldAnimate ? lastMessage.content : "",
     45
   );
+
+  // Boot sequence animation
+  useEffect(() => {
+    const bootTimer = setTimeout(() => {
+      setIsBooting(false);
+    }, 2000);
+    return () => clearTimeout(bootTimer);
+  }, []);
 
   useEffect(() => {
     // Create a new session on mount
@@ -155,7 +162,7 @@ const Chat = () => {
 
     const userMessage = input.trim();
     setInput("");
-    setTimeout(() => inputRef.current?.focus(), 0); // Refocus after React re-renders
+    setTimeout(() => inputRef.current?.focus(), 0);
     setIsLoading(true);
 
     // Add user message
@@ -172,7 +179,7 @@ const Chat = () => {
     await streamChat(userMessage);
     setIsLoading(false);
     
-    // Scroll to bottom after response completes (with small delay to ensure DOM updates)
+    // Scroll to bottom after response completes
     setTimeout(() => {
       if (messagesContainerRef.current) {
         messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
@@ -203,7 +210,6 @@ const Chat = () => {
       await streamChat(userMessage);
       setIsLoading(false);
       
-      // Scroll to bottom after response completes (with small delay to ensure DOM updates)
       setTimeout(() => {
         if (messagesContainerRef.current) {
           messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
@@ -229,64 +235,126 @@ const Chat = () => {
 
   return (
     <div className="journal-gradient min-h-screen flex flex-col items-center pt-20 sm:pt-[100px] md:pt-[150px] pb-20 sm:pb-[100px] md:pb-[168px] px-4 gap-[50px] sm:gap-[75px] md:gap-[100px]">
-      {/* Chat Container */}
-      <div className="w-full max-w-[550px] h-[329px] flex flex-col shadow-lg">
-        {/* Header */}
-        <div className="w-full h-[24px]">
-          <img src={headerChat} alt="Aiden Chat" className="w-full h-full object-contain" />
-        </div>
-        
-        {/* Messages Container */}
-        <div ref={messagesContainerRef} className="w-full min-h-[270px] sm:h-[270px] flex flex-col p-0 gap-[10px] bg-[#F7F7F7] border-l border-r border-foreground overflow-y-auto overflow-x-hidden">
-          {messages.map((msg, idx) => {
-            const isLastMessage = idx === messages.length - 1;
-            const showTypewriter = isLastMessage && shouldAnimate;
-            const displayContent = showTypewriter ? animatedContent : msg.content;
-            
-            return (
-              <div key={idx} className="w-full flex flex-row items-start pt-[10px] pl-3 pr-8 pb-0 gap-[5px]">
-                <p className="w-full font-ibm font-medium text-xs leading-5 block whitespace-normal break-words m-0">
-                  <span className={msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}>
-                    {msg.role === "assistant" ? "Aiden: " : "Me: "}
-                  </span>
-                  <span className={`font-normal ${msg.role === "assistant" ? "text-[#4B5563]" : "text-[#1F2A37]"}`}>
-                    {displayContent}
-                  </span>
-                </p>
-              </div>
-            );
-          })}
-          <div ref={messagesEndRef} />
+      {/* Terminal Window */}
+      <div className="w-full max-w-[580px] retro-window">
+        {/* Title Bar */}
+        <div className="h-8 flex items-center px-2 bg-gradient-to-b from-[#4a4a4a] to-[#2a2a2a] border-b border-[#1a1a1a]">
+          {/* Window Controls */}
+          <div className="flex gap-1.5">
+            <div className="w-3 h-3 rounded-full bg-[#ff5f57] border border-[#e33e32] retro-button" />
+            <div className="w-3 h-3 rounded-full bg-[#febc2e] border border-[#e09e1a] retro-button" />
+            <div className="w-3 h-3 rounded-full bg-[#28c840] border border-[#1aab2c] retro-button" />
+          </div>
+          {/* Title */}
+          <div className="flex-1 text-center">
+            <span className="font-vt323 text-sm text-[#cccccc] tracking-wider">
+              AIDEN TERMINAL v1.0
+            </span>
+          </div>
+          {/* Status Indicator */}
+          <div className="flex items-center gap-2">
+            <div className="status-indicator" />
+            <span className="font-vt323 text-xs text-terminal-accent">ONLINE</span>
+          </div>
         </div>
 
-        {/* Input Container */}
-        <div className="w-full h-[35px] flex flex-row items-stretch">
-          {/* Text Input */}
-          <div className="flex-1 flex items-center px-5 bg-white border border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]">
+        {/* Terminal Screen */}
+        <div className="relative terminal-bg">
+          {/* Scanline Overlay */}
+          <div className="absolute inset-0 terminal-scanlines z-10" />
+          
+          {/* Messages Container */}
+          <div 
+            ref={messagesContainerRef} 
+            className="relative z-0 min-h-[320px] max-h-[400px] overflow-y-auto overflow-x-hidden p-4 crt-flicker"
+          >
+            {isBooting ? (
+              <div className="font-vt323 text-lg text-terminal-glow terminal-glow">
+                <p>Initializing AIDEN...</p>
+                <p className="mt-2">Loading neural networks... <span className="boot-cursor">█</span></p>
+                <div className="mt-4 flex items-center gap-2">
+                  <span>▓▓▓▓▓▓▓▓░░</span>
+                  <span>80%</span>
+                </div>
+              </div>
+            ) : (
+              messages.map((msg, idx) => {
+                const isLastMessage = idx === messages.length - 1;
+                const showTypewriter = isLastMessage && shouldAnimate;
+                const displayContent = showTypewriter ? animatedContent : msg.content;
+                const showBlinkingCursor = showTypewriter && isTyping && showCursor;
+                
+                return (
+                  <div key={idx} className="mb-4 font-ibm text-sm leading-relaxed">
+                    {msg.role === "assistant" ? (
+                      <div>
+                        <span className="text-terminal-accent font-bold">AIDEN@system</span>
+                        <span className="text-terminal-text">:</span>
+                        <span className="text-[#58a6ff]">~</span>
+                        <span className="text-terminal-text">$ </span>
+                        <span className="text-terminal-glow terminal-glow">
+                          {displayContent}
+                          {showBlinkingCursor && <span className="terminal-cursor">█</span>}
+                        </span>
+                      </div>
+                    ) : (
+                      <div>
+                        <span className="text-[#f78166] font-bold">user@local</span>
+                        <span className="text-terminal-text">:</span>
+                        <span className="text-[#58a6ff]">~</span>
+                        <span className="text-terminal-text">$ </span>
+                        <span className="text-terminal-text">{displayContent}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Status Bar */}
+          <div className="h-6 px-3 flex items-center justify-between bg-terminal-surface border-t border-terminal-border">
+            <div className="flex items-center gap-4">
+              <span className="font-vt323 text-xs text-terminal-accent">● CONNECTED</span>
+              <span className="font-vt323 text-xs text-terminal-text">Session: {sessionId?.slice(0, 8) || '...'}</span>
+            </div>
+            <span className="font-vt323 text-xs text-terminal-text">{messages.length} msgs</span>
+          </div>
+        </div>
+
+        {/* Input Area */}
+        <div className="flex items-stretch bg-terminal-surface border-t-2 border-terminal-border">
+          {/* Terminal Prompt Input */}
+          <div className="flex-1 flex items-center px-4 py-2 retro-inset bg-terminal-bg">
+            <span className="font-vt323 text-terminal-accent mr-2">&gt;</span>
             <input
-              ref={inputRef as any}
+              ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Say anything"
-              className="flex-1 font-['Reddit_Mono'] font-light text-xs leading-4 text-[#4B5563] bg-transparent border-none outline-none placeholder:text-[#4B5563]"
+              placeholder="Enter command..."
+              className="flex-1 font-ibm text-sm terminal-input placeholder:text-terminal-border"
             />
+            {showCursor && !input && (
+              <span className="terminal-cursor">█</span>
+            )}
           </div>
-          {/* Save Button - Send and Navigate to Edit Entry */}
+          
+          {/* Save Button */}
           <button
             onClick={handleSendAndNavigate}
             disabled={isLoading}
-            className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
+            className="w-12 flex items-center justify-center bg-terminal-surface border-l border-terminal-border retro-button hover:bg-terminal-bg transition-colors"
           >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M14.25 15.75H3.75C3.33579 15.75 3 15.4142 3 15V3C3 2.58579 3.33579 2.25 3.75 2.25H10.5L15 6.75V15C15 15.4142 14.6642 15.75 14.25 15.75Z" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 15.75V10.5H6V15.75" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M6 2.25V6.75H10.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg width="20" height="20" viewBox="0 0 18 18" fill="none">
+              <path d="M14.25 15.75H3.75C3.33579 15.75 3 15.4142 3 15V3C3 2.58579 3.33579 2.25 3.75 2.25H10.5L15 6.75V15C15 15.4142 14.6642 15.75 14.25 15.75Z" stroke="hsl(140 70% 70%)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 15.75V10.5H6V15.75" stroke="hsl(140 70% 70%)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M6 2.25V6.75H10.5" stroke="hsl(140 70% 70%)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
         </div>
       </div>
-
     </div>
   );
 };

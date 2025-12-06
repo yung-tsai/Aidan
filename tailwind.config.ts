@@ -28,6 +28,19 @@ export default {
         "text-muted": "hsl(var(--text-muted))",
         "text-divider": "hsl(var(--text-divider))",
         "text-icon": "hsl(var(--text-icon))",
+        // Terminal theme
+        "terminal-bg": "hsl(var(--terminal-bg))",
+        "terminal-surface": "hsl(var(--terminal-surface))",
+        "terminal-text": "hsl(var(--terminal-text))",
+        "terminal-glow": "hsl(var(--terminal-glow))",
+        "terminal-accent": "hsl(var(--terminal-accent))",
+        "terminal-border": "hsl(var(--terminal-border))",
+        // Paper/Journal theme
+        "paper-bg": "hsl(var(--paper-bg))",
+        "paper-surface": "hsl(var(--paper-surface))",
+        "paper-text": "hsl(var(--paper-text))",
+        "paper-lines": "hsl(var(--paper-lines))",
+        "paper-accent": "hsl(var(--paper-accent))",
         // Insights page grayscale palette
         "insights-bg": "hsl(0 0% 97%)",
         "insights-dark": "hsl(0 0% 7%)",
@@ -68,6 +81,8 @@ export default {
       fontFamily: {
         mono: ['Reddit Mono', 'monospace'],
         'ibm': ['IBM Plex Mono', 'monospace'],
+        'vt323': ['VT323', 'monospace'],
+        'typewriter': ['Special Elite', 'monospace'],
       },
       borderRadius: {
         lg: "var(--radius)",
