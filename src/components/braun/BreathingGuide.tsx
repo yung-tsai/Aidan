@@ -5,12 +5,14 @@ type BreathPhase = "inhale" | "hold" | "exhale" | "rest";
 interface BreathingGuideProps {
   isActive: boolean;
   onToggle: () => void;
+  onCycleComplete?: () => void;
   pattern?: [number, number, number, number]; // inhale, hold, exhale, rest
 }
 
 const BreathingGuide = ({ 
   isActive, 
-  onToggle, 
+  onToggle,
+  onCycleComplete,
   pattern = [4, 4, 4, 4] 
 }: BreathingGuideProps) => {
   const [phase, setPhase] = useState<BreathPhase>("inhale");
@@ -49,6 +51,7 @@ const BreathingGuide = ({
           setPhase(nextPhase);
           if (nextPhase === "inhale") {
             setCycles((c) => c + 1);
+            onCycleComplete?.();
           }
           return pattern[getPhaseIndex(nextPhase)];
         }

@@ -1,34 +1,22 @@
-import ThemeToggle from "../ThemeToggle";
-
 interface DeviceHeaderProps {
   title?: string;
-  showThemeToggle?: boolean;
-  rightContent?: React.ReactNode;
 }
 
-const DeviceHeader = ({ 
-  title = "REFLECT", 
-  showThemeToggle = true,
-  rightContent 
-}: DeviceHeaderProps) => {
+const DeviceHeader = ({ title = "REFLECT" }: DeviceHeaderProps) => {
   return (
-    <div className="flex items-center justify-between px-6 py-4 bg-device-inset border-b border-control-border">
-      <div className="flex items-center gap-4">
-        {/* Brand indicator */}
-        <div className="flex items-center gap-2">
-          <div className="indicator-light active" />
-        </div>
+    <div className="flex items-center justify-between px-6 py-5 bg-device-inset border-b border-control-border">
+      <div className="flex items-center gap-3">
+        {/* Power indicator */}
+        <div className="indicator-light active" />
         
-        {/* Title */}
-        <h1 className="braun-title text-lg tracking-wide text-foreground">
+        {/* Brand */}
+        <h1 className="braun-title text-base tracking-[0.2em] text-foreground uppercase">
           {title}
         </h1>
       </div>
       
-      <div className="flex items-center gap-4">
-        {rightContent}
-        {showThemeToggle && <ThemeToggle />}
-      </div>
+      {/* Speaker grille detail */}
+      <div className="speaker-grille w-12 h-4" />
     </div>
   );
 };

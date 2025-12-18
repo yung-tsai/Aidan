@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 interface FocusTimerProps {
   onComplete?: (minutes: number) => void;
+  onTimeUpdate?: (timeString: string | null) => void;
 }
 
-const FocusTimer = ({ onComplete }: FocusTimerProps) => {
+const FocusTimer = ({ onComplete, onTimeUpdate }: FocusTimerProps) => {
   const [duration, setDuration] = useState(25); // minutes
   const [timeLeft, setTimeLeft] = useState(duration * 60);
   const [isRunning, setIsRunning] = useState(false);
@@ -13,12 +14,21 @@ const FocusTimer = ({ onComplete }: FocusTimerProps) => {
 
   const presets = [5, 15, 25, 45];
 
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
   useEffect(() => {
     durationRef.current = duration;
   }, [duration]);
 
   useEffect(() => {
-    if (!isRunning) return;
+    if (!isRunning) {
+      onTimeUpdate?.(null);
+      return;
+    }
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -26,14 +36,17 @@ const FocusTimer = ({ onComplete }: FocusTimerProps) => {
           setIsRunning(false);
           setIsComplete(true);
           onComplete?.(durationRef.current);
+          onTimeUpdate?.(null);
           return 0;
         }
-        return prev - 1;
+        const newTime = prev - 1;
+        onTimeUpdate?.(formatTime(newTime));
+        return newTime;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isRunning, onComplete]);
+  }, [isRunning, onComplete, onTimeUpdate]);
 
   const handlePresetClick = useCallback((minutes: number) => {
     if (isRunning) return;
@@ -56,11 +69,6 @@ const FocusTimer = ({ onComplete }: FocusTimerProps) => {
     setIsComplete(false);
   };
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
 
   const progress = 1 - timeLeft / (duration * 60);
   const circumference = 2 * Math.PI * 90;
