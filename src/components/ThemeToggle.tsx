@@ -33,9 +33,9 @@ const ThemeToggle = () => {
 
   const getLabel = () => {
     switch (theme) {
-      case "light": return "[ LIGHT ]";
-      case "dark": return "[ AMBER ]";
-      case "ice": return "[ ICE ]";
+      case "light": return "Light";
+      case "dark": return "Dark";
+      case "ice": return "Cool";
     }
   };
 
