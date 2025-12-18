@@ -1,136 +1,181 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ============================================
-   DESIGN SYSTEM - Dieter Rams / Braun 1980s
+   BRAUN / DIETER RAMS DESIGN SYSTEM
    "Good design is as little design as possible"
-   - Honest materials
-   - Functional simplicity
-   - Neutral colors with warm accent
+   
+   Inspired by: Braun ET66, SK4, TP1, ABW 30
+   - Geometric precision
+   - Honest materials (plastic, metal, glass)
+   - Functional color: neutral + orange accent
+   - Grid-based harmony
    ============================================ */
 
 @layer base {
   :root {
-    /* Light Mode - Clean, functional */
-    --background: 0 0% 97%;
-    --background-end: 0 0% 95%;
-    --foreground: 0 0% 8%;
+    /* Snow White - Braun SK4 "Snow White's Coffin" */
+    --background: 40 10% 98%;
+    --background-end: 40 8% 96%;
+    --foreground: 0 0% 12%;
     
-    /* Terminal/UI colors */
-    --terminal-bg: 0 0% 100%;
-    --terminal-surface: 0 0% 96%;
-    --terminal-border: 0 0% 85%;
-    --terminal-text: 0 0% 15%;
-    --terminal-glow: 24 100% 50%;
-    --terminal-accent: 24 90% 52%;
-    --terminal-dim: 0 0% 55%;
-    --terminal-muted: 0 0% 90%;
-    --terminal-highlight: 24 100% 50%;
+    /* Device surfaces */
+    --device-body: 40 6% 94%;
+    --device-face: 0 0% 100%;
+    --device-inset: 40 8% 90%;
+    --device-shadow: 30 10% 80%;
     
-    /* Status colors - Functional */
-    --status-active: 24 100% 50%;
-    --status-warning: 45 100% 45%;
-    --status-error: 0 80% 50%;
-    --status-success: 145 60% 40%;
+    /* Display - LCD style */
+    --display-bg: 75 15% 88%;
+    --display-text: 75 20% 25%;
+    --display-dim: 75 10% 55%;
     
-    /* Semantic colors */
+    /* Controls */
+    --control-bg: 0 0% 96%;
+    --control-border: 0 0% 82%;
+    --control-active: 0 0% 88%;
+    
+    /* The iconic Braun orange */
+    --braun-orange: 24 100% 50%;
+    --braun-orange-glow: 24 100% 55%;
+    
+    /* Semantic - minimal */
     --card: 0 0% 100%;
     --card-foreground: 0 0% 15%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 15%;
     --primary: 24 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 94%;
+    --secondary: 40 6% 92%;
     --secondary-foreground: 0 0% 20%;
-    --muted: 0 0% 92%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 24 90% 52%;
+    --muted: 40 5% 90%;
+    --muted-foreground: 0 0% 50%;
+    --accent: 24 100% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 80% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 88%;
-    --input: 0 0% 96%;
+    --border: 40 8% 85%;
+    --input: 40 6% 94%;
     --ring: 24 100% 50%;
-    --radius: 0px;
-  }
-
-  .dark {
-    /* Dark Mode - Braun calculator aesthetic */
-    --background: 0 0% 6%;
-    --background-end: 0 0% 8%;
-    --foreground: 0 0% 90%;
+    --radius: 2px;
     
-    --terminal-bg: 0 0% 4%;
-    --terminal-surface: 0 0% 10%;
-    --terminal-border: 0 0% 20%;
-    --terminal-text: 0 0% 88%;
-    --terminal-glow: 24 100% 55%;
-    --terminal-accent: 24 85% 50%;
-    --terminal-dim: 0 0% 50%;
-    --terminal-muted: 0 0% 18%;
-    --terminal-highlight: 24 100% 55%;
-    
-    --status-active: 24 100% 55%;
-    --status-warning: 45 100% 50%;
-    --status-error: 0 75% 55%;
-    --status-success: 145 55% 45%;
-    
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 88%;
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 88%;
-    --primary: 24 100% 55%;
-    --primary-foreground: 0 0% 5%;
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 88%;
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 50%;
-    --accent: 24 85% 50%;
-    --accent-foreground: 0 0% 100%;
-    --border: 0 0% 22%;
-    --input: 0 0% 10%;
-    --ring: 24 100% 55%;
-  }
-
-  .ice {
-    /* Alternate - Cool neutral */
-    --background: 210 15% 96%;
-    --background-end: 210 12% 94%;
-    --foreground: 210 10% 12%;
-    
-    --terminal-bg: 210 20% 98%;
-    --terminal-surface: 210 15% 95%;
-    --terminal-border: 210 10% 82%;
-    --terminal-text: 210 12% 18%;
-    --terminal-glow: 24 100% 50%;
-    --terminal-accent: 24 90% 52%;
-    --terminal-dim: 210 8% 50%;
-    --terminal-muted: 210 10% 88%;
-    --terminal-highlight: 24 100% 50%;
-    
-    --status-active: 24 100% 50%;
+    /* Legacy mappings */
+    --terminal-bg: var(--device-face);
+    --terminal-surface: var(--device-body);
+    --terminal-border: var(--control-border);
+    --terminal-text: var(--foreground);
+    --terminal-glow: var(--braun-orange);
+    --terminal-accent: var(--braun-orange);
+    --terminal-dim: var(--muted-foreground);
+    --terminal-muted: var(--muted);
+    --terminal-highlight: var(--braun-orange);
+    --status-active: var(--braun-orange);
     --status-warning: 45 100% 45%;
     --status-error: 0 80% 50%;
     --status-success: 145 60% 40%;
+  }
+
+  .dark {
+    /* Braun Calculator / TP1 Radio aesthetic */
+    --background: 0 0% 8%;
+    --background-end: 0 0% 6%;
+    --foreground: 0 0% 92%;
     
-    --card: 210 20% 98%;
-    --card-foreground: 210 12% 18%;
-    --popover: 210 20% 98%;
-    --popover-foreground: 210 12% 18%;
-    --primary: 24 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 12% 92%;
-    --secondary-foreground: 210 10% 25%;
-    --muted: 210 10% 90%;
-    --muted-foreground: 210 8% 45%;
-    --accent: 24 90% 52%;
+    --device-body: 0 0% 12%;
+    --device-face: 0 0% 6%;
+    --device-inset: 0 0% 10%;
+    --device-shadow: 0 0% 4%;
+    
+    --display-bg: 75 20% 12%;
+    --display-text: 75 60% 75%;
+    --display-dim: 75 15% 40%;
+    
+    --control-bg: 0 0% 14%;
+    --control-border: 0 0% 22%;
+    --control-active: 0 0% 18%;
+    
+    --braun-orange: 24 95% 55%;
+    --braun-orange-glow: 24 100% 60%;
+    
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 90%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 90%;
+    --primary: 24 95% 55%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 88%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 24 95% 55%;
     --accent-foreground: 0 0% 100%;
-    --border: 210 10% 85%;
-    --input: 210 15% 95%;
-    --ring: 24 100% 50%;
+    --border: 0 0% 20%;
+    --input: 0 0% 12%;
+    --ring: 24 95% 55%;
+    
+    --terminal-bg: var(--device-face);
+    --terminal-surface: var(--device-body);
+    --terminal-border: var(--control-border);
+    --terminal-text: var(--foreground);
+    --terminal-glow: var(--braun-orange);
+    --terminal-accent: var(--braun-orange);
+    --terminal-dim: var(--muted-foreground);
+    --terminal-muted: var(--muted);
+    --terminal-highlight: var(--braun-orange);
+    --status-active: var(--braun-orange);
+  }
+
+  .ice {
+    /* Cool aluminum variant */
+    --background: 210 12% 96%;
+    --background-end: 210 10% 94%;
+    --foreground: 210 15% 15%;
+    
+    --device-body: 210 10% 92%;
+    --device-face: 210 15% 98%;
+    --device-inset: 210 8% 88%;
+    --device-shadow: 210 8% 78%;
+    
+    --display-bg: 180 12% 88%;
+    --display-text: 180 20% 25%;
+    --display-dim: 180 10% 50%;
+    
+    --control-bg: 210 10% 94%;
+    --control-border: 210 8% 80%;
+    --control-active: 210 10% 88%;
+    
+    --braun-orange: 24 100% 52%;
+    --braun-orange-glow: 24 100% 58%;
+    
+    --card: 210 15% 98%;
+    --card-foreground: 210 15% 18%;
+    --popover: 210 15% 98%;
+    --popover-foreground: 210 15% 18%;
+    --primary: 24 100% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 10% 90%;
+    --secondary-foreground: 210 12% 25%;
+    --muted: 210 8% 88%;
+    --muted-foreground: 210 8% 50%;
+    --accent: 24 100% 52%;
+    --accent-foreground: 0 0% 100%;
+    --border: 210 8% 82%;
+    --input: 210 10% 94%;
+    --ring: 24 100% 52%;
+    
+    --terminal-bg: var(--device-face);
+    --terminal-surface: var(--device-body);
+    --terminal-border: var(--control-border);
+    --terminal-text: var(--foreground);
+    --terminal-glow: var(--braun-orange);
+    --terminal-accent: var(--braun-orange);
+    --terminal-dim: var(--muted-foreground);
+    --terminal-muted: var(--muted);
+    --terminal-highlight: var(--braun-orange);
+    --status-active: var(--braun-orange);
   }
 }
 
@@ -141,7 +186,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
     font-weight: 400;
     letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
@@ -150,170 +195,489 @@
 }
 
 /* ============================================
-   RAMS CONTAINER - Clean, functional frame
+   THE DEVICE - Physical product aesthetic
    ============================================ */
 
-.terminal-container {
-  background: hsl(var(--terminal-bg));
-  border: 1px solid hsl(var(--terminal-border));
+.braun-device {
+  background: hsl(var(--device-body));
+  border-radius: 24px;
+  box-shadow: 
+    0 1px 0 hsl(0 0% 100% / 0.6) inset,
+    0 -1px 0 hsl(var(--device-shadow)) inset,
+    0 20px 60px -20px hsl(0 0% 0% / 0.2),
+    0 40px 80px -40px hsl(0 0% 0% / 0.15);
+  position: relative;
+  overflow: hidden;
 }
 
-.terminal-container-glow {
-  background: hsl(var(--terminal-bg));
-  border: 1px solid hsl(var(--terminal-border));
+.braun-device::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    hsl(0 0% 100% / 0.5) 20%, 
+    hsl(0 0% 100% / 0.5) 80%, 
+    transparent
+  );
+}
+
+.dark .braun-device {
+  box-shadow: 
+    0 1px 0 hsl(0 0% 20% / 0.5) inset,
+    0 -1px 0 hsl(0 0% 0%) inset,
+    0 20px 60px -20px hsl(0 0% 0% / 0.5),
+    0 40px 80px -40px hsl(0 0% 0% / 0.4);
 }
 
 /* ============================================
-   FUNCTIONAL ELEMENTS
+   LCD DISPLAY - Retro digital display
    ============================================ */
 
-.terminal-box {
-  background: hsl(var(--terminal-surface));
-  border: 1px solid hsl(var(--terminal-border));
+.lcd-display {
+  background: hsl(var(--display-bg));
+  border-radius: 4px;
+  position: relative;
+  box-shadow: 
+    0 2px 8px -2px hsl(0 0% 0% / 0.1) inset,
+    0 1px 2px hsl(0 0% 0% / 0.05) inset;
 }
 
-.terminal-box-selected {
-  background: hsl(var(--terminal-accent) / 0.08);
-  border: 1px solid hsl(var(--terminal-accent));
+.lcd-display::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    hsl(0 0% 0% / 0.03) 0%,
+    transparent 50%,
+    hsl(0 0% 100% / 0.02) 100%
+  );
+  border-radius: inherit;
+  pointer-events: none;
 }
 
-.terminal-input {
-  @apply bg-transparent border-none outline-none;
-  color: hsl(var(--terminal-text));
-  caret-color: hsl(var(--terminal-accent));
+.lcd-text {
+  color: hsl(var(--display-text));
+  font-family: 'Space Mono', monospace;
 }
 
-/* Clean cursor */
-@keyframes blink-cursor {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-.terminal-cursor {
-  @apply inline-block;
-  animation: blink-cursor 1s step-end infinite;
-  color: hsl(var(--terminal-accent));
-}
-
-/* Status indicator - Braun style */
-.status-indicator {
-  @apply w-2 h-2 rounded-full;
-  background: hsl(var(--terminal-accent));
+.lcd-text-dim {
+  color: hsl(var(--display-dim));
 }
 
 /* ============================================
-   NAVIGATION PANEL - Grid-based
+   CONTROL BUTTONS - Tactile feel
    ============================================ */
 
-.terminal-nav-panel {
-  @apply flex flex-col;
-  width: 180px;
-  min-width: 180px;
-  background: hsl(var(--terminal-surface));
-  border-right: 1px solid hsl(var(--terminal-border));
-}
-
-.terminal-nav-item {
-  @apply flex items-center gap-3 px-4 py-3 text-sm font-medium tracking-wide w-full text-left;
-  color: hsl(var(--terminal-dim));
-  transition: all 0.15s ease;
-  border-left: 3px solid transparent;
-}
-
-.terminal-nav-item:hover {
-  color: hsl(var(--terminal-text));
-  background: hsl(var(--terminal-bg));
-}
-
-.terminal-nav-item-active {
-  color: hsl(var(--terminal-text));
-  background: hsl(var(--terminal-bg));
-  border-left: 3px solid hsl(var(--terminal-accent));
-}
-
-.terminal-nav-key {
-  @apply text-xs px-1.5 py-0.5 font-mono;
-  background: hsl(var(--terminal-muted));
-  border: 1px solid hsl(var(--terminal-border));
-  color: hsl(var(--terminal-dim));
-  font-size: 10px;
+.braun-button {
+  background: hsl(var(--control-bg));
+  border: 1px solid hsl(var(--control-border));
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 500;
-}
-
-/* ============================================
-   HEADER & STATUS BAR - Minimal
-   ============================================ */
-
-.terminal-header {
-  @apply flex items-center justify-between px-5 py-3;
-  background: hsl(var(--terminal-surface));
-  border-bottom: 1px solid hsl(var(--terminal-border));
-}
-
-.terminal-header-decorated {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-shadow: 
+    0 2px 0 hsl(var(--control-border)),
+    0 4px 8px -4px hsl(0 0% 0% / 0.1);
   position: relative;
 }
 
-.terminal-title {
-  @apply text-base font-semibold tracking-wide uppercase;
-  color: hsl(var(--terminal-text));
-  letter-spacing: 0.15em;
+.braun-button:hover {
+  background: hsl(var(--control-active));
 }
 
-.terminal-status-bar {
-  @apply flex items-center justify-between px-5 py-2.5;
-  background: hsl(var(--terminal-surface));
-  border-top: 1px solid hsl(var(--terminal-border));
-  color: hsl(var(--terminal-dim));
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.braun-button:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0 0 0 hsl(var(--control-border)),
+    0 2px 4px -2px hsl(0 0% 0% / 0.1);
 }
 
-.terminal-status-item {
-  @apply flex items-center gap-2;
+.braun-button-primary {
+  background: hsl(var(--braun-orange));
+  border-color: hsl(var(--braun-orange));
+  color: white;
+  box-shadow: 
+    0 2px 0 hsl(24 100% 40%),
+    0 4px 12px -4px hsl(var(--braun-orange) / 0.4);
+}
+
+.braun-button-primary:hover {
+  background: hsl(var(--braun-orange-glow));
+}
+
+.braun-button-primary:active {
+  box-shadow: 
+    0 0 0 hsl(24 100% 40%),
+    0 2px 6px -2px hsl(var(--braun-orange) / 0.3);
+}
+
+/* Round button - like Braun calculator keys */
+.braun-button-round {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.braun-button-round.large {
+  width: 72px;
+  height: 72px;
 }
 
 /* ============================================
-   BUTTON STYLES - Braun/Rams
+   MODE SELECTOR - Rotary dial style
    ============================================ */
 
-.terminal-btn {
-  @apply px-4 py-2 text-sm font-medium uppercase tracking-wider;
-  color: hsl(var(--terminal-text));
-  background: hsl(var(--terminal-surface));
-  border: 1px solid hsl(var(--terminal-border));
-  transition: all 0.12s ease;
-  letter-spacing: 0.08em;
+.mode-selector {
+  display: flex;
+  background: hsl(var(--device-inset));
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
 }
 
-.terminal-btn:hover {
-  background: hsl(var(--terminal-muted));
-  border-color: hsl(var(--terminal-dim));
+.mode-option {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.terminal-btn:active {
-  transform: scale(0.98);
+.mode-option:hover {
+  color: hsl(var(--foreground));
 }
 
-.terminal-btn-primary {
-  background: hsl(var(--terminal-accent));
-  color: hsl(var(--primary-foreground));
-  border-color: hsl(var(--terminal-accent));
+.mode-option.active {
+  background: hsl(var(--device-face));
+  color: hsl(var(--foreground));
+  box-shadow: 0 2px 8px -2px hsl(0 0% 0% / 0.1);
 }
 
-.terminal-btn-primary:hover {
-  background: hsl(var(--terminal-accent) / 0.9);
-  border-color: hsl(var(--terminal-accent));
+/* ============================================
+   INDICATOR LIGHTS
+   ============================================ */
+
+.indicator-light {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: hsl(var(--control-border));
+  box-shadow: 0 1px 2px hsl(0 0% 0% / 0.1) inset;
+}
+
+.indicator-light.active {
+  background: hsl(var(--braun-orange));
+  box-shadow: 
+    0 0 0 2px hsl(var(--braun-orange) / 0.2),
+    0 0 12px hsl(var(--braun-orange) / 0.5);
+}
+
+.indicator-light.success {
+  background: hsl(145 60% 45%);
+  box-shadow: 
+    0 0 0 2px hsl(145 60% 45% / 0.2),
+    0 0 12px hsl(145 60% 45% / 0.5);
+}
+
+/* ============================================
+   SPEAKER GRILLE - Iconic Braun element
+   ============================================ */
+
+.speaker-grille {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  padding: 16px;
+  background: hsl(var(--device-inset));
+  border-radius: 8px;
+}
+
+.speaker-hole {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: hsl(var(--device-shadow));
+}
+
+/* ============================================
+   DIAL / KNOB
+   ============================================ */
+
+.braun-dial {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, 
+    hsl(var(--control-bg)) 0%,
+    hsl(var(--device-inset)) 100%
+  );
+  border: 1px solid hsl(var(--control-border));
+  box-shadow: 
+    0 4px 12px -4px hsl(0 0% 0% / 0.15),
+    0 1px 0 hsl(0 0% 100% / 0.5) inset;
+  position: relative;
+  cursor: pointer;
+}
+
+.braun-dial::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 12px;
+  background: hsl(var(--braun-orange));
+  border-radius: 1px;
+}
+
+/* ============================================
+   PROGRESS BAR - Segmented display
+   ============================================ */
+
+.segment-display {
+  display: flex;
+  gap: 3px;
+}
+
+.segment {
+  width: 8px;
+  height: 24px;
+  background: hsl(var(--display-bg));
+  border-radius: 1px;
+}
+
+.segment.filled {
+  background: hsl(var(--braun-orange));
+}
+
+/* ============================================
+   DIVIDER LINES
+   ============================================ */
+
+.braun-divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    hsl(var(--control-border)) 20%,
+    hsl(var(--control-border)) 80%,
+    transparent
+  );
+}
+
+.braun-divider-vertical {
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent,
+    hsl(var(--control-border)) 20%,
+    hsl(var(--control-border)) 80%,
+    transparent
+  );
+}
+
+/* ============================================
+   TYPOGRAPHY - Clean Helvetica-style
+   ============================================ */
+
+.braun-title {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.braun-label {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
+.braun-mono {
+  font-family: 'Space Mono', monospace;
+}
+
+/* ============================================
+   ANIMATIONS - Subtle, purposeful
+   ============================================ */
+
+@keyframes breathe {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 hsl(var(--braun-orange) / 0);
+  }
+  50% { 
+    box-shadow: 0 0 0 12px hsl(var(--braun-orange) / 0.15);
+  }
+}
+
+@keyframes tick {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }
 
 /* ============================================
    SCROLLBAR - Minimal
    ============================================ */
 
+.braun-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.braun-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.braun-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--control-border));
+  border-radius: 2px;
+}
+
+.braun-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* ============================================
+   LEGACY TERMINAL CLASSES - Keep for compatibility
+   ============================================ */
+
+.terminal-container {
+  background: hsl(var(--device-body));
+  border: 1px solid hsl(var(--control-border));
+  border-radius: 16px;
+}
+
+.terminal-box {
+  background: hsl(var(--control-bg));
+  border: 1px solid hsl(var(--control-border));
+  border-radius: 8px;
+}
+
+.terminal-input {
+  @apply bg-transparent border-none outline-none;
+  color: hsl(var(--foreground));
+  caret-color: hsl(var(--braun-orange));
+}
+
+.terminal-cursor {
+  display: inline-block;
+  animation: blink-cursor 1s step-end infinite;
+  color: hsl(var(--braun-orange));
+}
+
+@keyframes blink-cursor {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.terminal-header {
+  @apply flex items-center justify-between px-5 py-3;
+  background: hsl(var(--device-inset));
+  border-bottom: 1px solid hsl(var(--control-border));
+}
+
+.terminal-nav-panel {
+  @apply flex flex-col;
+  width: 180px;
+  background: hsl(var(--device-inset));
+  border-right: 1px solid hsl(var(--control-border));
+}
+
+.terminal-nav-item {
+  @apply flex items-center gap-3 px-4 py-3 text-sm font-medium w-full text-left;
+  color: hsl(var(--muted-foreground));
+  transition: all 0.15s ease;
+}
+
+.terminal-nav-item:hover {
+  color: hsl(var(--foreground));
+  background: hsl(var(--device-face));
+}
+
+.terminal-nav-item-active {
+  color: hsl(var(--foreground));
+  background: hsl(var(--device-face));
+  border-left: 3px solid hsl(var(--braun-orange));
+}
+
+.terminal-nav-key {
+  @apply text-xs px-1.5 py-0.5;
+  background: hsl(var(--control-bg));
+  border: 1px solid hsl(var(--control-border));
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.terminal-status-bar {
+  @apply flex items-center justify-between px-5 py-2.5;
+  background: hsl(var(--device-inset));
+  border-top: 1px solid hsl(var(--control-border));
+  font-size: 11px;
+}
+
+.terminal-btn {
+  @apply px-4 py-2 text-sm font-medium uppercase tracking-wider;
+  background: hsl(var(--control-bg));
+  border: 1px solid hsl(var(--control-border));
+  border-radius: 6px;
+  transition: all 0.1s ease;
+}
+
+.terminal-btn:hover {
+  background: hsl(var(--control-active));
+}
+
+.terminal-btn-primary {
+  background: hsl(var(--braun-orange));
+  color: white;
+  border-color: hsl(var(--braun-orange));
+}
+
+.terminal-btn-primary:hover {
+  background: hsl(var(--braun-orange-glow));
+}
+
 .terminal-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .terminal-scrollbar::-webkit-scrollbar-track {
@@ -321,44 +685,30 @@
 }
 
 .terminal-scrollbar::-webkit-scrollbar-thumb {
-  background: hsl(var(--terminal-border));
+  background: hsl(var(--control-border));
+  border-radius: 2px;
 }
 
-.terminal-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--terminal-dim));
+.terminal-glow {
+  font-weight: 600;
 }
 
-/* ============================================
-   DIVIDERS & DECORATIONS - Subtle
-   ============================================ */
-
-.terminal-divider {
-  @apply flex items-center gap-4 my-4;
-}
-
-.terminal-divider::before,
-.terminal-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: hsl(var(--terminal-border));
-}
-
-.terminal-divider-label {
-  @apply text-xs uppercase tracking-widest font-medium;
-  color: hsl(var(--terminal-dim));
-  letter-spacing: 0.1em;
+.terminal-scanlines,
+.crt-flicker,
+.crt-sweep::after,
+.crt-vignette::before {
+  display: none;
 }
 
 /* ============================================
-   TIPTAP EDITOR STYLES
+   TIPTAP EDITOR
    ============================================ */
 
 .ProseMirror {
   outline: none;
   min-height: 200px;
-  color: hsl(var(--terminal-text));
-  font-family: 'Inter', sans-serif;
+  color: hsl(var(--foreground));
+  font-family: 'DM Sans', sans-serif;
   font-size: 15px;
   line-height: 1.7;
 }
@@ -386,131 +736,18 @@
   padding-left: 0.25rem;
 }
 
-.ProseMirror li p {
-  margin: 0;
-}
-
-/* ============================================
-   UTILITY CLASSES
-   ============================================ */
-
 .journal-gradient {
   background: hsl(var(--background));
-}
-
-/* Text highlight - Orange accent */
-.text-highlight {
-  background: linear-gradient(
-    transparent 70%,
-    hsl(var(--terminal-accent) / 0.15) 70%
-  );
-}
-
-/* Grid background - Subtle */
-.retro-grid {
-  background-image: 
-    linear-gradient(hsl(var(--terminal-border) / 0.3) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--terminal-border) / 0.3) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* ============================================
-   GLOW EFFECTS - Disabled for Rams aesthetic
-   ============================================ */
-
-.terminal-glow {
-  font-weight: 600;
-}
-
-.terminal-glow-subtle {
-  font-weight: 500;
-}
-
-.terminal-scanlines {
-  display: none;
-}
-
-.crt-flicker {
-  animation: none;
-}
-
-.crt-sweep::after {
-  display: none;
-}
-
-.crt-vignette::before {
-  display: none;
-}
-
-/* ============================================
-   ASCII ELEMENTS - Hidden in Rams mode
-   ============================================ */
-
-.ascii-box::before,
-.ascii-box::after {
-  display: none;
-}
-
-/* Boot animation - kept simple */
-@keyframes boot-text-appear {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.boot-line {
-  opacity: 0;
-  animation: boot-text-appear 0.1s forwards;
 }
 
 .boot-cursor {
   display: inline-block;
   width: 8px;
   height: 1.1em;
-  background: hsl(var(--terminal-accent));
+  background: hsl(var(--braun-orange));
   animation: blink-cursor 0.8s step-end infinite;
-  margin-left: 2px;
-  vertical-align: text-bottom;
-}
-
-/* Block progress - Rams style */
-.block-progress {
-  @apply flex gap-0.5;
-}
-
-.block-progress-fill {
-  @apply w-3 h-3;
-  background: hsl(var(--terminal-accent));
-}
-
-.block-progress-empty {
-  @apply w-3 h-3;
-  background: hsl(var(--terminal-muted));
-}
-
-/* Blinking text */
-@keyframes text-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
 }
 
 .blink-text {
-  animation: text-blink 1.2s step-end infinite;
-}
-
-/* ============================================
-   FONT UTILITIES
-   ============================================ */
-
-.font-vt323 {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-}
-
-.font-ibm {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-}
-
-.font-mono {
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', monospace;
+  animation: blink-cursor 1.2s step-end infinite;
 }

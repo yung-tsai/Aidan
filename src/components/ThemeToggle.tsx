@@ -42,7 +42,7 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={cycleTheme}
-      className="terminal-btn text-xs"
+      className="braun-button text-xs py-2 px-3"
       aria-label={`Current theme: ${theme}. Click to cycle.`}
     >
       {getLabel()}
