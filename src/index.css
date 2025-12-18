@@ -322,6 +322,67 @@
    TAB SYSTEM
    ============================================ */
 
+/* ============================================
+   VERTICAL NAVIGATION PANEL
+   ============================================ */
+
+.terminal-nav-panel {
+  @apply flex flex-col;
+  width: 180px;
+  min-width: 180px;
+  background: hsl(var(--terminal-surface) / 0.5);
+}
+
+.terminal-nav-item {
+  @apply flex items-center gap-2 px-3 py-2 font-vt323 text-base uppercase tracking-wider w-full text-left;
+  color: hsl(var(--terminal-dim));
+  transition: all 0.15s ease;
+  border-left: 2px solid transparent;
+}
+
+.terminal-nav-item:hover {
+  color: hsl(var(--terminal-text));
+  background: hsl(var(--terminal-surface));
+  text-shadow: 0 0 4px hsl(var(--terminal-glow) / 0.3);
+}
+
+.terminal-nav-item-active {
+  color: hsl(var(--terminal-glow));
+  background: hsl(var(--terminal-surface));
+  border-left: 2px solid hsl(var(--terminal-glow));
+  text-shadow: 0 0 8px hsl(var(--terminal-glow) / 0.5);
+}
+
+.terminal-nav-indicator {
+  @apply font-vt323 text-lg;
+  color: hsl(var(--terminal-glow));
+  width: 12px;
+}
+
+.terminal-nav-key {
+  @apply text-xs px-1 rounded;
+  background: hsl(var(--terminal-surface));
+  border: 1px solid hsl(var(--terminal-border));
+  color: hsl(var(--terminal-dim));
+  font-size: 10px;
+}
+
+.terminal-divider {
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    hsl(var(--terminal-border)) 10%,
+    hsl(var(--terminal-border)) 90%,
+    transparent
+  );
+  box-shadow: 0 0 8px hsl(var(--terminal-glow) / 0.2);
+}
+
+/* ============================================
+   TAB SYSTEM (Legacy - kept for compatibility)
+   ============================================ */
+
 .terminal-tab {
   @apply px-4 py-2 font-vt323 text-lg uppercase tracking-wider;
   color: hsl(var(--terminal-dim));

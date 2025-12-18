@@ -73,54 +73,111 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-crt-shadow flex items-center justify-center p-4 sm:p-6 md:p-8">
       {/* CRT Monitor Frame */}
-      <div className="crt-monitor w-full max-w-4xl">
+      <div className="crt-monitor w-full max-w-5xl">
         {/* CRT Screen */}
         <div className="crt-screen bg-terminal-bg crt-flicker">
           {/* Scanlines */}
           <div className="terminal-scanlines" />
           
           {/* Sweep line effect */}
-          <div className="crt-sweep relative">
+          <div className="crt-sweep relative flex flex-col h-full">
             {/* Header Bar */}
             <div className="terminal-header">
               <div className="flex items-center gap-3">
                 <Monitor className="w-5 h-5" />
-                <span className="terminal-title">PERSONAL TERMINAL</span>
+                <span className="terminal-title">PERSONAL TERMINAL v2.1</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4">
+                <span className="text-terminal-dim font-vt323 text-sm">{formatTime(currentTime)}</span>
                 <ThemeToggle />
                 <div className="w-3 h-3 bg-terminal-glow animate-glow-pulse" />
               </div>
             </div>
 
-            {/* Tab Navigation */}
-            <div className="flex border-b border-terminal-border bg-terminal-surface/50">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`terminal-tab flex items-center gap-2 ${
-                    activeTab === tab.id ? "terminal-tab-active" : ""
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-              <div className="flex-1" />
-              {/* Mini status in tab bar */}
-              <div className="flex items-center gap-4 px-4 text-terminal-dim font-vt323 text-sm">
-                <span>{formatTime(currentTime)}</span>
-              </div>
-            </div>
+            {/* Two-Column Layout */}
+            <div className="flex flex-1 min-h-0">
+              {/* Left Navigation Panel */}
+              <div className="terminal-nav-panel">
+                <div className="p-3 border-b border-terminal-border">
+                  <span className="text-terminal-dim text-xs font-vt323">NAVIGATION</span>
+                </div>
+                
+                <nav className="flex-1 py-2">
+                  {tabs.map((tab, index) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`terminal-nav-item ${
+                        activeTab === tab.id ? "terminal-nav-item-active" : ""
+                      }`}
+                    >
+                      <span className="terminal-nav-indicator">
+                        {activeTab === tab.id ? "▸" : " "}
+                      </span>
+                      <span className="terminal-nav-key">F{index + 1}</span>
+                      <tab.icon className="w-4 h-4" />
+                      <span>{tab.label}</span>
+                    </button>
+                  ))}
+                </nav>
 
-            {/* Content Area */}
-            <div className="min-h-[400px] max-h-[60vh] overflow-auto terminal-scrollbar p-4">
-              {activeTab === "entry" && (
-                <TerminalEntry onWordCountChange={setWordCount} />
-              )}
-              {activeTab === "index" && <TerminalIndex />}
-              {activeTab === "insights" && <TerminalInsights />}
+                {/* System Info at bottom of nav */}
+                <div className="mt-auto border-t border-terminal-border p-3 space-y-2">
+                  <div className="text-terminal-dim text-xs font-vt323 space-y-1">
+                    <div className="flex justify-between">
+                      <span>DATE:</span>
+                      <span>{formatDate(currentTime)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>WORDS:</span>
+                      <span>{wordCount}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>MEM:</span>
+                      <span>64K FREE</span>
+                    </div>
+                  </div>
+                  
+                  {/* ASCII decoration */}
+                  <div className="text-terminal-dim text-xs font-vt323 text-center pt-2 opacity-50">
+                    ╔══════════╗<br/>
+                    ║ MU/TH/UR ║<br/>
+                    ╚══════════╝
+                  </div>
+                </div>
+              </div>
+
+              {/* Vertical Divider */}
+              <div className="terminal-divider" />
+
+              {/* Right Content Panel */}
+              <div className="flex-1 flex flex-col min-w-0">
+                {/* Content Header */}
+                <div className="px-4 py-2 border-b border-terminal-border bg-terminal-surface/30">
+                  <div className="flex items-center gap-2">
+                    {tabs.find(t => t.id === activeTab)?.icon && (
+                      <span className="text-terminal-glow">
+                        {(() => {
+                          const Icon = tabs.find(t => t.id === activeTab)?.icon;
+                          return Icon ? <Icon className="w-4 h-4" /> : null;
+                        })()}
+                      </span>
+                    )}
+                    <span className="font-vt323 text-terminal-text">
+                      {tabs.find(t => t.id === activeTab)?.label} MODULE
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content Area */}
+                <div className="flex-1 overflow-auto terminal-scrollbar p-4">
+                  {activeTab === "entry" && (
+                    <TerminalEntry onWordCountChange={setWordCount} />
+                  )}
+                  {activeTab === "index" && <TerminalIndex />}
+                  {activeTab === "insights" && <TerminalInsights />}
+                </div>
+              </div>
             </div>
 
             {/* Status Bar */}
@@ -134,17 +191,11 @@ const Home = () => {
                   <WifiOff className="w-3 h-3" />
                   <span>NET: ISOLATED</span>
                 </div>
-                <div className="terminal-status-item">
-                  <span>WORDS: {wordCount}</span>
-                </div>
               </div>
-              <div className="flex items-center gap-6">
-                <div className="terminal-status-item">
-                  <span>{formatDate(currentTime)}</span>
-                </div>
-                <div className="terminal-status-item">
-                  <span>MEM: 64K FREE</span>
-                </div>
+              <div className="flex items-center gap-4 text-terminal-dim text-xs">
+                <span>F1-F3: NAV</span>
+                <span>ESC: MENU</span>
+                <span>CTRL+S: SAVE</span>
               </div>
             </div>
           </div>
