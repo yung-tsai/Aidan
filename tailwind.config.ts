@@ -20,7 +20,23 @@ export default {
         background: "hsl(var(--background))",
         "background-end": "hsl(var(--background-end))",
         foreground: "hsl(var(--foreground))",
-        // Terminal theme
+        // Braun device colors
+        "device-body": "hsl(var(--device-body))",
+        "device-face": "hsl(var(--device-face))",
+        "device-inset": "hsl(var(--device-inset))",
+        "device-shadow": "hsl(var(--device-shadow))",
+        // Display colors
+        "display-bg": "hsl(var(--display-bg))",
+        "display-text": "hsl(var(--display-text))",
+        "display-dim": "hsl(var(--display-dim))",
+        // Control colors
+        "control-bg": "hsl(var(--control-bg))",
+        "control-border": "hsl(var(--control-border))",
+        "control-active": "hsl(var(--control-active))",
+        // Accent
+        "braun-orange": "hsl(var(--braun-orange))",
+        "braun-orange-glow": "hsl(var(--braun-orange-glow))",
+        // Legacy terminal mappings
         "terminal-bg": "hsl(var(--terminal-bg))",
         "terminal-surface": "hsl(var(--terminal-surface))",
         "terminal-text": "hsl(var(--terminal-text))",
@@ -30,7 +46,6 @@ export default {
         "terminal-dim": "hsl(var(--terminal-dim))",
         "terminal-muted": "hsl(var(--terminal-muted))",
         "terminal-highlight": "hsl(var(--terminal-highlight))",
-        // Status colors
         "status-active": "hsl(var(--status-active))",
         "status-warning": "hsl(var(--status-warning))",
         "status-error": "hsl(var(--status-error))",
@@ -65,11 +80,10 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'sans-serif'],
-        mono: ['SF Mono', 'Monaco', 'Inconsolata', 'monospace'],
-        'ibm': ['Inter', 'sans-serif'],
-        'vt323': ['Inter', 'sans-serif'],
-        'typewriter': ['Inter', 'sans-serif'],
+        sans: ['DM Sans', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'sans-serif'],
+        mono: ['Space Mono', 'Monaco', 'Inconsolata', 'monospace'],
+        'dm': ['DM Sans', 'sans-serif'],
+        'space': ['Space Mono', 'monospace'],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -85,32 +99,35 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "blink": {
-          "0%, 50%": { opacity: "1" },
-          "51%, 100%": { opacity: "0" },
-        },
-        "glow-pulse": {
+        "breathe": {
           "0%, 100%": { 
-            boxShadow: "0 0 4px hsl(var(--terminal-glow))",
-            opacity: "1",
+            transform: "scale(1)",
+            opacity: "0.6",
           },
           "50%": { 
-            boxShadow: "0 0 12px hsl(var(--terminal-glow))",
-            opacity: "0.8",
+            transform: "scale(1.15)",
+            opacity: "1",
           },
         },
-        "text-flicker": {
-          "0%, 100%": { opacity: "1" },
-          "33%": { opacity: "0.9" },
-          "66%": { opacity: "0.95" },
+        "pulse-glow": {
+          "0%, 100%": { 
+            boxShadow: "0 0 0 0 hsl(var(--braun-orange) / 0)",
+          },
+          "50%": { 
+            boxShadow: "0 0 0 12px hsl(var(--braun-orange) / 0.15)",
+          },
+        },
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "blink": "blink 1s step-end infinite",
-        "glow-pulse": "glow-pulse 2s ease-in-out infinite",
-        "text-flicker": "text-flicker 3s ease-in-out infinite",
+        "breathe": "breathe 4s ease-in-out infinite",
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "fade-in": "fade-in 0.3s ease-out",
       },
     },
   },
