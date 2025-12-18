@@ -200,7 +200,7 @@
 
 .braun-device {
   background: hsl(var(--device-body));
-  border-radius: 24px;
+  border-radius: 20px;
   box-shadow: 
     0 1px 0 hsl(0 0% 100% / 0.6) inset,
     0 -1px 0 hsl(var(--device-shadow)) inset,
@@ -208,6 +208,12 @@
     0 40px 80px -40px hsl(0 0% 0% / 0.15);
   position: relative;
   overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .braun-device {
+    border-radius: 24px;
+  }
 }
 
 .braun-device::before {
@@ -285,22 +291,36 @@
   text-transform: uppercase;
   color: hsl(var(--foreground));
   cursor: pointer;
-  transition: all 0.1s ease;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
     0 2px 0 hsl(var(--control-border)),
     0 4px 8px -4px hsl(0 0% 0% / 0.1);
   position: relative;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
 }
 
 .braun-button:hover {
   background: hsl(var(--control-active));
+  transform: translateY(-1px);
+  box-shadow: 
+    0 3px 0 hsl(var(--control-border)),
+    0 6px 12px -4px hsl(0 0% 0% / 0.12);
 }
 
-.braun-button:active {
+.braun-button:active,
+.braun-button.pressed {
   transform: translateY(2px);
   box-shadow: 
     0 0 0 hsl(var(--control-border)),
-    0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    0 1px 2px -1px hsl(0 0% 0% / 0.1);
+  transition-duration: 0.05s;
+}
+
+.braun-button:focus-visible {
+  outline: 2px solid hsl(var(--braun-orange));
+  outline-offset: 2px;
 }
 
 .braun-button-primary {
@@ -314,18 +334,26 @@
 
 .braun-button-primary:hover {
   background: hsl(var(--braun-orange-glow));
+  transform: translateY(-1px);
+  box-shadow: 
+    0 3px 0 hsl(24 100% 38%),
+    0 6px 16px -4px hsl(var(--braun-orange) / 0.5);
 }
 
-.braun-button-primary:active {
+.braun-button-primary:active,
+.braun-button-primary.pressed {
+  transform: translateY(2px);
   box-shadow: 
     0 0 0 hsl(24 100% 40%),
-    0 2px 6px -2px hsl(var(--braun-orange) / 0.3);
+    0 1px 4px -1px hsl(var(--braun-orange) / 0.3);
 }
 
 /* Round button - like Braun calculator keys */
 .braun-button-round {
   width: 56px;
   height: 56px;
+  min-width: 56px;
+  min-height: 56px;
   border-radius: 50%;
   padding: 0;
   display: flex;
@@ -336,6 +364,33 @@
 .braun-button-round.large {
   width: 72px;
   height: 72px;
+  min-width: 72px;
+  min-height: 72px;
+}
+
+/* Touch feedback animation */
+.touch-feedback {
+  position: relative;
+  overflow: hidden;
+}
+
+.touch-feedback::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, hsl(0 0% 100% / 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.touch-feedback:active::after,
+.touch-feedback.pressed::after {
+  opacity: 1;
+  transform: scale(1);
+  transition-duration: 0.1s;
 }
 
 /* ============================================
@@ -351,7 +406,7 @@
 }
 
 .mode-option {
-  padding: 10px 16px;
+  padding: 12px 20px;
   border-radius: 8px;
   font-size: 11px;
   font-weight: 600;
@@ -359,17 +414,42 @@
   text-transform: uppercase;
   color: hsl(var(--muted-foreground));
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mode-option:hover {
   color: hsl(var(--foreground));
+  background: hsl(var(--control-active) / 0.5);
+}
+
+.mode-option:focus-visible {
+  outline: 2px solid hsl(var(--braun-orange));
+  outline-offset: -2px;
+}
+
+.mode-option:active {
+  transform: scale(0.97);
+  transition-duration: 0.05s;
 }
 
 .mode-option.active {
   background: hsl(var(--device-face));
   color: hsl(var(--foreground));
-  box-shadow: 0 2px 8px -2px hsl(0 0% 0% / 0.1);
+  box-shadow: 
+    0 2px 8px -2px hsl(0 0% 0% / 0.1),
+    0 1px 0 hsl(0 0% 100% / 0.5) inset;
+}
+
+.mode-option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* ============================================

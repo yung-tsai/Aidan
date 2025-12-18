@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 type BreathPhase = "inhale" | "hold" | "exhale" | "rest";
 
@@ -18,6 +18,13 @@ const BreathingGuide = ({
   const [phase, setPhase] = useState<BreathPhase>("inhale");
   const [countdown, setCountdown] = useState(pattern[0]);
   const [cycles, setCycles] = useState(0);
+  const [isPressed, setIsPressed] = useState(false);
+  const onCycleCompleteRef = useRef(onCycleComplete);
+
+  // Keep ref updated
+  useEffect(() => {
+    onCycleCompleteRef.current = onCycleComplete;
+  }, [onCycleComplete]);
 
   const phaseLabels: Record<BreathPhase, string> = {
     inhale: "BREATHE IN",
@@ -51,7 +58,8 @@ const BreathingGuide = ({
           setPhase(nextPhase);
           if (nextPhase === "inhale") {
             setCycles((c) => c + 1);
-            onCycleComplete?.();
+            // Use setTimeout to avoid setState during render
+            setTimeout(() => onCycleCompleteRef.current?.(), 0);
           }
           return pattern[getPhaseIndex(nextPhase)];
         }
@@ -80,10 +88,31 @@ const BreathingGuide = ({
     }
   };
 
+  const handleButtonPress = () => {
+    setIsPressed(true);
+    // Haptic feedback simulation via vibration API
+    if (navigator.vibrate) {
+      navigator.vibrate(10);
+    }
+  };
+
+  const handleButtonRelease = () => {
+    setIsPressed(false);
+    onToggle();
+  };
+
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div 
+      className="flex flex-col items-center gap-6 p-4"
+      role="region"
+      aria-label="Breathing exercise guide"
+    >
       {/* Breathing circle */}
-      <div className="relative w-48 h-48 md:w-64 md:h-64 flex items-center justify-center">
+      <div 
+        className="relative w-48 h-48 md:w-56 md:h-56 flex items-center justify-center"
+        role="img"
+        aria-label={isActive ? `${phaseLabels[phase]}, ${countdown} seconds remaining` : "Ready to begin"}
+      >
         {/* Outer ring */}
         <div 
           className="absolute inset-0 rounded-full border-2 border-control-border transition-all duration-1000 ease-in-out"
@@ -92,11 +121,12 @@ const BreathingGuide = ({
             borderColor: isActive ? 'hsl(var(--braun-orange))' : undefined,
             opacity: isActive ? 0.3 : 0.5,
           }}
+          aria-hidden="true"
         />
         
         {/* Inner circle */}
         <div 
-          className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-device-inset flex items-center justify-center transition-all duration-1000 ease-in-out"
+          className="w-32 h-32 md:w-36 md:h-36 rounded-full bg-device-inset flex items-center justify-center transition-all duration-1000 ease-in-out"
           style={{ 
             transform: `scale(${getCircleScale()})`,
             boxShadow: isActive 
@@ -107,7 +137,10 @@ const BreathingGuide = ({
           <div className="text-center">
             {isActive ? (
               <>
-                <div className="text-4xl md:text-5xl font-space font-bold text-foreground">
+                <div 
+                  className="text-4xl md:text-5xl font-space font-bold text-foreground tabular-nums"
+                  aria-live="polite"
+                >
                   {countdown}
                 </div>
                 <div className="braun-label mt-2 text-braun-orange">
@@ -116,7 +149,7 @@ const BreathingGuide = ({
               </>
             ) : (
               <div className="braun-label text-muted-foreground">
-                READY
+                TAP TO START
               </div>
             )}
           </div>
@@ -126,16 +159,22 @@ const BreathingGuide = ({
       {/* Controls */}
       <div className="flex items-center gap-4">
         <button
-          onClick={onToggle}
-          className={`braun-button-round large ${isActive ? 'braun-button-primary' : ''}`}
+          onMouseDown={handleButtonPress}
+          onMouseUp={handleButtonRelease}
+          onMouseLeave={() => isPressed && setIsPressed(false)}
+          onTouchStart={handleButtonPress}
+          onTouchEnd={handleButtonRelease}
+          className={`braun-button-round large touch-feedback ${isActive ? 'braun-button-primary' : ''} ${isPressed ? 'pressed' : ''}`}
+          aria-label={isActive ? "Pause breathing exercise" : "Start breathing exercise"}
+          aria-pressed={isActive}
         >
           {isActive ? (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <rect x="6" y="5" width="4" height="14" rx="1" />
               <rect x="14" y="5" width="4" height="14" rx="1" />
             </svg>
           ) : (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M8 5.14v14l11-7-11-7z" />
             </svg>
           )}
@@ -144,24 +183,30 @@ const BreathingGuide = ({
 
       {/* Cycle counter */}
       {cycles > 0 && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" aria-live="polite">
           <span className="braun-label text-muted-foreground">CYCLES</span>
-          <span className="font-space font-bold text-lg text-foreground">{cycles}</span>
+          <span className="font-space font-bold text-lg text-foreground tabular-nums">{cycles}</span>
         </div>
       )}
 
       {/* Pattern indicator */}
-      <div className="flex gap-3">
-        {["inhale", "hold", "exhale", "rest"].map((p, i) => (
-          <div key={p} className="flex flex-col items-center gap-1">
+      <div className="flex gap-4" role="list" aria-label="Breathing pattern">
+        {(["inhale", "hold", "exhale", "rest"] as const).map((p, i) => (
+          <div 
+            key={p} 
+            className="flex flex-col items-center gap-1"
+            role="listitem"
+            aria-current={phase === p && isActive ? "step" : undefined}
+          >
             <div 
-              className={`w-2 h-2 rounded-full transition-colors ${
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                 phase === p && isActive 
-                  ? "bg-braun-orange" 
+                  ? "bg-braun-orange scale-125" 
                   : "bg-control-border"
               }`}
+              aria-hidden="true"
             />
-            <span className="text-[9px] font-medium text-muted-foreground uppercase">
+            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
               {pattern[i]}s
             </span>
           </div>

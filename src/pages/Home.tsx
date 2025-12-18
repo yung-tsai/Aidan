@@ -70,35 +70,40 @@ const Home = () => {
   const statusText = getStatusText();
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 md:p-8">
+    <main 
+      className="min-h-screen min-h-[100dvh] bg-background flex items-center justify-center p-3 sm:p-4 md:p-8"
+      role="main"
+      aria-label="Reflect - Personal mindfulness device"
+    >
       <div className="braun-device w-full max-w-md">
         <DeviceHeader />
 
-        {/* Mode selector - styled as dial pips */}
-        <div className="flex justify-center px-6 py-5 bg-device-face">
+        {/* Mode selector */}
+        <nav className="flex justify-center px-4 sm:px-6 py-4 sm:py-5 bg-device-face" aria-label="Mode selection">
           <ModeSwitch
             modes={modes}
             activeMode={activeMode}
             onChange={(mode) => {
+              if (navigator.vibrate) navigator.vibrate(5);
               if (activeMode === "breathe" && isBreathing) {
                 handleBreathingToggle();
               }
               setActiveMode(mode as Mode);
             }}
           />
-        </div>
+        </nav>
 
-        <div className="braun-divider mx-6" />
+        <div className="braun-divider mx-4 sm:mx-6" aria-hidden="true" />
 
         {/* Ambient sound player */}
         {showAmbientSounds && (
-          <div className="px-6 py-4 bg-device-face">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 bg-device-face">
             <AmbientSoundPlayer isPlaying={isSessionActive} />
           </div>
         )}
 
         {/* Main display area */}
-        <div className="lcd-display mx-6 my-4 min-h-[320px] flex items-center justify-center">
+        <div className="lcd-display mx-3 sm:mx-6 my-3 sm:my-4 min-h-[300px] sm:min-h-[340px] flex items-center justify-center overflow-hidden">
           {activeMode === "breathe" && (
             <BreathingGuide
               isActive={isBreathing}
@@ -119,10 +124,14 @@ const Home = () => {
 
         {/* Contextual status - only when active */}
         {statusText && (
-          <div className="flex justify-center pb-4 bg-device-face">
+          <div 
+            className="flex justify-center pb-3 sm:pb-4 bg-device-face animate-fade-in"
+            role="status"
+            aria-live="polite"
+          >
             <div className="flex items-center gap-2">
-              <div className="indicator-light active" />
-              <span className="braun-mono text-xs text-accent-foreground tracking-wider">
+              <div className="indicator-light active" aria-hidden="true" />
+              <span className="braun-mono text-xs text-foreground tracking-wider tabular-nums">
                 {statusText}
               </span>
             </div>
@@ -132,7 +141,7 @@ const Home = () => {
         {/* Theme rocker at bottom */}
         <ThemeSlider />
       </div>
-    </div>
+    </main>
   );
 };
 
