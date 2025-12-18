@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import SplashScreen from "@/components/SplashScreen";
 import BootSequence from "@/components/BootSequence";
 import ThemeToggle from "@/components/ThemeToggle";
 import TerminalEntry from "@/components/terminal/TerminalEntry";
@@ -7,17 +8,22 @@ import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
 
 type TabId = "entry" | "index" | "insights";
+type StartupPhase = "splash" | "boot" | "ready";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [isBooting, setIsBooting] = useState(true);
+  const [startupPhase, setStartupPhase] = useState<StartupPhase>("splash");
   const [activeTab, setActiveTab] = useState<TabId>("entry");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [wordCount, setWordCount] = useState(0);
   const [systemStatus, setSystemStatus] = useState("NOMINAL");
 
+  const handleSplashComplete = useCallback(() => {
+    setStartupPhase("boot");
+  }, []);
+
   const handleBootComplete = useCallback(() => {
-    setIsBooting(false);
+    setStartupPhase("ready");
   }, []);
 
   // Update time every second
@@ -28,19 +34,19 @@ const Home = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Check if boot has been shown this session
+  // Check if startup has been shown this session
   useEffect(() => {
     const hasBooted = sessionStorage.getItem("hasBooted");
     if (hasBooted) {
-      setIsBooting(false);
+      setStartupPhase("ready");
     }
   }, []);
 
   useEffect(() => {
-    if (!isBooting) {
+    if (startupPhase === "ready") {
       sessionStorage.setItem("hasBooted", "true");
     }
-  }, [isBooting]);
+  }, [startupPhase]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -84,7 +90,11 @@ const Home = () => {
     }).toUpperCase();
   };
 
-  if (isBooting) {
+  if (startupPhase === "splash") {
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+
+  if (startupPhase === "boot") {
     return <BootSequence onComplete={handleBootComplete} />;
   }
 
