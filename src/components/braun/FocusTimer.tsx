@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 interface FocusTimerProps {
-  onComplete?: () => void;
+  onComplete?: (minutes: number) => void;
 }
 
 const FocusTimer = ({ onComplete }: FocusTimerProps) => {
@@ -9,8 +9,13 @@ const FocusTimer = ({ onComplete }: FocusTimerProps) => {
   const [timeLeft, setTimeLeft] = useState(duration * 60);
   const [isRunning, setIsRunning] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const durationRef = useRef(duration);
 
   const presets = [5, 15, 25, 45];
+
+  useEffect(() => {
+    durationRef.current = duration;
+  }, [duration]);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -20,7 +25,7 @@ const FocusTimer = ({ onComplete }: FocusTimerProps) => {
         if (prev <= 1) {
           setIsRunning(false);
           setIsComplete(true);
-          onComplete?.();
+          onComplete?.(durationRef.current);
           return 0;
         }
         return prev - 1;
