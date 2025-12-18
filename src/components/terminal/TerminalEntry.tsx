@@ -143,13 +143,6 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
         </button>
 
         <div className="flex-1" />
-
-        <button
-          onClick={() => navigate("/chat")}
-          className="terminal-btn text-xs"
-        >
-          [ AIDEN ]
-        </button>
         
         <button
           onClick={handleSave}

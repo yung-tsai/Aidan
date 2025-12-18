@@ -6,8 +6,10 @@ import ThemeToggle from "@/components/ThemeToggle";
 import TerminalEntry from "@/components/terminal/TerminalEntry";
 import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
+import TerminalAiden from "@/components/terminal/TerminalAiden";
+import AsciiCube from "@/components/AsciiCube";
 
-type TabId = "entry" | "index" | "insights";
+type TabId = "entry" | "index" | "insights" | "aiden";
 type StartupPhase = "splash" | "boot" | "ready";
 
 const Home = () => {
@@ -60,6 +62,9 @@ const Home = () => {
       } else if (e.key === "F3") {
         e.preventDefault();
         setActiveTab("insights");
+      } else if (e.key === "F4") {
+        e.preventDefault();
+        setActiveTab("aiden");
       }
     };
 
@@ -71,6 +76,7 @@ const Home = () => {
     { id: "entry" as TabId, label: "ENTRY", key: "F1" },
     { id: "index" as TabId, label: "INDEX", key: "F2" },
     { id: "insights" as TabId, label: "INSIGHTS", key: "F3" },
+    { id: "aiden" as TabId, label: "AIDEN", key: "F4" },
   ];
 
   const formatTime = (date: Date) => {
@@ -111,6 +117,7 @@ const Home = () => {
           {/* Header */}
           <div className="terminal-header">
             <div className="flex items-center gap-4">
+              <AsciiCube />
               <span className="font-vt323 text-terminal-dim text-sm">├──</span>
               <span className="font-vt323 text-lg text-terminal-text tracking-widest">
                 JOURNAL TERMINAL
@@ -198,6 +205,7 @@ const Home = () => {
                 )}
                 {activeTab === "index" && <TerminalIndex />}
                 {activeTab === "insights" && <TerminalInsights />}
+                {activeTab === "aiden" && <TerminalAiden />}
               </div>
             </div>
           </div>
@@ -215,7 +223,7 @@ const Home = () => {
               </div>
             </div>
             <div className="flex items-center gap-4 text-terminal-dim text-xs">
-              <span>[ F1-F3: NAV ]</span>
+              <span>[ F1-F4: NAV ]</span>
               <span>[ CTRL+S: SAVE ]</span>
             </div>
           </div>
