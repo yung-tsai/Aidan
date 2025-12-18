@@ -1,34 +1,30 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import DeviceHeader from "@/components/braun/DeviceHeader";
-import StatusBar from "@/components/braun/StatusBar";
 import ModeSwitch from "@/components/braun/ModeSwitch";
-import ClockDisplay from "@/components/braun/ClockDisplay";
 import BreathingGuide from "@/components/braun/BreathingGuide";
 import FocusTimer from "@/components/braun/FocusTimer";
 import ReflectionPrompt from "@/components/braun/ReflectionPrompt";
-import StatsDisplay from "@/components/braun/StatsDisplay";
-import JournalHistory from "@/components/braun/JournalHistory";
 import AmbientSoundPlayer from "@/components/braun/AmbientSoundPlayer";
+import ThemeSlider from "@/components/braun/ThemeSlider";
 import useSessionStats from "@/hooks/useSessionStats";
 
-type Mode = "clock" | "breathe" | "focus" | "reflect" | "stats" | "journal";
+type Mode = "breathe" | "focus" | "reflect";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [activeMode, setActiveMode] = useState<Mode>("clock");
+  const [activeMode, setActiveMode] = useState<Mode>("breathe");
   const [isBreathing, setIsBreathing] = useState(false);
   const [breathingStartTime, setBreathingStartTime] = useState<number | null>(null);
+  const [focusTimeRemaining, setFocusTimeRemaining] = useState<string | null>(null);
+  const [breathCount, setBreathCount] = useState(0);
   
-  const { stats, logBreathingSession, logFocusSession, logReflection } = useSessionStats();
+  const { logBreathingSession, logFocusSession, logReflection } = useSessionStats();
 
-  const modes = [
-    { id: "clock", label: "TIME" },
+  const modes: { id: Mode; label: string }[] = [
     { id: "breathe", label: "BREATHE" },
     { id: "focus", label: "FOCUS" },
     { id: "reflect", label: "REFLECT" },
-    { id: "stats", label: "STATS" },
-    { id: "journal", label: "JOURNAL" },
   ];
 
   const handleStartJournal = useCallback(() => {
@@ -38,7 +34,6 @@ const Home = () => {
 
   const handleBreathingToggle = useCallback(() => {
     if (isBreathing) {
-      // Stopping - log the session
       if (breathingStartTime) {
         const minutes = Math.round((Date.now() - breathingStartTime) / 60000);
         if (minutes >= 1) {
@@ -46,8 +41,8 @@ const Home = () => {
         }
       }
       setBreathingStartTime(null);
+      setBreathCount(0);
     } else {
-      // Starting
       setBreathingStartTime(Date.now());
     }
     setIsBreathing(!isBreathing);
@@ -55,24 +50,36 @@ const Home = () => {
 
   const handleFocusComplete = useCallback((minutes: number) => {
     logFocusSession(minutes);
+    setFocusTimeRemaining(null);
   }, [logFocusSession]);
 
-  // Show ambient sounds for breathing and focus modes
   const showAmbientSounds = activeMode === "breathe" || activeMode === "focus";
   const isSessionActive = (activeMode === "breathe" && isBreathing) || activeMode === "focus";
 
+  // Contextual status text
+  const getStatusText = () => {
+    if (activeMode === "breathe" && isBreathing) {
+      return breathCount > 0 ? `BREATH ${breathCount}` : "BREATHING";
+    }
+    if (activeMode === "focus" && focusTimeRemaining) {
+      return focusTimeRemaining;
+    }
+    return null;
+  };
+
+  const statusText = getStatusText();
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 md:p-8">
-      <div className="braun-device w-full max-w-lg">
+      <div className="braun-device w-full max-w-md">
         <DeviceHeader />
 
-        {/* Mode selector */}
-        <div className="flex justify-center px-4 py-4 bg-device-face overflow-x-auto">
+        {/* Mode selector - styled as dial pips */}
+        <div className="flex justify-center px-6 py-5 bg-device-face">
           <ModeSwitch
             modes={modes}
             activeMode={activeMode}
             onChange={(mode) => {
-              // Stop breathing if switching away
               if (activeMode === "breathe" && isBreathing) {
                 handleBreathingToggle();
               }
@@ -83,65 +90,47 @@ const Home = () => {
 
         <div className="braun-divider mx-6" />
 
-        {/* Ambient sound player for breathing/focus modes */}
+        {/* Ambient sound player */}
         {showAmbientSounds && (
-          <div className="px-6 py-4 bg-device-face border-b border-control-border">
-            <div className="braun-label text-center mb-3">AMBIENT SOUND</div>
+          <div className="px-6 py-4 bg-device-face">
             <AmbientSoundPlayer isPlaying={isSessionActive} />
           </div>
         )}
 
         {/* Main display area */}
-        <div className="px-6 py-8 bg-device-face min-h-[380px] flex items-center justify-center overflow-y-auto braun-scrollbar">
-          {activeMode === "clock" && <ClockDisplay />}
+        <div className="lcd-display mx-6 my-4 min-h-[320px] flex items-center justify-center">
           {activeMode === "breathe" && (
             <BreathingGuide
               isActive={isBreathing}
               onToggle={handleBreathingToggle}
+              onCycleComplete={() => setBreathCount(c => c + 1)}
             />
           )}
           {activeMode === "focus" && (
-            <FocusTimer onComplete={() => handleFocusComplete(25)} />
+            <FocusTimer 
+              onComplete={handleFocusComplete}
+              onTimeUpdate={setFocusTimeRemaining}
+            />
           )}
           {activeMode === "reflect" && (
             <ReflectionPrompt onStartJournal={handleStartJournal} />
           )}
-          {activeMode === "stats" && (
-            <StatsDisplay
-              breathingSessions={stats.breathingSessions}
-              breathingMinutes={stats.breathingMinutes}
-              focusSessions={stats.focusSessions}
-              focusMinutes={stats.focusMinutes}
-              reflectionCount={stats.reflectionCount}
-              currentStreak={stats.currentStreak}
-              longestStreak={stats.longestStreak}
-            />
-          )}
-          {activeMode === "journal" && <JournalHistory />}
         </div>
 
-        <StatusBar
-          leftContent={
+        {/* Contextual status - only when active */}
+        {statusText && (
+          <div className="flex justify-center pb-4 bg-device-face">
             <div className="flex items-center gap-2">
-              <div className={`indicator-light ${isSessionActive ? "active" : "success"}`} />
-              <span className="braun-label">
-                {isSessionActive ? "IN SESSION" : "READY"}
+              <div className="indicator-light active" />
+              <span className="braun-mono text-xs text-accent-foreground tracking-wider">
+                {statusText}
               </span>
             </div>
-          }
-          rightContent={
-            <div className="flex items-center gap-3">
-              {stats.currentStreak > 0 && (
-                <span className="braun-label text-braun-orange">
-                  🔥 {stats.currentStreak}d
-                </span>
-              )}
-              <span className="braun-label text-muted-foreground">
-                V1.0
-              </span>
-            </div>
-          }
-        />
+          </div>
+        )}
+
+        {/* Theme rocker at bottom */}
+        <ThemeSlider />
       </div>
     </div>
   );
