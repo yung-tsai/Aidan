@@ -1,114 +1,102 @@
 import { useState, useEffect } from "react";
 
-const AsciiCube = () => {
+const AsciiPyramid = () => {
   const [frame, setFrame] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setFrame((f) => (f + 1) % 360);
-    }, 80);
+    }, 100);
     return () => clearInterval(interval);
   }, []);
 
-  const size = 6;
+  const width = 12;
+  const height = 6;
   const A = (frame * Math.PI) / 180;
-  const B = (frame * 0.7 * Math.PI) / 180;
-  const C = (frame * 0.5 * Math.PI) / 180;
 
-  const rotateX = (x: number, y: number, z: number) => {
+  // Fixed size buffer
+  const buffer: string[][] = Array.from({ length: height }, () =>
+    Array.from({ length: width }, () => " ")
+  );
+
+  const setPixel = (x: number, y: number, char: string) => {
+    const px = Math.round(x);
+    const py = Math.round(y);
+    if (px >= 0 && px < width && py >= 0 && py < height) {
+      buffer[py][px] = char;
+    }
+  };
+
+  // Pyramid vertices (apex + 4 base corners)
+  const apex = [0, -2, 0];
+  const base = [
+    [-2, 1.5, -2],
+    [2, 1.5, -2],
+    [2, 1.5, 2],
+    [-2, 1.5, 2],
+  ];
+
+  const rotate = (x: number, y: number, z: number) => {
     const cosA = Math.cos(A);
     const sinA = Math.sin(A);
-    return { x, y: y * cosA - z * sinA, z: y * sinA + z * cosA };
-  };
-
-  const rotateY = (x: number, y: number, z: number) => {
-    const cosB = Math.cos(B);
-    const sinB = Math.sin(B);
-    return { x: x * cosB + z * sinB, y, z: -x * sinB + z * cosB };
-  };
-
-  const rotateZ = (x: number, y: number, z: number) => {
-    const cosC = Math.cos(C);
-    const sinC = Math.sin(C);
-    return { x: x * cosC - y * sinC, y: x * sinC + y * cosC, z };
+    return {
+      x: x * cosA + z * sinA,
+      y,
+      z: -x * sinA + z * cosA,
+    };
   };
 
   const project = (x: number, y: number, z: number) => {
-    let p = rotateX(x, y, z);
-    p = rotateY(p.x, p.y, p.z);
-    p = rotateZ(p.x, p.y, p.z);
-    const scale = 10 / (10 + p.z);
+    const p = rotate(x, y, z);
+    const scale = 6 / (6 + p.z);
     return {
-      x: p.x * scale * 2.5,
-      y: p.y * scale * 1.2,
+      x: p.x * scale * 1.8 + width / 2,
+      y: p.y * scale + height / 2,
       z: p.z,
     };
   };
 
-  const width = 20;
-  const height = 10;
-  const buffer: { char: string; z: number }[][] = Array.from({ length: height }, () =>
-    Array.from({ length: width }, () => ({ char: " ", z: -Infinity }))
-  );
-
-  const setPixel = (x: number, y: number, z: number, char: string) => {
-    const px = Math.round(x + width / 2);
-    const py = Math.round(y + height / 2);
-    if (px >= 0 && px < width && py >= 0 && py < height) {
-      if (z > buffer[py][px].z) {
-        buffer[py][px] = { char, z };
-      }
+  const drawLine = (x1: number, y1: number, z1: number, x2: number, y2: number, z2: number, char: string) => {
+    const p1 = project(x1, y1, z1);
+    const p2 = project(x2, y2, z2);
+    const steps = 10;
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const x = p1.x + (p2.x - p1.x) * t;
+      const y = p1.y + (p2.y - p1.y) * t;
+      setPixel(x, y, char);
     }
   };
 
-  // Draw cube edges
-  const vertices = [
-    [-size, -size, -size],
-    [size, -size, -size],
-    [size, size, -size],
-    [-size, size, -size],
-    [-size, -size, size],
-    [size, -size, size],
-    [size, size, size],
-    [-size, size, size],
-  ];
+  // Draw base edges
+  for (let i = 0; i < 4; i++) {
+    const [x1, y1, z1] = base[i];
+    const [x2, y2, z2] = base[(i + 1) % 4];
+    drawLine(x1, y1, z1, x2, y2, z2, "░");
+  }
 
-  const edges = [
-    [0, 1], [1, 2], [2, 3], [3, 0],
-    [4, 5], [5, 6], [6, 7], [7, 4],
-    [0, 4], [1, 5], [2, 6], [3, 7],
-  ];
+  // Draw edges from apex to base
+  const chars = ["▓", "▒", "░", "▒"];
+  for (let i = 0; i < 4; i++) {
+    const [x, y, z] = base[i];
+    const [ax, ay, az] = apex;
+    drawLine(ax, ay, az, x, y, z, chars[i]);
+  }
 
-  const chars = "░▒▓█";
+  // Draw apex
+  const ap = project(apex[0], apex[1], apex[2]);
+  setPixel(ap.x, ap.y, "█");
 
-  edges.forEach(([a, b]) => {
-    const [x1, y1, z1] = vertices[a];
-    const [x2, y2, z2] = vertices[b];
-    const steps = 15;
-    for (let i = 0; i <= steps; i++) {
-      const t = i / steps;
-      const x = x1 + (x2 - x1) * t;
-      const y = y1 + (y2 - y1) * t;
-      const z = z1 + (z2 - z1) * t;
-      const p = project(x, y, z);
-      const charIdx = Math.floor(((p.z + size) / (size * 2)) * (chars.length - 1));
-      setPixel(p.x, p.y, p.z, chars[Math.max(0, Math.min(chars.length - 1, charIdx))]);
-    }
-  });
-
-  // Draw vertices with brighter chars
-  vertices.forEach(([x, y, z]) => {
-    const p = project(x, y, z);
-    setPixel(p.x, p.y, p.z + 0.1, "█");
-  });
-
-  const output = buffer.map((row) => row.map((cell) => cell.char).join("")).join("\n");
+  const output = buffer.map((row) => row.join("")).join("\n");
 
   return (
-    <pre className="font-vt323 text-terminal-glow text-[8px] leading-[8px] select-none opacity-70">
+    <pre 
+      className="font-vt323 text-terminal-glow text-[10px] leading-[10px] select-none opacity-60"
+      style={{ width: `${width * 6}px`, height: `${height * 10}px` }}
+    >
       {output}
     </pre>
   );
 };
 
-export default AsciiCube;
+export default AsciiPyramid;

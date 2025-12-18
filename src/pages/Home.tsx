@@ -7,7 +7,7 @@ import TerminalEntry from "@/components/terminal/TerminalEntry";
 import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
 import TerminalAiden from "@/components/terminal/TerminalAiden";
-import AsciiCube from "@/components/AsciiCube";
+import AsciiPyramid from "@/components/AsciiCube";
 
 type TabId = "entry" | "index" | "insights" | "aiden";
 type StartupPhase = "splash" | "boot" | "ready";
@@ -117,7 +117,7 @@ const Home = () => {
           {/* Header */}
           <div className="terminal-header">
             <div className="flex items-center gap-4">
-              <AsciiCube />
+              <AsciiPyramid />
               <span className="font-vt323 text-terminal-dim text-sm">├──</span>
               <span className="font-vt323 text-lg text-terminal-text tracking-widest">
                 JOURNAL TERMINAL
