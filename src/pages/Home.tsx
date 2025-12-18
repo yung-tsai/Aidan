@@ -7,7 +7,6 @@ import TerminalEntry from "@/components/terminal/TerminalEntry";
 import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
 import TerminalAiden from "@/components/terminal/TerminalAiden";
-import AsciiPyramid from "@/components/AsciiCube";
 
 type TabId = "entry" | "index" | "insights" | "aiden";
 type StartupPhase = "splash" | "boot" | "ready";
@@ -116,18 +115,15 @@ const Home = () => {
           
           {/* Header */}
           <div className="terminal-header">
-            <div className="flex items-center gap-4">
-              <AsciiPyramid />
-              <span className="font-vt323 text-terminal-dim text-sm">├──</span>
-              <span className="font-vt323 text-lg text-terminal-text tracking-widest">
-                JOURNAL TERMINAL
+            <div className="flex items-center gap-5">
+              <div className="w-3 h-3 rounded-full bg-terminal-accent" />
+              <span className="terminal-title">
+                REFLECT
               </span>
-              <span className="font-vt323 text-terminal-dim text-sm">v2.1</span>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-terminal-dim font-vt323 text-sm">{formatTime(currentTime)}</span>
+            <div className="flex items-center gap-5">
+              <span className="text-terminal-dim text-xs font-medium tracking-wide">{formatTime(currentTime)}</span>
               <ThemeToggle />
-              <div className="status-indicator" />
             </div>
           </div>
 
@@ -135,11 +131,11 @@ const Home = () => {
           <div className="flex flex-1 min-h-0">
             {/* Left Navigation Panel */}
             <div className="terminal-nav-panel">
-              <div className="p-3 border-b border-terminal-border">
-                <span className="text-terminal-dim text-xs font-vt323 tracking-widest">[ MODULES ]</span>
+              <div className="px-4 py-3 border-b border-terminal-border">
+                <span className="text-terminal-dim text-xs font-medium tracking-widest uppercase">Modules</span>
               </div>
               
-              <nav className="flex-1 py-2">
+              <nav className="flex-1 py-1">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
@@ -148,37 +144,23 @@ const Home = () => {
                       activeTab === tab.id ? "terminal-nav-item-active" : ""
                     }`}
                   >
-                    <span className="font-vt323 text-lg w-4">
-                      {activeTab === tab.id ? "▸" : " "}
-                    </span>
                     <span className="terminal-nav-key">{tab.key}</span>
-                    <span>[ {tab.label} ]</span>
+                    <span>{tab.label}</span>
                   </button>
                 ))}
               </nav>
 
               {/* System Info */}
-              <div className="mt-auto border-t border-terminal-border p-3 space-y-2">
-                <div className="text-terminal-dim text-xs font-vt323 space-y-1">
-                  <div className="flex justify-between">
-                    <span>DATE:</span>
+              <div className="mt-auto border-t border-terminal-border px-4 py-3 space-y-3">
+                <div className="text-xs font-medium space-y-2">
+                  <div className="flex justify-between text-terminal-dim">
+                    <span>Date</span>
                     <span className="text-terminal-text">{formatDate(currentTime)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>WORDS:</span>
+                  <div className="flex justify-between text-terminal-dim">
+                    <span>Words</span>
                     <span className="text-terminal-text">{wordCount}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>MEM:</span>
-                    <span className="text-terminal-text">64K</span>
-                  </div>
-                </div>
-                
-                {/* ASCII decoration */}
-                <div className="text-terminal-muted text-xs font-vt323 text-center pt-2 opacity-40">
-                  ┌─────────┐<br/>
-                  │ MU/TH/UR │<br/>
-                  └─────────┘
                 </div>
               </div>
             </div>
@@ -186,20 +168,14 @@ const Home = () => {
             {/* Right Content Panel */}
             <div className="flex-1 flex flex-col min-w-0">
               {/* Content Header */}
-              <div className="px-4 py-2 border-b border-terminal-border bg-terminal-surface/30">
-                <div className="flex items-center gap-2">
-                  <span className="text-terminal-dim font-vt323">▶</span>
-                  <span className="font-vt323 text-terminal-glow terminal-glow-subtle">
-                    {tabs.find(t => t.id === activeTab)?.label} MODULE
-                  </span>
-                  <span className="text-terminal-dim font-vt323 text-xs ml-auto">
-                    ────────────────
-                  </span>
-                </div>
+              <div className="px-5 py-2.5 border-b border-terminal-border bg-terminal-surface/50">
+                <span className="text-xs font-semibold text-terminal-accent uppercase tracking-widest">
+                  {tabs.find(t => t.id === activeTab)?.label}
+                </span>
               </div>
 
               {/* Content Area */}
-              <div className="flex-1 overflow-auto terminal-scrollbar p-4">
+              <div className="flex-1 overflow-auto terminal-scrollbar p-5">
                 {activeTab === "entry" && (
                   <TerminalEntry onWordCountChange={setWordCount} />
                 )}
@@ -212,19 +188,15 @@ const Home = () => {
 
           {/* Status Bar */}
           <div className="terminal-status-bar">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
               <div className="terminal-status-item">
-                <span className="text-terminal-glow">●</span>
-                <span>SYS: {systemStatus}</span>
-              </div>
-              <div className="terminal-status-item">
-                <span className="text-terminal-dim">○</span>
-                <span>NET: ISOLATED</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-terminal-accent" />
+                <span>Ready</span>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-terminal-dim text-xs">
-              <span>[ F1-F4: NAV ]</span>
-              <span>[ CTRL+S: SAVE ]</span>
+            <div className="flex items-center gap-4">
+              <span>F1–F4: Navigate</span>
+              <span>Ctrl+S: Save</span>
             </div>
           </div>
         </div>

@@ -65,10 +65,11 @@ export default {
         },
       },
       fontFamily: {
-        mono: ['VT323', 'monospace'],
-        'ibm': ['IBM Plex Mono', 'monospace'],
-        'vt323': ['VT323', 'monospace'],
-        'typewriter': ['Special Elite', 'monospace'],
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'sans-serif'],
+        mono: ['SF Mono', 'Monaco', 'Inconsolata', 'monospace'],
+        'ibm': ['Inter', 'sans-serif'],
+        'vt323': ['Inter', 'sans-serif'],
+        'typewriter': ['Inter', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",
