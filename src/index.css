@@ -12,7 +12,51 @@
 
 @layer base {
   :root {
-    /* Light Mode - Warm Amber Terminal */
+    /* Light Mode - Clean Paper/Ink */
+    --background: 40 20% 96%;
+    --background-end: 40 15% 94%;
+    --foreground: 220 15% 20%;
+    
+    /* Terminal colors - Light */
+    --terminal-bg: 40 25% 98%;
+    --terminal-surface: 40 20% 95%;
+    --terminal-border: 220 10% 75%;
+    --terminal-text: 220 20% 25%;
+    --terminal-glow: 220 60% 45%;
+    --terminal-accent: 220 50% 55%;
+    --terminal-dim: 220 10% 50%;
+    --terminal-muted: 220 10% 85%;
+    --terminal-highlight: 220 70% 50%;
+    
+    /* Status colors */
+    --status-active: 220 60% 50%;
+    --status-warning: 35 100% 50%;
+    --status-error: 0 70% 55%;
+    --status-success: 150 60% 40%;
+    
+    /* Semantic colors */
+    --card: 40 20% 97%;
+    --card-foreground: 220 20% 25%;
+    --popover: 40 20% 98%;
+    --popover-foreground: 220 20% 25%;
+    --primary: 220 60% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 15% 92%;
+    --secondary-foreground: 220 15% 30%;
+    --muted: 40 15% 90%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 220 45% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 15% 80%;
+    --input: 40 20% 96%;
+    --ring: 220 60% 50%;
+    --radius: 0px;
+  }
+
+  .dark {
+    /* Dark Mode - Warm Amber Terminal */
     --background: 30 8% 8%;
     --background-end: 30 6% 10%;
     --foreground: 35 60% 75%;
@@ -52,10 +96,9 @@
     --border: 35 35% 25%;
     --input: 30 10% 12%;
     --ring: 35 80% 60%;
-    --radius: 0px;
   }
 
-  .dark {
+  .ice {
     /* Dark Mode - Cool Blue/Gray Terminal */
     --background: 215 25% 6%;
     --background-end: 215 20% 8%;
