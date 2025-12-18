@@ -29,14 +29,12 @@ export default {
         "terminal-border": "hsl(var(--terminal-border))",
         "terminal-dim": "hsl(var(--terminal-dim))",
         "terminal-muted": "hsl(var(--terminal-muted))",
-        // CRT frame
-        "crt-frame": "hsl(var(--crt-frame))",
-        "crt-bezel": "hsl(var(--crt-bezel))",
-        "crt-shadow": "hsl(var(--crt-shadow))",
+        "terminal-highlight": "hsl(var(--terminal-highlight))",
         // Status colors
         "status-active": "hsl(var(--status-active))",
         "status-warning": "hsl(var(--status-warning))",
         "status-error": "hsl(var(--status-error))",
+        "status-success": "hsl(var(--status-success))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -100,12 +98,18 @@ export default {
             opacity: "0.8",
           },
         },
+        "text-flicker": {
+          "0%, 100%": { opacity: "1" },
+          "33%": { opacity: "0.9" },
+          "66%": { opacity: "0.95" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "blink": "blink 1s step-end infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
+        "text-flicker": "text-flicker 3s ease-in-out infinite",
       },
     },
   },

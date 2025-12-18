@@ -234,45 +234,38 @@ const Chat = () => {
   };
 
   return (
-    <div className="journal-gradient min-h-screen flex flex-col items-center pt-20 sm:pt-[100px] md:pt-[150px] pb-20 sm:pb-[100px] md:pb-[168px] px-4 gap-[50px] sm:gap-[75px] md:gap-[100px]">
-      {/* Terminal Window */}
-      <div className="w-full max-w-[580px] retro-window">
-        {/* Title Bar */}
-        <div className="h-8 flex items-center px-2 bg-gradient-to-b from-[#4a4a4a] to-[#2a2a2a] border-b border-[#1a1a1a]">
-          {/* Window Controls */}
-          <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-[#ff5f57] border border-[#e33e32] retro-button" />
-            <div className="w-3 h-3 rounded-full bg-[#febc2e] border border-[#e09e1a] retro-button" />
-            <div className="w-3 h-3 rounded-full bg-[#28c840] border border-[#1aab2c] retro-button" />
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 md:p-8">
+      {/* Terminal Container */}
+      <div className="terminal-container crt-vignette w-full max-w-2xl relative overflow-hidden">
+        {/* Scanlines */}
+        <div className="terminal-scanlines" />
+        
+        <div className="crt-sweep crt-flicker relative">
+          {/* Header */}
+          <div className="terminal-header">
+            <div className="flex items-center gap-3">
+              <span className="font-vt323 text-terminal-dim text-sm">├──</span>
+              <span className="font-vt323 text-lg text-terminal-text tracking-widest">
+                AIDEN TERMINAL
+              </span>
+              <span className="font-vt323 text-terminal-dim text-sm">v1.0</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="status-indicator" />
+              <span className="font-vt323 text-xs text-terminal-glow">ONLINE</span>
+            </div>
           </div>
-          {/* Title */}
-          <div className="flex-1 text-center">
-            <span className="font-vt323 text-sm text-[#cccccc] tracking-wider">
-              AIDEN TERMINAL v1.0
-            </span>
-          </div>
-          {/* Status Indicator */}
-          <div className="flex items-center gap-2">
-            <div className="status-indicator" />
-            <span className="font-vt323 text-xs text-terminal-accent">ONLINE</span>
-          </div>
-        </div>
 
-        {/* Terminal Screen */}
-        <div className="relative terminal-bg">
-          {/* Scanline Overlay */}
-          <div className="absolute inset-0 terminal-scanlines z-10" />
-          
           {/* Messages Container */}
           <div 
             ref={messagesContainerRef} 
-            className="relative z-0 min-h-[320px] max-h-[400px] overflow-y-auto overflow-x-hidden p-4 crt-flicker"
+            className="min-h-[350px] max-h-[450px] overflow-y-auto overflow-x-hidden p-4 terminal-scrollbar bg-terminal-bg/50"
           >
             {isBooting ? (
               <div className="font-vt323 text-lg text-terminal-glow terminal-glow">
                 <p>Initializing AIDEN...</p>
                 <p className="mt-2">Loading neural networks... <span className="boot-cursor">█</span></p>
-                <div className="mt-4 flex items-center gap-2">
+                <div className="mt-4 flex items-center gap-2 text-terminal-text">
                   <span>▓▓▓▓▓▓▓▓░░</span>
                   <span>80%</span>
                 </div>
@@ -288,21 +281,25 @@ const Chat = () => {
                   <div key={idx} className="mb-4 font-ibm text-sm leading-relaxed">
                     {msg.role === "assistant" ? (
                       <div>
-                        <span className="text-terminal-accent font-bold">AIDEN@system</span>
-                        <span className="text-terminal-text">:</span>
-                        <span className="text-[#58a6ff]">~</span>
-                        <span className="text-terminal-text">$ </span>
-                        <span className="text-terminal-glow terminal-glow">
+                        <span className="text-terminal-glow font-bold font-vt323">AIDEN</span>
+                        <span className="text-terminal-dim">@</span>
+                        <span className="text-terminal-accent font-vt323">system</span>
+                        <span className="text-terminal-dim">:</span>
+                        <span className="text-terminal-dim">~</span>
+                        <span className="text-terminal-dim">$ </span>
+                        <span className="text-terminal-text">
                           {displayContent}
                           {showBlinkingCursor && <span className="terminal-cursor">█</span>}
                         </span>
                       </div>
                     ) : (
                       <div>
-                        <span className="text-[#f78166] font-bold">user@local</span>
-                        <span className="text-terminal-text">:</span>
-                        <span className="text-[#58a6ff]">~</span>
-                        <span className="text-terminal-text">$ </span>
+                        <span className="text-terminal-highlight font-bold font-vt323">USER</span>
+                        <span className="text-terminal-dim">@</span>
+                        <span className="text-terminal-accent font-vt323">local</span>
+                        <span className="text-terminal-dim">:</span>
+                        <span className="text-terminal-dim">~</span>
+                        <span className="text-terminal-dim">$ </span>
                         <span className="text-terminal-text">{displayContent}</span>
                       </div>
                     )}
@@ -314,45 +311,43 @@ const Chat = () => {
           </div>
 
           {/* Status Bar */}
-          <div className="h-6 px-3 flex items-center justify-between bg-terminal-surface border-t border-terminal-border">
+          <div className="px-4 py-2 flex items-center justify-between bg-terminal-surface border-t border-terminal-border">
             <div className="flex items-center gap-4">
-              <span className="font-vt323 text-xs text-terminal-accent">● CONNECTED</span>
-              <span className="font-vt323 text-xs text-terminal-text">Session: {sessionId?.slice(0, 8) || '...'}</span>
+              <span className="font-vt323 text-xs text-terminal-glow">● CONNECTED</span>
+              <span className="font-vt323 text-xs text-terminal-dim">
+                Session: {sessionId?.slice(0, 8) || '...'}
+              </span>
             </div>
-            <span className="font-vt323 text-xs text-terminal-text">{messages.length} msgs</span>
+            <span className="font-vt323 text-xs text-terminal-dim">{messages.length} msgs</span>
           </div>
-        </div>
 
-        {/* Input Area */}
-        <div className="flex items-stretch bg-terminal-surface border-t-2 border-terminal-border">
-          {/* Terminal Prompt Input */}
-          <div className="flex-1 flex items-center px-4 py-2 retro-inset bg-terminal-bg">
-            <span className="font-vt323 text-terminal-accent mr-2">&gt;</span>
-            <input
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Enter command..."
-              className="flex-1 font-ibm text-sm terminal-input placeholder:text-terminal-border"
-            />
-            {showCursor && !input && (
-              <span className="terminal-cursor">█</span>
-            )}
+          {/* Input Area */}
+          <div className="flex items-stretch bg-terminal-surface border-t border-terminal-border">
+            {/* Terminal Prompt Input */}
+            <div className="flex-1 flex items-center px-4 py-3 bg-terminal-bg/50">
+              <span className="font-vt323 text-terminal-glow mr-2">▶</span>
+              <input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Enter command..."
+                className="flex-1 font-ibm text-sm terminal-input placeholder:text-terminal-muted"
+              />
+              {showCursor && !input && (
+                <span className="terminal-cursor">█</span>
+              )}
+            </div>
+            
+            {/* Save Button */}
+            <button
+              onClick={handleSendAndNavigate}
+              disabled={isLoading}
+              className="px-4 flex items-center justify-center bg-terminal-surface border-l border-terminal-border hover:bg-terminal-accent/20 transition-colors"
+            >
+              <span className="font-vt323 text-terminal-text text-sm">[ SAVE ]</span>
+            </button>
           </div>
-          
-          {/* Save Button */}
-          <button
-            onClick={handleSendAndNavigate}
-            disabled={isLoading}
-            className="w-12 flex items-center justify-center bg-terminal-surface border-l border-terminal-border retro-button hover:bg-terminal-bg transition-colors"
-          >
-            <svg width="20" height="20" viewBox="0 0 18 18" fill="none">
-              <path d="M14.25 15.75H3.75C3.33579 15.75 3 15.4142 3 15V3C3 2.58579 3.33579 2.25 3.75 2.25H10.5L15 6.75V15C15 15.4142 14.6642 15.75 14.25 15.75Z" stroke="hsl(140 70% 70%)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 15.75V10.5H6V15.75" stroke="hsl(140 70% 70%)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M6 2.25V6.75H10.5" stroke="hsl(140 70% 70%)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
         </div>
       </div>
     </div>

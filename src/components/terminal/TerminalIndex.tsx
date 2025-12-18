@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
-import { Search, ChevronRight, FileText } from "lucide-react";
 
 type JournalEntry = {
   id: string;
@@ -54,7 +53,6 @@ const TerminalIndex = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-
       setEntries(data || []);
       setFilteredEntries(data || []);
     } catch (error) {
@@ -77,7 +75,7 @@ const TerminalIndex = () => {
       {/* Search */}
       <div className="terminal-box p-3">
         <div className="flex items-center gap-3">
-          <Search className="w-4 h-4 text-terminal-dim" />
+          <span className="font-vt323 text-terminal-glow">▶</span>
           <input
             type="text"
             value={searchQuery}
@@ -92,11 +90,11 @@ const TerminalIndex = () => {
       </div>
 
       {/* Entry list */}
-      <div className="space-y-2 max-h-[350px] overflow-auto terminal-scrollbar">
+      <div className="space-y-2 max-h-[300px] overflow-auto terminal-scrollbar">
         {isLoading ? (
           <div className="terminal-box p-4 text-center">
-            <span className="text-terminal-dim font-vt323 text-lg animate-pulse">
-              LOADING DATABASE...
+            <span className="text-terminal-dim font-vt323 text-lg">
+              LOADING DATABASE<span className="blink-text">...</span>
             </span>
           </div>
         ) : filteredEntries.length === 0 ? (
@@ -118,7 +116,9 @@ const TerminalIndex = () => {
               }`}
             >
               <div className="flex items-start gap-3">
-                <FileText className="w-4 h-4 text-terminal-accent mt-1 flex-shrink-0" />
+                <span className="font-vt323 text-terminal-dim text-lg">
+                  {selectedIndex === index ? "▸" : " "}
+                </span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <h3 className="font-vt323 text-lg text-terminal-glow terminal-glow-subtle truncate">
@@ -129,21 +129,18 @@ const TerminalIndex = () => {
                     </span>
                   </div>
                   <p className="text-terminal-dim font-ibm text-xs mt-1 line-clamp-2">
-                    {stripHtml(entry.content).substring(0, 120)}
-                    {stripHtml(entry.content).length > 120 ? "..." : ""}
+                    {stripHtml(entry.content).substring(0, 100)}...
                   </p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-terminal-dim flex-shrink-0" />
               </div>
             </div>
           ))
         )}
       </div>
 
-      {/* Footer instructions */}
       <div className="flex items-center justify-center gap-6 text-terminal-dim font-vt323 text-sm pt-2">
-        <span>[CLICK] SELECT</span>
-        <span>[SCROLL] NAVIGATE</span>
+        <span>[ CLICK ] SELECT</span>
+        <span>[ SCROLL ] NAVIGATE</span>
       </div>
     </div>
   );

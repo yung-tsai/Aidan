@@ -1,20 +1,10 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  Bold, 
-  Italic, 
-  Underline as UnderlineIcon, 
-  Link as LinkIcon, 
-  List, 
-  ListOrdered,
-  Save,
-  MessageSquare
-} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface TerminalEntryProps {
@@ -37,7 +27,7 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
     content: "<p>> Begin your entry...</p>",
     editorProps: {
       attributes: {
-        class: "outline-none min-h-[250px] text-terminal-text font-ibm text-sm leading-relaxed",
+        class: "outline-none min-h-[200px] text-terminal-text font-ibm text-sm leading-relaxed",
       },
     },
     onUpdate: ({ editor }) => {
@@ -47,7 +37,6 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
     },
   });
 
-  // Create entry on mount
   useEffect(() => {
     const createEntry = async () => {
       try {
@@ -87,10 +76,10 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
       if (error) throw error;
 
       setLastSaved(new Date());
-      toast.success("ENTRY SAVED TO DATABASE");
+      toast.success("ENTRY SAVED");
     } catch (error) {
       console.error("Error saving:", error);
-      toast.error("SAVE FAILED - RETRY");
+      toast.error("SAVE FAILED");
     } finally {
       setIsSaving(false);
     }
@@ -105,10 +94,10 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
 
   return (
     <div className="space-y-4">
-      {/* Title input */}
+      {/* Title */}
       <div className="terminal-box p-3">
         <div className="flex items-center gap-2 text-terminal-dim font-vt323 text-sm mb-2">
-          <span>&gt; TITLE:</span>
+          <span>▶ TITLE:</span>
         </div>
         <input
           type="text"
@@ -123,80 +112,59 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
       <div className="flex flex-wrap items-center gap-1 p-2 terminal-box">
         <button
           onClick={() => editor?.chain().focus().toggleBold().run()}
-          className={`terminal-btn px-2 py-1 text-sm ${
-            editor?.isActive("bold") ? "terminal-btn-primary" : ""
-          }`}
+          className={`terminal-btn text-xs ${editor?.isActive("bold") ? "terminal-btn-primary" : ""}`}
         >
-          <Bold className="w-4 h-4" />
+          [ B ]
         </button>
         <button
           onClick={() => editor?.chain().focus().toggleItalic().run()}
-          className={`terminal-btn px-2 py-1 text-sm ${
-            editor?.isActive("italic") ? "terminal-btn-primary" : ""
-          }`}
+          className={`terminal-btn text-xs ${editor?.isActive("italic") ? "terminal-btn-primary" : ""}`}
         >
-          <Italic className="w-4 h-4" />
+          [ I ]
         </button>
         <button
           onClick={() => editor?.chain().focus().toggleUnderline().run()}
-          className={`terminal-btn px-2 py-1 text-sm ${
-            editor?.isActive("underline") ? "terminal-btn-primary" : ""
-          }`}
+          className={`terminal-btn text-xs ${editor?.isActive("underline") ? "terminal-btn-primary" : ""}`}
         >
-          <UnderlineIcon className="w-4 h-4" />
+          [ U ]
         </button>
         
-        <div className="w-px h-6 bg-terminal-border mx-1" />
+        <span className="text-terminal-border mx-1">│</span>
         
-        <button onClick={setLink} className="terminal-btn px-2 py-1 text-sm">
-          <LinkIcon className="w-4 h-4" />
-        </button>
+        <button onClick={setLink} className="terminal-btn text-xs">[ LINK ]</button>
         
-        <div className="w-px h-6 bg-terminal-border mx-1" />
+        <span className="text-terminal-border mx-1">│</span>
         
         <button
           onClick={() => editor?.chain().focus().toggleBulletList().run()}
-          className={`terminal-btn px-2 py-1 text-sm ${
-            editor?.isActive("bulletList") ? "terminal-btn-primary" : ""
-          }`}
+          className={`terminal-btn text-xs ${editor?.isActive("bulletList") ? "terminal-btn-primary" : ""}`}
         >
-          <List className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-          className={`terminal-btn px-2 py-1 text-sm ${
-            editor?.isActive("orderedList") ? "terminal-btn-primary" : ""
-          }`}
-        >
-          <ListOrdered className="w-4 h-4" />
+          [ LIST ]
         </button>
 
         <div className="flex-1" />
 
         <button
           onClick={() => navigate("/chat")}
-          className="terminal-btn px-3 py-1 flex items-center gap-2"
+          className="terminal-btn text-xs"
         >
-          <MessageSquare className="w-4 h-4" />
-          <span>AIDEN</span>
+          [ AIDEN ]
         </button>
         
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className="terminal-btn-primary terminal-btn px-3 py-1 flex items-center gap-2"
+          className="terminal-btn-primary terminal-btn text-xs"
         >
-          <Save className="w-4 h-4" />
-          <span>{isSaving ? "SAVING..." : "SAVE"}</span>
+          {isSaving ? "[ SAVING... ]" : "[ SAVE ]"}
         </button>
       </div>
 
       {/* Editor */}
-      <div className="terminal-box p-4 min-h-[250px]">
+      <div className="terminal-box p-4 min-h-[200px]">
         <EditorContent editor={editor} />
       </div>
 
-      {/* Last saved indicator */}
       {lastSaved && (
         <div className="text-terminal-dim font-vt323 text-sm text-right">
           LAST SAVED: {lastSaved.toLocaleTimeString()}

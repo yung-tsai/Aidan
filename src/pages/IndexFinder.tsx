@@ -1,10 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import arrowBtn from "@/assets/arrow-btn.png";
 import { supabase } from "@/integrations/supabase/client";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
-import { Search } from "lucide-react";
 
 type JournalEntry = {
   id: string;
@@ -16,15 +13,14 @@ type JournalEntry = {
 
 const IndexFinder = () => {
   const navigate = useNavigate();
-  const [showContent, setShowContent] = useState(false);
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<JournalEntry[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoadingEntries, setIsLoadingEntries] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     fetchEntries();
-    setTimeout(() => setShowContent(true), 100);
   }, []);
 
   useEffect(() => {
@@ -38,6 +34,7 @@ const IndexFinder = () => {
       );
       setFilteredEntries(filtered);
     }
+    setSelectedIndex(0);
   }, [searchQuery, entries]);
 
   const stripHtml = (html: string) => {
@@ -74,70 +71,104 @@ const IndexFinder = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen flex flex-col items-center justify-center py-10">
-      <div className="flex flex-col gap-5 w-[600px]">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate("/")}
-            className="w-10 h-10 flex-shrink-0 flex items-center justify-center"
-          >
-            <img 
-              src={arrowBtn} 
-              alt="Back" 
-              className="w-full h-full"
-            />
-          </button>
-          <h1 className="font-mono font-medium text-[22px] leading-4 text-[#1F2A37]">
-            Index Finder
-          </h1>
-        </div>
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 md:p-8">
+      {/* Terminal Container */}
+      <div className="terminal-container crt-vignette w-full max-w-2xl relative overflow-hidden">
+        {/* Scanlines */}
+        <div className="terminal-scanlines" />
+        
+        <div className="crt-sweep crt-flicker relative">
+          {/* Header */}
+          <div className="terminal-header">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate("/")}
+                className="font-vt323 text-terminal-dim hover:text-terminal-text transition-colors"
+              >
+                [ ← BACK ]
+              </button>
+              <span className="text-terminal-dim">│</span>
+              <span className="font-vt323 text-lg text-terminal-text tracking-widest">
+                INDEX FINDER
+              </span>
+            </div>
+            <span className="font-vt323 text-xs text-terminal-dim">
+              {filteredEntries.length} ENTRIES
+            </span>
+          </div>
 
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search entries..."
-            className="w-full h-10 pl-10 pr-4 font-ibm text-sm bg-white border border-[#374151] focus:outline-none focus:ring-2 focus:ring-gray-300"
-          />
-        </div>
+          {/* Search */}
+          <div className="p-4 border-b border-terminal-border bg-terminal-surface/30">
+            <div className="flex items-center gap-3">
+              <span className="font-vt323 text-terminal-glow">▶</span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="SEARCH ENTRIES..."
+                className="flex-1 bg-transparent text-terminal-text font-vt323 text-lg uppercase tracking-wider outline-none placeholder:text-terminal-muted"
+              />
+            </div>
+          </div>
 
-        {/* Entries List */}
-        <ScrollArea className="h-[500px]">
-          <div className={`flex flex-col gap-2 pr-4 transition-opacity duration-300 ${
-            showContent ? 'opacity-100' : 'opacity-0'
-          }`}>
+          {/* Entry List */}
+          <div className="max-h-[400px] overflow-y-auto terminal-scrollbar bg-terminal-bg/50">
             {isLoadingEntries ? (
-              <p className="font-ibm text-sm text-gray-500 text-center py-8">Loading entries...</p>
+              <div className="p-8 text-center">
+                <span className="text-terminal-dim font-vt323 text-lg">
+                  LOADING DATABASE<span className="blink-text">...</span>
+                </span>
+              </div>
             ) : filteredEntries.length === 0 ? (
-              <p className="font-ibm text-sm text-gray-500 text-center py-8">
-                {searchQuery ? "No entries match your search. Try different keywords." : "No journal entries yet. Start writing to see them here!"}
-              </p>
+              <div className="p-8 text-center">
+                <span className="text-terminal-dim font-vt323 text-lg">
+                  {searchQuery ? "NO MATCHING ENTRIES" : "NO ENTRIES FOUND"}
+                </span>
+              </div>
             ) : (
-              filteredEntries.map((entry) => (
-                <div
-                  key={entry.id}
-                  onClick={() => handleEntryClick(entry)}
-                  className="w-full bg-white border border-black p-4 shadow-[2px_2px_0px_#000000] hover:shadow-[1px_1px_0px_#000000] hover:translate-x-[1px] hover:translate-y-[1px] transition-all cursor-pointer"
-                >
-                  <p className="font-ibm text-xs font-medium text-gray-500 mb-1">
-                    {format(new Date(entry.created_at), 'MMM dd, yyyy')}
-                  </p>
-                  <h3 className="font-mono text-base font-medium text-[#010101] mb-1 line-clamp-1">
-                    {entry.title}
-                  </h3>
-                  <p className="font-ibm text-xs font-light text-gray-600 line-clamp-2">
-                    {stripHtml(entry.content).substring(0, 100)}
-                    {stripHtml(entry.content).length > 100 ? '...' : ''}
-                  </p>
-                </div>
-              ))
+              <div className="divide-y divide-terminal-border">
+                {filteredEntries.map((entry, index) => (
+                  <div
+                    key={entry.id}
+                    onClick={() => handleEntryClick(entry)}
+                    onMouseEnter={() => setSelectedIndex(index)}
+                    className={`p-4 cursor-pointer transition-all ${
+                      selectedIndex === index
+                        ? "bg-terminal-accent/20 border-l-2 border-terminal-glow"
+                        : "hover:bg-terminal-surface/50"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="font-vt323 text-terminal-dim text-lg mt-0.5">
+                        {selectedIndex === index ? "▸" : " "}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <h3 className="font-vt323 text-lg text-terminal-glow terminal-glow-subtle truncate">
+                            {entry.title.toUpperCase()}
+                          </h3>
+                          <span className="text-terminal-dim font-vt323 text-xs flex-shrink-0">
+                            {format(new Date(entry.created_at), "MMM dd, yyyy").toUpperCase()}
+                          </span>
+                        </div>
+                        <p className="text-terminal-dim font-ibm text-xs line-clamp-2">
+                          {stripHtml(entry.content).substring(0, 120)}
+                          {stripHtml(entry.content).length > 120 ? "..." : ""}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
-        </ScrollArea>
+
+          {/* Footer */}
+          <div className="terminal-status-bar">
+            <span className="font-vt323 text-xs">[ CLICK ] SELECT</span>
+            <span className="font-vt323 text-xs">[ SCROLL ] NAVIGATE</span>
+          </div>
+        </div>
       </div>
     </div>
   );

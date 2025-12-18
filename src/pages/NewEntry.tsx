@@ -1,31 +1,22 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
 import { toast } from "sonner";
-import {
-  Bold,
-  Italic,
-  Underline as UnderlineIcon,
-  Link as LinkIcon,
-  Link2Off,
-  List,
-  ListOrdered,
-  MoreHorizontal,
-  ChevronDown,
-} from "lucide-react";
 
 const NewEntry = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const existingEntryId = searchParams.get('id');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [entryId, setEntryId] = useState<string | null>(null);
-  const [title, setTitle] = useState("Untitled");
+  const [title, setTitle] = useState("UNTITLED");
   const [dateString, setDateString] = useState("");
+  const [wordCount, setWordCount] = useState(0);
 
   const editor = useEditor({
     extensions: [
@@ -38,8 +29,13 @@ const NewEntry = () => {
     content: "<p></p>",
     editorProps: {
       attributes: {
-        class: "font-mono text-xs text-text-secondary leading-4 outline-none min-h-[304px] prose prose-sm max-w-none",
+        class: "outline-none min-h-[280px] prose prose-sm max-w-none",
       },
+    },
+    onUpdate: ({ editor }) => {
+      const text = editor.getText();
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      setWordCount(words);
     },
   });
 
@@ -75,7 +71,7 @@ const NewEntry = () => {
           .from("journal_entries")
           .insert({
             session_id: null,
-            title: "Untitled",
+            title: "UNTITLED",
             content: "<p></p>",
           })
           .select()
@@ -116,7 +112,7 @@ const NewEntry = () => {
 
       if (error) throw error;
 
-      toast.success("Journal entry saved");
+      toast.success("Entry saved successfully");
     } catch (error) {
       console.error("Error saving:", error);
       toast.error("Failed to save entry");
@@ -134,153 +130,121 @@ const NewEntry = () => {
 
   if (isLoading) {
     return (
-      <div className="journal-gradient min-h-screen flex items-center justify-center">
-        <p className="font-mono text-text-secondary">Loading...</p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="font-vt323 text-terminal-text text-lg">
+          Loading<span className="blink-text">...</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="journal-gradient min-h-screen flex flex-col items-center pt-20 sm:pt-[100px] md:pt-[150px] pb-20 sm:pb-[100px] md:pb-[168px] px-4 gap-[50px] sm:gap-[75px] md:gap-[100px]">
-      {/* Journal Container */}
-      <div className="w-full max-w-[600px] flex flex-col shadow-lg">
-        {/* Window-Style Header */}
-        <div className="w-full h-[20px] flex flex-row items-center px-3 py-0.5 bg-white border border-[#2C2C2C] relative">
-          {/* Control Buttons */}
-          <div className="flex flex-row items-center gap-[5px] h-4">
-            {/* Close Button */}
-            <div className="w-[11.33px] h-[11.33px] border border-[#2C2C2C] flex items-center justify-center relative">
-              <div className="absolute w-[4.66px] h-[1px] bg-[#2C2C2C] rotate-45" />
-              <div className="absolute w-[4.66px] h-[1px] bg-[#2C2C2C] -rotate-45" />
-            </div>
-            {/* Minimize Button */}
-            <div className="w-[11.33px] h-[11.3px] border border-[#2C2C2C] flex items-center justify-center">
-              <div className="w-[5px] h-[1px] bg-[#2C2C2C]" />
-            </div>
-          </div>
-          {/* Divider */}
-          <div className="flex-1 h-3" />
-          {/* Title */}
-          <span className="font-['Rasa'] font-medium text-xs leading-4 text-[#2C2C2C]">
-            New Entry
-          </span>
-        </div>
-
-        {/* Inner Wrapper */}
-        <div className="w-full flex flex-col gap-5 bg-chat-bg border-l border-r border-foreground">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 md:p-8">
+      {/* Terminal Container */}
+      <div className="terminal-container crt-vignette w-full max-w-2xl relative overflow-hidden">
+        {/* Scanlines */}
+        <div className="terminal-scanlines" />
+        
+        <div className="crt-sweep crt-flicker relative">
           {/* Header */}
-          <div className="w-full h-[71px] flex flex-col">
-            {/* Header Info */}
-            <div className="w-full h-[41px] border-b border-text-primary flex flex-row justify-between">
-              {/* Title */}
-              <div className="flex-1 min-w-0 h-[41px] pt-[15px] pb-2.5 pl-5">
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="font-mono font-medium text-base text-text-primary bg-transparent border-none outline-none w-full"
-                />
-              </div>
-              {/* Date */}
-              <div className="flex-1 min-w-0 h-[41px] pt-[15px] pb-2.5 pr-5 text-right">
-                <span className="font-mono font-medium text-xs text-text-muted">
-                  {dateString}
-                </span>
-              </div>
+          <div className="terminal-header">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate("/")}
+                className="font-vt323 text-terminal-dim hover:text-terminal-text transition-colors"
+              >
+                [ ← BACK ]
+              </button>
+              <span className="text-terminal-dim">│</span>
+              <span className="font-vt323 text-lg text-terminal-text tracking-widest">
+                NEW ENTRY
+              </span>
             </div>
-
-            {/* Command Bar */}
-            <div className="w-full h-[30px] px-[11px] py-[3px] gap-2 bg-toolbar-bg border-b border-text-primary flex flex-row flex-wrap items-center">
-              <button className="flex items-center gap-1 px-2 py-1 hover:bg-gray-200 rounded font-['Segoe_UI'] text-xs">
-                Format <ChevronDown className="w-3 h-3" />
-              </button>
-              <div className="w-px h-[30px] bg-text-divider" />
-              <button
-                onClick={() => editor?.chain().focus().toggleBold().run()}
-                className={`p-1 hover:bg-gray-200 rounded ${
-                  editor?.isActive("bold") ? "bg-gray-300" : ""
-                }`}
-              >
-                <Bold className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => editor?.chain().focus().toggleItalic().run()}
-                className={`p-1 hover:bg-gray-200 rounded ${
-                  editor?.isActive("italic") ? "bg-gray-300" : ""
-                }`}
-              >
-                <Italic className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => editor?.chain().focus().toggleUnderline().run()}
-                className={`p-1 hover:bg-gray-200 rounded ${
-                  editor?.isActive("underline") ? "bg-gray-300" : ""
-                }`}
-              >
-                <UnderlineIcon className="w-4 h-4" />
-              </button>
-              <div className="w-px h-[30px] bg-text-divider" />
-              <button
-                onClick={setLink}
-                className="p-1 hover:bg-gray-200 rounded"
-              >
-                <LinkIcon className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => editor?.chain().focus().unsetLink().run()}
-                className="p-1 hover:bg-gray-200 rounded"
-              >
-                <Link2Off className="w-4 h-4 text-text-icon" />
-              </button>
-              <div className="w-px h-[30px] bg-text-divider" />
-              <button
-                onClick={() => editor?.chain().focus().toggleBulletList().run()}
-                className={`p-1 hover:bg-gray-200 rounded ${
-                  editor?.isActive("bulletList") ? "bg-gray-300" : ""
-                }`}
-              >
-                <List className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-                className={`p-1 hover:bg-gray-200 rounded ${
-                  editor?.isActive("orderedList") ? "bg-gray-300" : ""
-                }`}
-              >
-                <ListOrdered className="w-4 h-4" />
-              </button>
-              <div className="w-px h-[30px] bg-text-divider" />
-              <button className="p-1 hover:bg-gray-200 rounded">
-                <MoreHorizontal className="w-4 h-4" />
-              </button>
-            </div>
+            <span className="font-vt323 text-xs text-terminal-dim">{dateString}</span>
           </div>
 
-          {/* Content Container */}
-          <div className="w-full px-5 flex flex-col items-center gap-[15px] pb-5">
-            <div className="w-full">
-              <EditorContent editor={editor} />
+          {/* Title Input */}
+          <div className="p-4 border-b border-terminal-border bg-terminal-surface/30">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-vt323 text-terminal-dim text-sm">▶ TITLE:</span>
             </div>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value.toUpperCase())}
+              placeholder="ENTER TITLE..."
+              className="w-full bg-transparent text-terminal-glow terminal-glow-subtle font-vt323 text-xl uppercase tracking-wider outline-none"
+            />
           </div>
-        </div>
 
-        {/* Input Container - Save Button Only */}
-        <div className="w-full h-[35px] flex flex-row items-stretch">
-          {/* Empty Container */}
-          <div className="flex-1 bg-white border border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]">
+          {/* Toolbar */}
+          <div className="px-4 py-2 flex flex-wrap items-center gap-2 bg-terminal-surface/50 border-b border-terminal-border">
+            <button
+              onClick={() => editor?.chain().focus().toggleBold().run()}
+              className={`terminal-btn text-xs ${editor?.isActive("bold") ? "terminal-btn-primary" : ""}`}
+            >
+              [ B ]
+            </button>
+            <button
+              onClick={() => editor?.chain().focus().toggleItalic().run()}
+              className={`terminal-btn text-xs ${editor?.isActive("italic") ? "terminal-btn-primary" : ""}`}
+            >
+              [ I ]
+            </button>
+            <button
+              onClick={() => editor?.chain().focus().toggleUnderline().run()}
+              className={`terminal-btn text-xs ${editor?.isActive("underline") ? "terminal-btn-primary" : ""}`}
+            >
+              [ U ]
+            </button>
+            
+            <span className="text-terminal-border">│</span>
+            
+            <button onClick={setLink} className="terminal-btn text-xs">
+              [ LINK ]
+            </button>
+            <button
+              onClick={() => editor?.chain().focus().unsetLink().run()}
+              className="terminal-btn text-xs"
+            >
+              [ UNLINK ]
+            </button>
+            
+            <span className="text-terminal-border">│</span>
+            
+            <button
+              onClick={() => editor?.chain().focus().toggleBulletList().run()}
+              className={`terminal-btn text-xs ${editor?.isActive("bulletList") ? "terminal-btn-primary" : ""}`}
+            >
+              [ LIST ]
+            </button>
+            <button
+              onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+              className={`terminal-btn text-xs ${editor?.isActive("orderedList") ? "terminal-btn-primary" : ""}`}
+            >
+              [ NUM ]
+            </button>
+
+            <span className="ml-auto font-vt323 text-xs text-terminal-dim">
+              {wordCount} words
+            </span>
           </div>
-          {/* Save Button */}
-          <button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="w-[38px] h-[35px] flex items-center justify-center bg-white border border-l-0 border-[#374151] shadow-[0px_-2px_4px_rgba(80,80,80,0.25)]"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M14.25 15.75H3.75C3.33579 15.75 3 15.4142 3 15V3C3 2.58579 3.33579 2.25 3.75 2.25H10.5L15 6.75V15C15 15.4142 14.6642 15.75 14.25 15.75Z" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 15.75V10.5H6V15.75" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M6 2.25V6.75H10.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
+
+          {/* Editor Content */}
+          <div className="p-4 min-h-[280px] bg-terminal-bg/50">
+            <EditorContent editor={editor} />
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="flex items-center justify-end px-4 py-3 bg-terminal-surface border-t border-terminal-border">
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="terminal-btn-primary terminal-btn"
+            >
+              {isSaving ? "[ SAVING... ]" : "[ SAVE ]"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
