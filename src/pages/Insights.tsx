@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import arrowBtn from "@/assets/arrow-btn.png";
 import InsightCard from "@/components/insights/InsightCard";
 import MoodOscilloscope from "@/components/insights/MoodOscilloscope";
 import ThemeStacksChart from "@/components/insights/ThemeStacksChart";
@@ -19,74 +18,84 @@ const Insights = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-insights-bg min-h-screen py-6 sm:py-8 md:py-12">
-      <div className="max-w-[760px] mx-auto px-4 sm:px-6">
+    <div className="min-h-screen bg-background p-4 sm:p-6 md:p-8">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <header className="mb-6 sm:mb-8 md:mb-10">
-          <div className="flex items-center gap-3 sm:gap-4 mb-2">
-            <button
-              onClick={() => navigate("/")}
-              className="w-8 h-8 flex-shrink-0 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity"
-            >
-              <img src={arrowBtn} alt="Back" className="w-full h-full" />
-            </button>
-            <h1 className="font-mono font-medium text-xl sm:text-2xl text-insights-dark">Insights</h1>
-          </div>
-          <p className="font-ibm text-xs sm:text-sm text-insights-gray-light ml-11 sm:ml-12">
-            AI-generated patterns from your recent journal entries.
-          </p>
-        </header>
-
-        {/* Section 2: Summary Card */}
-        <section className="mb-8 sm:mb-10 md:mb-12">
-          <InsightCard title="This Month's Story">
-            <p className="font-ibm text-sm text-insights-gray-mid leading-relaxed mb-4">
-              {mockSummary.text}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <span className="px-2 py-1 font-ibm text-xs bg-insights-hover border border-insights-border text-insights-gray-mid">
-                Top Mood: {mockSummary.topMood}
-              </span>
-              <span className="px-2 py-1 font-ibm text-xs bg-insights-hover border border-insights-border text-insights-gray-mid">
-                Frequent Theme: {mockSummary.frequentTheme}
-              </span>
-              <span className="px-2 py-1 font-ibm text-xs bg-insights-hover border border-insights-border text-insights-gray-mid">
-                Energizer: {mockSummary.energizer}
+        <div className="terminal-container mb-6">
+          <div className="terminal-scanlines" />
+          <div className="terminal-header">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate("/")}
+                className="font-vt323 text-terminal-dim hover:text-terminal-text transition-colors"
+              >
+                [ ← BACK ]
+              </button>
+              <span className="text-terminal-dim">│</span>
+              <span className="font-vt323 text-lg text-terminal-text tracking-widest">
+                INSIGHTS ANALYSIS
               </span>
             </div>
-          </InsightCard>
-        </section>
+          </div>
+          <div className="p-4 bg-terminal-bg/50">
+            <p className="font-ibm text-sm text-terminal-dim">
+              AI-generated patterns from your recent journal entries.
+            </p>
+          </div>
+        </div>
 
-        {/* Section 3: Mood Oscilloscope */}
-        <section className="mb-8 sm:mb-10 md:mb-12">
-          <MoodOscilloscope />
-        </section>
+        {/* Summary Card */}
+        <div className="terminal-box p-4 mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-terminal-glow font-vt323">▶</span>
+            <span className="font-vt323 text-lg text-terminal-glow terminal-glow-subtle">
+              THIS MONTH'S STORY
+            </span>
+          </div>
+          <p className="font-ibm text-sm text-terminal-text leading-relaxed mb-4">
+            {mockSummary.text}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <span className="px-2 py-1 font-vt323 text-xs bg-terminal-surface border border-terminal-border text-terminal-dim">
+              TOP MOOD: {mockSummary.topMood.toUpperCase()}
+            </span>
+            <span className="px-2 py-1 font-vt323 text-xs bg-terminal-surface border border-terminal-border text-terminal-dim">
+              THEME: {mockSummary.frequentTheme.toUpperCase()}
+            </span>
+            <span className="px-2 py-1 font-vt323 text-xs bg-terminal-surface border border-terminal-border text-terminal-dim">
+              ENERGIZER: {mockSummary.energizer.toUpperCase()}
+            </span>
+          </div>
+        </div>
 
-        {/* Section 4: Theme Stacks */}
-        <section className="mb-8 sm:mb-10 md:mb-12">
-          <InsightCard title="What You Write About Most">
-            <ThemeStacksChart />
-          </InsightCard>
-        </section>
+        {/* Charts Grid */}
+        <div className="space-y-6">
+          <section>
+            <MoodOscilloscope />
+          </section>
 
-        {/* Section 5: Likes vs Drains Matrix */}
-        <section className="mb-8 sm:mb-10 md:mb-12">
-          <LikesDrainsMatrix />
-        </section>
+          <section>
+            <InsightCard title="WHAT YOU WRITE ABOUT MOST">
+              <ThemeStacksChart />
+            </InsightCard>
+          </section>
 
-        {/* Section 6: Time Heatmap */}
-        <section className="mb-8 sm:mb-10 md:mb-12">
-          <InsightCard title="When Your Mood Peaks & Drops">
-            <TimeHeatmap />
-          </InsightCard>
-        </section>
+          <section>
+            <LikesDrainsMatrix />
+          </section>
 
-        {/* Section 7: People Radar */}
-        <section className="mb-8 sm:mb-10 md:mb-12">
-          <InsightCard title="People You Mention Most">
-            <PeopleRadar />
-          </InsightCard>
-        </section>
+          <section>
+            <InsightCard title="WHEN YOUR MOOD PEAKS & DROPS">
+              <TimeHeatmap />
+            </InsightCard>
+          </section>
+
+          <section>
+            <InsightCard title="PEOPLE YOU MENTION MOST">
+              <PeopleRadar />
+            </InsightCard>
+          </section>
+        </div>
       </div>
     </div>
   );

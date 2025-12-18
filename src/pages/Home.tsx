@@ -5,7 +5,6 @@ import ThemeToggle from "@/components/ThemeToggle";
 import TerminalEntry from "@/components/terminal/TerminalEntry";
 import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
-import { Monitor, FileText, FolderOpen, BarChart3, Wifi, WifiOff } from "lucide-react";
 
 type TabId = "entry" | "index" | "insights";
 
@@ -43,10 +42,29 @@ const Home = () => {
     }
   }, [isBooting]);
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "F1") {
+        e.preventDefault();
+        setActiveTab("entry");
+      } else if (e.key === "F2") {
+        e.preventDefault();
+        setActiveTab("index");
+      } else if (e.key === "F3") {
+        e.preventDefault();
+        setActiveTab("insights");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const tabs = [
-    { id: "entry" as TabId, label: "ENTRY", icon: FileText },
-    { id: "index" as TabId, label: "INDEX", icon: FolderOpen },
-    { id: "insights" as TabId, label: "INSIGHTS", icon: BarChart3 },
+    { id: "entry" as TabId, label: "ENTRY", key: "F1" },
+    { id: "index" as TabId, label: "INDEX", key: "F2" },
+    { id: "insights" as TabId, label: "INSIGHTS", key: "F3" },
   ];
 
   const formatTime = (date: Date) => {
@@ -71,132 +89,124 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-crt-shadow flex items-center justify-center p-4 sm:p-6 md:p-8">
-      {/* CRT Monitor Frame */}
-      <div className="crt-monitor w-full max-w-5xl">
-        {/* CRT Screen */}
-        <div className="crt-screen bg-terminal-bg crt-flicker">
-          {/* Scanlines */}
-          <div className="terminal-scanlines" />
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 md:p-8">
+      {/* Terminal Container - No monitor frame */}
+      <div className="terminal-container crt-vignette w-full max-w-4xl relative overflow-hidden">
+        {/* Scanlines */}
+        <div className="terminal-scanlines" />
+        
+        {/* Main content with sweep effect */}
+        <div className="crt-sweep crt-flicker relative flex flex-col min-h-[600px]">
           
-          {/* Sweep line effect */}
-          <div className="crt-sweep relative flex flex-col h-full">
-            {/* Header Bar */}
-            <div className="terminal-header">
-              <div className="flex items-center gap-3">
-                <Monitor className="w-5 h-5" />
-                <span className="terminal-title">PERSONAL TERMINAL v2.1</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-terminal-dim font-vt323 text-sm">{formatTime(currentTime)}</span>
-                <ThemeToggle />
-                <div className="w-3 h-3 bg-terminal-glow animate-glow-pulse" />
-              </div>
+          {/* Header */}
+          <div className="terminal-header">
+            <div className="flex items-center gap-4">
+              <span className="font-vt323 text-terminal-dim text-sm">├──</span>
+              <span className="font-vt323 text-lg text-terminal-text tracking-widest">
+                JOURNAL TERMINAL
+              </span>
+              <span className="font-vt323 text-terminal-dim text-sm">v2.1</span>
             </div>
+            <div className="flex items-center gap-4">
+              <span className="text-terminal-dim font-vt323 text-sm">{formatTime(currentTime)}</span>
+              <ThemeToggle />
+              <div className="status-indicator" />
+            </div>
+          </div>
 
-            {/* Two-Column Layout */}
-            <div className="flex flex-1 min-h-0">
-              {/* Left Navigation Panel */}
-              <div className="terminal-nav-panel">
-                <div className="p-3 border-b border-terminal-border">
-                  <span className="text-terminal-dim text-xs font-vt323">NAVIGATION</span>
+          {/* Two-Column Layout */}
+          <div className="flex flex-1 min-h-0">
+            {/* Left Navigation Panel */}
+            <div className="terminal-nav-panel">
+              <div className="p-3 border-b border-terminal-border">
+                <span className="text-terminal-dim text-xs font-vt323 tracking-widest">[ MODULES ]</span>
+              </div>
+              
+              <nav className="flex-1 py-2">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`terminal-nav-item ${
+                      activeTab === tab.id ? "terminal-nav-item-active" : ""
+                    }`}
+                  >
+                    <span className="font-vt323 text-lg w-4">
+                      {activeTab === tab.id ? "▸" : " "}
+                    </span>
+                    <span className="terminal-nav-key">{tab.key}</span>
+                    <span>[ {tab.label} ]</span>
+                  </button>
+                ))}
+              </nav>
+
+              {/* System Info */}
+              <div className="mt-auto border-t border-terminal-border p-3 space-y-2">
+                <div className="text-terminal-dim text-xs font-vt323 space-y-1">
+                  <div className="flex justify-between">
+                    <span>DATE:</span>
+                    <span className="text-terminal-text">{formatDate(currentTime)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>WORDS:</span>
+                    <span className="text-terminal-text">{wordCount}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>MEM:</span>
+                    <span className="text-terminal-text">64K</span>
+                  </div>
                 </div>
                 
-                <nav className="flex-1 py-2">
-                  {tabs.map((tab, index) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`terminal-nav-item ${
-                        activeTab === tab.id ? "terminal-nav-item-active" : ""
-                      }`}
-                    >
-                      <span className="terminal-nav-indicator">
-                        {activeTab === tab.id ? "▸" : " "}
-                      </span>
-                      <span className="terminal-nav-key">F{index + 1}</span>
-                      <tab.icon className="w-4 h-4" />
-                      <span>{tab.label}</span>
-                    </button>
-                  ))}
-                </nav>
-
-                {/* System Info at bottom of nav */}
-                <div className="mt-auto border-t border-terminal-border p-3 space-y-2">
-                  <div className="text-terminal-dim text-xs font-vt323 space-y-1">
-                    <div className="flex justify-between">
-                      <span>DATE:</span>
-                      <span>{formatDate(currentTime)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>WORDS:</span>
-                      <span>{wordCount}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>MEM:</span>
-                      <span>64K FREE</span>
-                    </div>
-                  </div>
-                  
-                  {/* ASCII decoration */}
-                  <div className="text-terminal-dim text-xs font-vt323 text-center pt-2 opacity-50">
-                    ╔══════════╗<br/>
-                    ║ MU/TH/UR ║<br/>
-                    ╚══════════╝
-                  </div>
-                </div>
-              </div>
-
-              {/* Vertical Divider */}
-              <div className="terminal-divider" />
-
-              {/* Right Content Panel */}
-              <div className="flex-1 flex flex-col min-w-0">
-                {/* Content Header */}
-                <div className="px-4 py-2 border-b border-terminal-border bg-terminal-surface/30">
-                  <div className="flex items-center gap-2">
-                    {tabs.find(t => t.id === activeTab)?.icon && (
-                      <span className="text-terminal-glow">
-                        {(() => {
-                          const Icon = tabs.find(t => t.id === activeTab)?.icon;
-                          return Icon ? <Icon className="w-4 h-4" /> : null;
-                        })()}
-                      </span>
-                    )}
-                    <span className="font-vt323 text-terminal-text">
-                      {tabs.find(t => t.id === activeTab)?.label} MODULE
-                    </span>
-                  </div>
-                </div>
-
-                {/* Content Area */}
-                <div className="flex-1 overflow-auto terminal-scrollbar p-4">
-                  {activeTab === "entry" && (
-                    <TerminalEntry onWordCountChange={setWordCount} />
-                  )}
-                  {activeTab === "index" && <TerminalIndex />}
-                  {activeTab === "insights" && <TerminalInsights />}
+                {/* ASCII decoration */}
+                <div className="text-terminal-muted text-xs font-vt323 text-center pt-2 opacity-40">
+                  ┌─────────┐<br/>
+                  │ MU/TH/UR │<br/>
+                  └─────────┘
                 </div>
               </div>
             </div>
 
-            {/* Status Bar */}
-            <div className="terminal-status-bar">
-              <div className="flex items-center gap-6">
-                <div className="terminal-status-item">
-                  <div className="status-indicator" />
-                  <span>SYS: {systemStatus}</span>
-                </div>
-                <div className="terminal-status-item">
-                  <WifiOff className="w-3 h-3" />
-                  <span>NET: ISOLATED</span>
+            {/* Right Content Panel */}
+            <div className="flex-1 flex flex-col min-w-0">
+              {/* Content Header */}
+              <div className="px-4 py-2 border-b border-terminal-border bg-terminal-surface/30">
+                <div className="flex items-center gap-2">
+                  <span className="text-terminal-dim font-vt323">▶</span>
+                  <span className="font-vt323 text-terminal-glow terminal-glow-subtle">
+                    {tabs.find(t => t.id === activeTab)?.label} MODULE
+                  </span>
+                  <span className="text-terminal-dim font-vt323 text-xs ml-auto">
+                    ────────────────
+                  </span>
                 </div>
               </div>
-              <div className="flex items-center gap-4 text-terminal-dim text-xs">
-                <span>F1-F3: NAV</span>
-                <span>ESC: MENU</span>
-                <span>CTRL+S: SAVE</span>
+
+              {/* Content Area */}
+              <div className="flex-1 overflow-auto terminal-scrollbar p-4">
+                {activeTab === "entry" && (
+                  <TerminalEntry onWordCountChange={setWordCount} />
+                )}
+                {activeTab === "index" && <TerminalIndex />}
+                {activeTab === "insights" && <TerminalInsights />}
               </div>
+            </div>
+          </div>
+
+          {/* Status Bar */}
+          <div className="terminal-status-bar">
+            <div className="flex items-center gap-6">
+              <div className="terminal-status-item">
+                <span className="text-terminal-glow">●</span>
+                <span>SYS: {systemStatus}</span>
+              </div>
+              <div className="terminal-status-item">
+                <span className="text-terminal-dim">○</span>
+                <span>NET: ISOLATED</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-terminal-dim text-xs">
+              <span>[ F1-F3: NAV ]</span>
+              <span>[ CTRL+S: SAVE ]</span>
             </div>
           </div>
         </div>

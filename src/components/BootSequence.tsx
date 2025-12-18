@@ -35,7 +35,6 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
       timers.push(timer);
     });
 
-    // Complete boot sequence
     const completeTimer = setTimeout(() => {
       onComplete();
     }, 4000);
@@ -56,18 +55,9 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
 
   return (
     <div className="fixed inset-0 bg-terminal-bg z-50 flex items-center justify-center">
-      {/* Scanlines overlay */}
       <div className="terminal-scanlines absolute inset-0" />
-      
-      {/* CRT curve effect */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(ellipse at center, transparent 0%, transparent 60%, rgba(0,0,0,0.4) 100%)"
-        }}
-      />
+      <div className="crt-vignette absolute inset-0" />
 
-      {/* Boot content */}
       <div className="relative z-10 p-8 max-w-2xl w-full font-vt323">
         <div className="space-y-1">
           {bootLines.map((line, index) => (
@@ -97,7 +87,6 @@ const BootSequence = ({ onComplete }: BootSequenceProps) => {
             </div>
           ))}
           
-          {/* Blinking cursor */}
           <div className="h-6 flex items-center">
             <span 
               className={`inline-block w-3 h-5 bg-terminal-glow ${
