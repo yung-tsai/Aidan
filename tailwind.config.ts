@@ -20,14 +20,6 @@ export default {
         background: "hsl(var(--background))",
         "background-end": "hsl(var(--background-end))",
         foreground: "hsl(var(--foreground))",
-        "chat-bg": "hsl(var(--chat-bg))",
-        "input-bg": "hsl(var(--input-bg))",
-        "toolbar-bg": "hsl(var(--toolbar-bg))",
-        "text-primary": "hsl(var(--text-primary))",
-        "text-secondary": "hsl(var(--text-secondary))",
-        "text-muted": "hsl(var(--text-muted))",
-        "text-divider": "hsl(var(--text-divider))",
-        "text-icon": "hsl(var(--text-icon))",
         // Terminal theme
         "terminal-bg": "hsl(var(--terminal-bg))",
         "terminal-surface": "hsl(var(--terminal-surface))",
@@ -35,20 +27,16 @@ export default {
         "terminal-glow": "hsl(var(--terminal-glow))",
         "terminal-accent": "hsl(var(--terminal-accent))",
         "terminal-border": "hsl(var(--terminal-border))",
-        // Paper/Journal theme
-        "paper-bg": "hsl(var(--paper-bg))",
-        "paper-surface": "hsl(var(--paper-surface))",
-        "paper-text": "hsl(var(--paper-text))",
-        "paper-lines": "hsl(var(--paper-lines))",
-        "paper-accent": "hsl(var(--paper-accent))",
-        // Insights page grayscale palette
-        "insights-bg": "hsl(0 0% 97%)",
-        "insights-dark": "hsl(0 0% 7%)",
-        "insights-border": "hsl(0 0% 16%)",
-        "insights-gray-dark": "hsl(0 0% 13%)",
-        "insights-gray-mid": "hsl(0 0% 27%)",
-        "insights-gray-light": "hsl(0 0% 40%)",
-        "insights-hover": "hsl(0 0% 94%)",
+        "terminal-dim": "hsl(var(--terminal-dim))",
+        "terminal-muted": "hsl(var(--terminal-muted))",
+        // CRT frame
+        "crt-frame": "hsl(var(--crt-frame))",
+        "crt-bezel": "hsl(var(--crt-bezel))",
+        "crt-shadow": "hsl(var(--crt-shadow))",
+        // Status colors
+        "status-active": "hsl(var(--status-active))",
+        "status-warning": "hsl(var(--status-warning))",
+        "status-error": "hsl(var(--status-error))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -79,7 +67,7 @@ export default {
         },
       },
       fontFamily: {
-        mono: ['Reddit Mono', 'monospace'],
+        mono: ['VT323', 'monospace'],
         'ibm': ['IBM Plex Mono', 'monospace'],
         'vt323': ['VT323', 'monospace'],
         'typewriter': ['Special Elite', 'monospace'],
@@ -91,25 +79,33 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "blink": {
+          "0%, 50%": { opacity: "1" },
+          "51%, 100%": { opacity: "0" },
+        },
+        "glow-pulse": {
+          "0%, 100%": { 
+            boxShadow: "0 0 4px hsl(var(--terminal-glow))",
+            opacity: "1",
           },
-          to: {
-            height: "0",
+          "50%": { 
+            boxShadow: "0 0 12px hsl(var(--terminal-glow))",
+            opacity: "0.8",
           },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "blink": "blink 1s step-end infinite",
+        "glow-pulse": "glow-pulse 2s ease-in-out infinite",
       },
     },
   },
