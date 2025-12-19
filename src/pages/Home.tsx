@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import SplashScreen from "@/components/SplashScreen";
 import BootSequence from "@/components/BootSequence";
+import TerminalStatus from "@/components/terminal/TerminalStatus";
 import TerminalEntry from "@/components/terminal/TerminalEntry";
 import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
@@ -11,12 +12,12 @@ import AsciiTypewriter from "@/components/terminal/AsciiTypewriter";
 import KeyboardShortcutsModal from "@/components/terminal/KeyboardShortcutsModal";
 import { useTheme } from "@/hooks/useTheme";
 
-type TabId = "entry" | "index" | "insights" | "aiden" | "purge";
+type TabId = "status" | "entry" | "index" | "insights" | "aiden" | "purge";
 type StartupPhase = "splash" | "boot" | "ready";
 
 const Home = () => {
   const [startupPhase, setStartupPhase] = useState<StartupPhase>("splash");
-  const [activeTab, setActiveTab] = useState<TabId>("entry");
+  const [activeTab, setActiveTab] = useState<TabId>("status");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [wordCount, setWordCount] = useState(0);
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -81,17 +82,20 @@ const Home = () => {
       
       if (e.key === "F1") {
         e.preventDefault();
-        setActiveTab("entry");
+        setActiveTab("status");
       } else if (e.key === "F2") {
         e.preventDefault();
-        setActiveTab("index");
+        setActiveTab("entry");
       } else if (e.key === "F3") {
         e.preventDefault();
-        setActiveTab("insights");
+        setActiveTab("index");
       } else if (e.key === "F4") {
         e.preventDefault();
-        setActiveTab("aiden");
+        setActiveTab("insights");
       } else if (e.key === "F5") {
+        e.preventDefault();
+        setActiveTab("aiden");
+      } else if (e.key === "F6") {
         e.preventDefault();
         setActiveTab("purge");
       } else if (e.key === "?") {
@@ -108,6 +112,7 @@ const Home = () => {
   }, [cycleTheme]);
 
   const tabs = [
+    { id: "status" as TabId, label: "STATUS" },
     { id: "entry" as TabId, label: "ENTRY" },
     { id: "index" as TabId, label: "INDEX" },
     { id: "insights" as TabId, label: "INSIGHTS" },
@@ -222,6 +227,9 @@ const Home = () => {
               {/* Content Area with transition */}
               <div className={`flex-1 overflow-auto terminal-scrollbar p-4 ${isTransitioning ? 'tab-transitioning' : ''}`}>
                 <div key={activeTab} className="h-full">
+                  {activeTab === "status" && (
+                    <TerminalStatus onNavigate={(tab) => setActiveTab(tab as TabId)} />
+                  )}
                   {activeTab === "entry" && (
                     <TerminalEntry onWordCountChange={setWordCount} />
                   )}
