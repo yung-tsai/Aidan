@@ -747,78 +747,151 @@
 
 .crt-monitor-wrapper {
   width: 100%;
-  max-width: 1000px;
+  max-width: 800px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  perspective: 1000px;
 }
 
-/* Outer bezel - gray plastic frame */
+/* Outer bezel - gray plastic frame with 3D depth */
 .crt-outer-bezel {
   width: 100%;
-  padding: 24px 28px 40px 28px;
+  aspect-ratio: 4 / 3.5;
+  padding: 20px 36px 48px 36px;
   background: linear-gradient(
     180deg,
-    hsl(0 0% 55%) 0%,
-    hsl(0 0% 48%) 10%,
-    hsl(0 0% 42%) 50%,
-    hsl(0 0% 38%) 90%,
+    hsl(0 0% 58%) 0%,
+    hsl(0 0% 52%) 5%,
+    hsl(0 0% 48%) 20%,
+    hsl(0 0% 44%) 80%,
+    hsl(0 0% 38%) 95%,
     hsl(0 0% 32%) 100%
   );
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+    /* Main drop shadow */
+    0 12px 40px rgba(0, 0, 0, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    /* Top highlight */
+    inset 0 2px 0 rgba(255, 255, 255, 0.2),
+    /* Left side protrusion */
+    -8px 0 0 hsl(0 0% 42%),
+    -10px 2px 0 hsl(0 0% 35%),
+    -12px 4px 8px rgba(0, 0, 0, 0.4),
+    /* Right side protrusion */
+    8px 0 0 hsl(0 0% 42%),
+    10px 2px 0 hsl(0 0% 35%),
+    12px 4px 8px rgba(0, 0, 0, 0.4),
+    /* Bottom edge depth */
+    0 6px 0 hsl(0 0% 35%),
+    0 8px 0 hsl(0 0% 28%),
+    0 10px 12px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+/* Side depth panels */
+.crt-outer-bezel::before,
+.crt-outer-bezel::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  bottom: 15%;
+  width: 14px;
+  background: linear-gradient(
+    90deg,
+    hsl(0 0% 38%) 0%,
+    hsl(0 0% 32%) 100%
+  );
+  border-radius: 4px;
+}
+
+.crt-outer-bezel::before {
+  left: -14px;
+  box-shadow: inset 2px 0 4px rgba(255, 255, 255, 0.1);
+}
+
+.crt-outer-bezel::after {
+  right: -14px;
+  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Inner bezel - thick black border */
 .crt-inner-bezel {
-  padding: 12px;
+  height: 100%;
+  padding: 20px 24px;
   background: linear-gradient(
     180deg,
-    hsl(0 0% 8%) 0%,
-    hsl(0 0% 5%) 50%,
-    hsl(0 0% 3%) 100%
+    hsl(0 0% 10%) 0%,
+    hsl(0 0% 6%) 30%,
+    hsl(0 0% 4%) 70%,
+    hsl(0 0% 2%) 100%
   );
-  border-radius: 8px;
+  border-radius: 6px;
   box-shadow: 
-    inset 0 2px 8px rgba(0, 0, 0, 0.8),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+    inset 0 4px 12px rgba(0, 0, 0, 0.9),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.03),
+    inset 4px 0 8px rgba(0, 0, 0, 0.5),
+    inset -4px 0 8px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
 }
 
 /* Screen inset - where content renders */
 .crt-screen-inset {
+  flex: 1;
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 
-    inset 0 0 20px rgba(0, 0, 0, 0.5),
-    inset 0 0 60px rgba(0, 0, 0, 0.3);
-  min-height: 500px;
-  max-height: 75vh;
+    inset 0 0 30px rgba(0, 0, 0, 0.6),
+    inset 0 0 80px rgba(0, 0, 0, 0.4);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .crt-monitor-wrapper {
-    max-width: 100%;
-    padding: 0 8px;
+    max-width: 95%;
+    padding: 0;
   }
   
   .crt-outer-bezel {
-    padding: 16px 18px 28px 18px;
-    border-radius: 12px;
+    padding: 14px 24px 32px 24px;
+    border-radius: 10px;
+  }
+  
+  .crt-outer-bezel::before,
+  .crt-outer-bezel::after {
+    width: 10px;
+  }
+  
+  .crt-outer-bezel::before {
+    left: -10px;
+  }
+  
+  .crt-outer-bezel::after {
+    right: -10px;
   }
   
   .crt-inner-bezel {
-    padding: 8px;
-    border-radius: 6px;
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .crt-outer-bezel::before,
+  .crt-outer-bezel::after {
+    display: none;
   }
   
-  .crt-screen-inset {
-    min-height: 400px;
-    max-height: 70vh;
+  .crt-outer-bezel {
+    padding: 10px 16px 24px 16px;
+    box-shadow: 
+      0 8px 24px rgba(0, 0, 0, 0.5),
+      inset 0 2px 0 rgba(255, 255, 255, 0.15);
+  }
+  
+  .crt-inner-bezel {
+    padding: 10px 12px;
   }
 }
