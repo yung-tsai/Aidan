@@ -5,18 +5,19 @@ import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import TagInput from "./TagInput";
 
 interface TerminalEntryProps {
   onWordCountChange: (count: number) => void;
 }
 
 const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
-  const navigate = useNavigate();
   const [title, setTitle] = useState("UNTITLED_ENTRY");
   const [isSaving, setIsSaving] = useState(false);
   const [entryId, setEntryId] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
+  const [saveProgress, setSaveProgress] = useState(0);
 
   const editor = useEditor({
     extensions: [
@@ -46,6 +47,7 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
             session_id: null,
             title: "UNTITLED_ENTRY",
             content: "<p>> Begin your entry...</p>",
+            tags: [],
           })
           .select()
           .single();
@@ -64,36 +66,45 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
     if (!entryId || !editor) return;
 
     setIsSaving(true);
+    setSaveProgress(0);
+    
+    // Animate save progress
+    const progressInterval = setInterval(() => {
+      setSaveProgress((prev) => Math.min(prev + 20, 80));
+    }, 100);
+
     try {
       const { error } = await supabase
         .from("journal_entries")
         .update({
           title,
           content: editor.getHTML(),
+          tags,
         })
         .eq("id", entryId);
 
       if (error) throw error;
 
-      setLastSaved(new Date());
-      toast.success("ENTRY SAVED");
+      clearInterval(progressInterval);
+      setSaveProgress(100);
+      
+      setTimeout(() => {
+        setLastSaved(new Date());
+        toast.success("ENTRY SAVED");
+        setSaveProgress(0);
+        setIsSaving(false);
+      }, 200);
     } catch (error) {
+      clearInterval(progressInterval);
       console.error("Error saving:", error);
       toast.error("SAVE FAILED");
-    } finally {
+      setSaveProgress(0);
       setIsSaving(false);
     }
   };
 
-  const setLink = () => {
-    const url = window.prompt("ENTER URL:");
-    if (url) {
-      editor?.chain().focus().setLink({ href: url }).run();
-    }
-  };
-
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-tab-enter">
       {/* Title */}
       <div className="terminal-box p-3">
         <div className="flex items-center gap-2 text-terminal-dim font-vt323 text-sm mb-2">
@@ -108,26 +119,55 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
         />
       </div>
 
+      {/* Tags */}
+      <TagInput tags={tags} onTagsChange={setTags} />
+
       {/* Editor */}
       <div className="terminal-box p-4 min-h-[200px]">
         <EditorContent editor={editor} />
       </div>
 
-      {/* Save Button */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="terminal-btn-primary terminal-btn text-xs"
-        >
-          {isSaving ? "[ SAVING... ]" : "[ SAVE ]"}
-        </button>
-        
-        {lastSaved && (
-          <span className="text-terminal-dim font-vt323 text-sm">
-            LAST SAVED: {lastSaved.toLocaleTimeString()}
-          </span>
-        )}
+      {/* Save Button - Enhanced */}
+      <div className="terminal-box p-3">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="terminal-save-btn group"
+          >
+            <span className="terminal-save-btn-bracket">[</span>
+            <span className="terminal-save-btn-content">
+              {isSaving ? (
+                <span className="flex items-center gap-2">
+                  <span className="terminal-save-progress">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span
+                        key={i}
+                        className={`terminal-save-block ${
+                          saveProgress > i * 20 ? "terminal-save-block-filled" : ""
+                        }`}
+                      />
+                    ))}
+                  </span>
+                  <span>WRITING...</span>
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <span className="terminal-save-icon">▶</span>
+                  <span>SAVE_ENTRY.exe</span>
+                </span>
+              )}
+            </span>
+            <span className="terminal-save-btn-bracket">]</span>
+          </button>
+          
+          {lastSaved && (
+            <div className="flex items-center gap-2 text-terminal-dim font-vt323 text-sm">
+              <span className="text-status-success">●</span>
+              <span>SAVED: {lastSaved.toLocaleTimeString()}</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
