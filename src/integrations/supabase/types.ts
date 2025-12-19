@@ -44,6 +44,27 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_goals: {
+        Row: {
+          created_at: string | null
+          id: string
+          session_id: string
+          target_words: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          session_id: string
+          target_words?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          session_id?: string
+          target_words?: number | null
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           content: string

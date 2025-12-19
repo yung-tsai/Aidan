@@ -5,8 +5,8 @@ import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAchievements } from "@/hooks/useAchievements";
 import TagInput from "./TagInput";
-
 interface TerminalEntryProps {
   onWordCountChange: (count: number) => void;
 }
@@ -15,10 +15,12 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
   const [title, setTitle] = useState("UNTITLED_ENTRY");
   const [isSaving, setIsSaving] = useState(false);
   const [entryId, setEntryId] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [saveProgress, setSaveProgress] = useState(0);
 
+  const { checkAchievements } = useAchievements(sessionId);
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -49,6 +51,8 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
           .single();
 
         if (sessionError) throw sessionError;
+
+        setSessionId(sessionData.id);
 
         // Then create the journal entry with the session_id
         const { data, error } = await supabase
@@ -99,11 +103,14 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
       clearInterval(progressInterval);
       setSaveProgress(100);
       
-      setTimeout(() => {
+      setTimeout(async () => {
         setLastSaved(new Date());
         toast.success("ENTRY SAVED");
         setSaveProgress(0);
         setIsSaving(false);
+        
+        // Check for achievements after successful save
+        await checkAchievements(editor.getHTML(), tags);
       }, 200);
     } catch (error) {
       clearInterval(progressInterval);
