@@ -1,150 +1,235 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import ModeSwitch from "@/components/braun/ModeSwitch";
-import BreathingGuide from "@/components/braun/BreathingGuide";
-import FocusTimer from "@/components/braun/FocusTimer";
-import ReflectionPrompt from "@/components/braun/ReflectionPrompt";
-import AmbientSoundPlayer from "@/components/braun/AmbientSoundPlayer";
-import ThemeSlider from "@/components/braun/ThemeSlider";
-import useSessionStats from "@/hooks/useSessionStats";
+import SplashScreen from "@/components/SplashScreen";
+import BootSequence from "@/components/BootSequence";
+import ThemeToggle from "@/components/ThemeToggle";
+import TerminalEntry from "@/components/terminal/TerminalEntry";
+import TerminalIndex from "@/components/terminal/TerminalIndex";
+import TerminalInsights from "@/components/terminal/TerminalInsights";
+import TerminalAiden from "@/components/terminal/TerminalAiden";
+import AsciiPyramid from "@/components/AsciiCube";
 
-type Mode = "breathe" | "focus" | "reflect";
+type TabId = "entry" | "index" | "insights" | "aiden";
+type StartupPhase = "splash" | "boot" | "ready";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [activeMode, setActiveMode] = useState<Mode>("breathe");
-  const [isBreathing, setIsBreathing] = useState(false);
-  const [breathingStartTime, setBreathingStartTime] = useState<number | null>(null);
-  const [focusTimeRemaining, setFocusTimeRemaining] = useState<string | null>(null);
-  const [breathCount, setBreathCount] = useState(0);
-  
-  const { logBreathingSession, logFocusSession, logReflection } = useSessionStats();
+  const [startupPhase, setStartupPhase] = useState<StartupPhase>("splash");
+  const [activeTab, setActiveTab] = useState<TabId>("entry");
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [wordCount, setWordCount] = useState(0);
+  const [systemStatus, setSystemStatus] = useState("NOMINAL");
 
-  const modes: { id: Mode; label: string }[] = [
-    { id: "breathe", label: "BREATHE" },
-    { id: "focus", label: "FOCUS" },
-    { id: "reflect", label: "REFLECT" },
+  const handleSplashComplete = useCallback(() => {
+    setStartupPhase("boot");
+  }, []);
+
+  const handleBootComplete = useCallback(() => {
+    setStartupPhase("ready");
+  }, []);
+
+  // Update time every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Check if startup has been shown this session
+  useEffect(() => {
+    const hasBooted = sessionStorage.getItem("hasBooted");
+    if (hasBooted) {
+      setStartupPhase("ready");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (startupPhase === "ready") {
+      sessionStorage.setItem("hasBooted", "true");
+    }
+  }, [startupPhase]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "F1") {
+        e.preventDefault();
+        setActiveTab("entry");
+      } else if (e.key === "F2") {
+        e.preventDefault();
+        setActiveTab("index");
+      } else if (e.key === "F3") {
+        e.preventDefault();
+        setActiveTab("insights");
+      } else if (e.key === "F4") {
+        e.preventDefault();
+        setActiveTab("aiden");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const tabs = [
+    { id: "entry" as TabId, label: "ENTRY", key: "F1" },
+    { id: "index" as TabId, label: "INDEX", key: "F2" },
+    { id: "insights" as TabId, label: "INSIGHTS", key: "F3" },
+    { id: "aiden" as TabId, label: "AIDEN", key: "F4" },
   ];
 
-  const handleStartJournal = useCallback(() => {
-    logReflection();
-    navigate("/chat");
-  }, [logReflection, navigate]);
-
-  const handleBreathingToggle = useCallback(() => {
-    if (isBreathing) {
-      if (breathingStartTime) {
-        const minutes = Math.round((Date.now() - breathingStartTime) / 60000);
-        if (minutes >= 1) {
-          logBreathingSession(minutes);
-        }
-      }
-      setBreathingStartTime(null);
-      setBreathCount(0);
-    } else {
-      setBreathingStartTime(Date.now());
-    }
-    setIsBreathing(!isBreathing);
-  }, [isBreathing, breathingStartTime, logBreathingSession]);
-
-  const handleFocusComplete = useCallback((minutes: number) => {
-    logFocusSession(minutes);
-    setFocusTimeRemaining(null);
-  }, [logFocusSession]);
-
-  const showAmbientSounds = activeMode === "breathe" || activeMode === "focus";
-  const isSessionActive = (activeMode === "breathe" && isBreathing) || activeMode === "focus";
-
-  // Contextual status text
-  const getStatusText = () => {
-    if (activeMode === "breathe" && isBreathing) {
-      return breathCount > 0 ? `BREATH ${breathCount}` : "BREATHING";
-    }
-    if (activeMode === "focus" && focusTimeRemaining) {
-      return focusTimeRemaining;
-    }
-    return null;
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString("en-US", { 
+      hour12: false, 
+      hour: "2-digit", 
+      minute: "2-digit", 
+      second: "2-digit" 
+    });
   };
 
-  const statusText = getStatusText();
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("en-US", { 
+      year: "numeric", 
+      month: "short", 
+      day: "2-digit" 
+    }).toUpperCase();
+  };
+
+  if (startupPhase === "splash") {
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+
+  if (startupPhase === "boot") {
+    return <BootSequence onComplete={handleBootComplete} />;
+  }
 
   return (
-    <main 
-      className="min-h-screen min-h-[100dvh] bg-background flex flex-col"
-      role="main"
-      aria-label="Reflect - Personal mindfulness"
-    >
-      {/* Top bar with brand and theme */}
-      <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border/30">
-        <div className="flex items-center gap-3">
-          <div className="indicator-light active" aria-hidden="true" />
-          <h1 className="braun-title text-sm sm:text-base tracking-[0.2em] text-foreground uppercase">
-            REFLECT
-          </h1>
-        </div>
-        <ThemeSlider />
-      </header>
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 md:p-8">
+      {/* Terminal Container - No monitor frame */}
+      <div className="terminal-container crt-vignette w-full max-w-4xl relative overflow-hidden">
+        {/* Scanlines */}
+        <div className="terminal-scanlines" />
+        
+        {/* Main content with sweep effect */}
+        <div className="crt-sweep crt-flicker relative flex flex-col min-h-[600px]">
+          
+          {/* Header */}
+          <div className="terminal-header">
+            <div className="flex items-center gap-4">
+              <AsciiPyramid />
+              <span className="font-vt323 text-terminal-dim text-sm">├──</span>
+              <span className="font-vt323 text-lg text-terminal-text tracking-widest">
+                JOURNAL TERMINAL
+              </span>
+              <span className="font-vt323 text-terminal-dim text-sm">v2.1</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="text-terminal-dim font-vt323 text-sm">{formatTime(currentTime)}</span>
+              <ThemeToggle />
+              <div className="status-indicator" />
+            </div>
+          </div>
 
-      {/* Mode navigation */}
-      <nav className="flex justify-center px-4 py-4 sm:py-5" aria-label="Mode selection">
-        <ModeSwitch
-          modes={modes}
-          activeMode={activeMode}
-          onChange={(mode) => {
-            if (navigator.vibrate) navigator.vibrate(5);
-            if (activeMode === "breathe" && isBreathing) {
-              handleBreathingToggle();
-            }
-            setActiveMode(mode as Mode);
-          }}
-        />
-      </nav>
+          {/* Two-Column Layout */}
+          <div className="flex flex-1 min-h-0">
+            {/* Left Navigation Panel */}
+            <div className="terminal-nav-panel">
+              <div className="p-3 border-b border-terminal-border">
+                <span className="text-terminal-dim text-xs font-vt323 tracking-widest">[ MODULES ]</span>
+              </div>
+              
+              <nav className="flex-1 py-2">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`terminal-nav-item ${
+                      activeTab === tab.id ? "terminal-nav-item-active" : ""
+                    }`}
+                  >
+                    <span className="font-vt323 text-lg w-4">
+                      {activeTab === tab.id ? "▸" : " "}
+                    </span>
+                    <span className="terminal-nav-key">{tab.key}</span>
+                    <span>[ {tab.label} ]</span>
+                  </button>
+                ))}
+              </nav>
 
-      {/* Ambient sound player */}
-      {showAmbientSounds && (
-        <div className="px-4 sm:px-6">
-          <AmbientSoundPlayer isPlaying={isSessionActive} />
-        </div>
-      )}
+              {/* System Info */}
+              <div className="mt-auto border-t border-terminal-border p-3 space-y-2">
+                <div className="text-terminal-dim text-xs font-vt323 space-y-1">
+                  <div className="flex justify-between">
+                    <span>DATE:</span>
+                    <span className="text-terminal-text">{formatDate(currentTime)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>WORDS:</span>
+                    <span className="text-terminal-text">{wordCount}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>MEM:</span>
+                    <span className="text-terminal-text">64K</span>
+                  </div>
+                </div>
+                
+                {/* ASCII decoration */}
+                <div className="text-terminal-muted text-xs font-vt323 text-center pt-2 opacity-40">
+                  ┌─────────┐<br/>
+                  │ MU/TH/UR │<br/>
+                  └─────────┘
+                </div>
+              </div>
+            </div>
 
-      {/* Main content area - grows to fill space */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-6 sm:py-8">
-        <div className="lcd-display w-full max-w-lg min-h-[280px] sm:min-h-[320px] flex items-center justify-center">
-          {activeMode === "breathe" && (
-            <BreathingGuide
-              isActive={isBreathing}
-              onToggle={handleBreathingToggle}
-              onCycleComplete={() => setBreathCount(c => c + 1)}
-            />
-          )}
-          {activeMode === "focus" && (
-            <FocusTimer 
-              onComplete={handleFocusComplete}
-              onTimeUpdate={setFocusTimeRemaining}
-            />
-          )}
-          {activeMode === "reflect" && (
-            <ReflectionPrompt onStartJournal={handleStartJournal} />
-          )}
+            {/* Right Content Panel */}
+            <div className="flex-1 flex flex-col min-w-0">
+              {/* Content Header */}
+              <div className="px-4 py-2 border-b border-terminal-border bg-terminal-surface/30">
+                <div className="flex items-center gap-2">
+                  <span className="text-terminal-dim font-vt323">▶</span>
+                  <span className="font-vt323 text-terminal-glow terminal-glow-subtle">
+                    {tabs.find(t => t.id === activeTab)?.label} MODULE
+                  </span>
+                  <span className="text-terminal-dim font-vt323 text-xs ml-auto">
+                    ────────────────
+                  </span>
+                </div>
+              </div>
+
+              {/* Content Area */}
+              <div className="flex-1 overflow-auto terminal-scrollbar p-4">
+                {activeTab === "entry" && (
+                  <TerminalEntry onWordCountChange={setWordCount} />
+                )}
+                {activeTab === "index" && <TerminalIndex />}
+                {activeTab === "insights" && <TerminalInsights />}
+                {activeTab === "aiden" && <TerminalAiden />}
+              </div>
+            </div>
+          </div>
+
+          {/* Status Bar */}
+          <div className="terminal-status-bar">
+            <div className="flex items-center gap-6">
+              <div className="terminal-status-item">
+                <span className="text-terminal-glow">●</span>
+                <span>SYS: {systemStatus}</span>
+              </div>
+              <div className="terminal-status-item">
+                <span className="text-terminal-dim">○</span>
+                <span>NET: ISOLATED</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-terminal-dim text-xs">
+              <span>[ F1-F4: NAV ]</span>
+              <span>[ CTRL+S: SAVE ]</span>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Bottom status bar - only when active */}
-      {statusText && (
-        <footer 
-          className="flex justify-center py-4 border-t border-border/30 animate-fade-in"
-          role="status"
-          aria-live="polite"
-        >
-          <div className="flex items-center gap-2">
-            <div className="indicator-light active" aria-hidden="true" />
-            <span className="braun-mono text-xs text-foreground tracking-wider tabular-nums">
-              {statusText}
-            </span>
-          </div>
-        </footer>
-      )}
-    </main>
+    </div>
   );
 };
 

@@ -33,16 +33,16 @@ const ThemeToggle = () => {
 
   const getLabel = () => {
     switch (theme) {
-      case "light": return "Light";
-      case "dark": return "Dark";
-      case "ice": return "Cool";
+      case "light": return "[ LIGHT ]";
+      case "dark": return "[ AMBER ]";
+      case "ice": return "[ ICE ]";
     }
   };
 
   return (
     <button
       onClick={cycleTheme}
-      className="braun-button text-xs py-2 px-3"
+      className="terminal-btn text-xs"
       aria-label={`Current theme: ${theme}. Click to cycle.`}
     >
       {getLabel()}
