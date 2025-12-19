@@ -740,3 +740,50 @@
   opacity: 0.03;
   pointer-events: none;
 }
+
+/* ============================================
+   CRT MONITOR FRAME
+   ============================================ */
+
+.crt-monitor-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crt-monitor-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+.crt-monitor-screen {
+  position: absolute;
+  /* Position to fit inside the gray screen area of the monitor */
+  top: 6.5%;
+  left: 8.5%;
+  right: 8.5%;
+  bottom: 17%;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .crt-monitor-wrapper {
+    max-width: 100%;
+  }
+  
+  .crt-monitor-screen {
+    top: 6%;
+    left: 8%;
+    right: 8%;
+    bottom: 16%;
+  }
+}

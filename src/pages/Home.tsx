@@ -8,6 +8,7 @@ import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
 import TerminalAiden from "@/components/terminal/TerminalAiden";
 import AsciiPyramid from "@/components/AsciiCube";
+import CRTMonitorFrame from "@/components/CRTMonitorFrame";
 
 type TabId = "entry" | "index" | "insights" | "aiden";
 type StartupPhase = "splash" | "boot" | "ready";
@@ -105,14 +106,15 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 md:p-8">
-      {/* Terminal Container - No monitor frame */}
-      <div className="terminal-container crt-vignette w-full max-w-4xl relative overflow-hidden">
-        {/* Scanlines */}
-        <div className="terminal-scanlines" />
-        
-        {/* Main content with sweep effect */}
-        <div className="crt-sweep crt-flicker relative flex flex-col min-h-[600px]">
+    <div className="min-h-screen bg-background flex items-center justify-center p-2 sm:p-4 md:p-6">
+      <CRTMonitorFrame>
+        {/* Terminal Container */}
+        <div className="terminal-container crt-vignette w-full h-full relative overflow-hidden">
+          {/* Scanlines */}
+          <div className="terminal-scanlines" />
+          
+          {/* Main content with sweep effect */}
+          <div className="crt-sweep crt-flicker relative flex flex-col h-full">
           
           {/* Header */}
           <div className="terminal-header">
@@ -210,25 +212,26 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Status Bar */}
-          <div className="terminal-status-bar">
-            <div className="flex items-center gap-6">
-              <div className="terminal-status-item">
-                <span className="text-terminal-glow">●</span>
-                <span>SYS: {systemStatus}</span>
+            {/* Status Bar */}
+            <div className="terminal-status-bar">
+              <div className="flex items-center gap-6">
+                <div className="terminal-status-item">
+                  <span className="text-terminal-glow">●</span>
+                  <span>SYS: {systemStatus}</span>
+                </div>
+                <div className="terminal-status-item">
+                  <span className="text-terminal-dim">○</span>
+                  <span>NET: ISOLATED</span>
+                </div>
               </div>
-              <div className="terminal-status-item">
-                <span className="text-terminal-dim">○</span>
-                <span>NET: ISOLATED</span>
+              <div className="flex items-center gap-4 text-terminal-dim text-xs">
+                <span>[ F1-F4: NAV ]</span>
+                <span>[ CTRL+S: SAVE ]</span>
               </div>
-            </div>
-            <div className="flex items-center gap-4 text-terminal-dim text-xs">
-              <span>[ F1-F4: NAV ]</span>
-              <span>[ CTRL+S: SAVE ]</span>
             </div>
           </div>
         </div>
-      </div>
+      </CRTMonitorFrame>
     </div>
   );
 };
