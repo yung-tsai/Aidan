@@ -27,6 +27,7 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }: KeyboardShortcutsModalProps
     { key: "F2", action: "INDEX MODULE" },
     { key: "F3", action: "INSIGHTS MODULE" },
     { key: "F4", action: "AIDEN MODULE" },
+    { key: "T", action: "CYCLE THEME" },
     { key: "?", action: "SHOW THIS HELP" },
     { key: "ESC", action: "CLOSE MODAL" },
     { key: "CTRL+S", action: "SAVE ENTRY" },
