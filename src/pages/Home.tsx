@@ -7,12 +7,13 @@ import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
 import TerminalAiden from "@/components/terminal/TerminalAiden";
 import TerminalPurge from "@/components/terminal/TerminalPurge";
+import TerminalAchievements from "@/components/terminal/TerminalAchievements";
 import AsciiLogo from "@/components/AsciiLogo";
 import AsciiTypewriter from "@/components/terminal/AsciiTypewriter";
 import KeyboardShortcutsModal from "@/components/terminal/KeyboardShortcutsModal";
 import { useTheme } from "@/hooks/useTheme";
 
-type TabId = "status" | "entry" | "index" | "insights" | "aiden" | "purge";
+type TabId = "status" | "entry" | "index" | "insights" | "aiden" | "achievements" | "purge";
 type StartupPhase = "splash" | "boot" | "ready";
 
 const Home = () => {
@@ -97,6 +98,9 @@ const Home = () => {
         setActiveTab("aiden");
       } else if (e.key === "F6") {
         e.preventDefault();
+        setActiveTab("achievements");
+      } else if (e.key === "F7") {
+        e.preventDefault();
         setActiveTab("purge");
       } else if (e.key === "?") {
         e.preventDefault();
@@ -117,6 +121,7 @@ const Home = () => {
     { id: "index" as TabId, label: "INDEX" },
     { id: "insights" as TabId, label: "INSIGHTS" },
     { id: "aiden" as TabId, label: "AIDEN" },
+    { id: "achievements" as TabId, label: "TROPHIES" },
     { id: "purge" as TabId, label: "PURGE", danger: true },
   ];
 
@@ -236,6 +241,7 @@ const Home = () => {
                   {activeTab === "index" && <TerminalIndex />}
                   {activeTab === "insights" && <TerminalInsights />}
                   {activeTab === "aiden" && <TerminalAiden />}
+                  {activeTab === "achievements" && <TerminalAchievements />}
                   {activeTab === "purge" && <TerminalPurge />}
                 </div>
               </div>

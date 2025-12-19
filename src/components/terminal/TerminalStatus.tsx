@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAchievements } from "@/hooks/useAchievements";
+import { useDailyGoal } from "@/hooks/useDailyGoal";
 import { formatDistanceToNow } from "date-fns";
 
 interface TerminalStatusProps {
@@ -35,6 +36,9 @@ const TerminalStatus = ({ onNavigate }: TerminalStatusProps) => {
   }, []);
 
   const { achievements, stats, loading } = useAchievements(sessionId);
+  const { goal, loading: goalLoading, updateTarget } = useDailyGoal(sessionId);
+
+  const targetOptions = [250, 500, 750, 1000, 1500];
 
   useEffect(() => {
     const fetchRecentEntries = async () => {
@@ -102,6 +106,75 @@ const TerminalStatus = ({ onNavigate }: TerminalStatusProps) => {
             {loading ? "..." : `${unlockedCount}/${achievements.length}`}
           </div>
         </div>
+      </div>
+
+      {/* Daily Goal Section */}
+      <div className="terminal-box p-4">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-terminal-glow font-vt323">▶</span>
+          <span className="font-vt323 text-terminal-text tracking-wide">DAILY WORD GOAL</span>
+        </div>
+
+        {goalLoading ? (
+          <div className="font-vt323 text-terminal-dim text-sm animate-pulse">
+            LOADING GOAL...
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {/* Goal Progress */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-vt323 text-terminal-text">
+                  {goal.todayWords.toLocaleString()} / {goal.targetWords.toLocaleString()} WORDS
+                </span>
+                <span className={`font-vt323 text-sm ${goal.isComplete ? "text-status-success" : "text-terminal-dim"}`}>
+                  {goal.isComplete ? "★ GOAL MET!" : `${Math.round(goal.progress)}%`}
+                </span>
+              </div>
+              
+              {/* ASCII Progress Bar */}
+              <div className="font-vt323 text-sm">
+                <span className="text-terminal-dim">[</span>
+                <span className="text-terminal-glow">
+                  {Array.from({ length: 20 }).map((_, i) => (
+                    <span key={i}>{i < Math.floor(goal.progress / 5) ? "█" : "░"}</span>
+                  ))}
+                </span>
+                <span className="text-terminal-dim">]</span>
+              </div>
+            </div>
+
+            {/* Target Selector */}
+            <div className="space-y-2">
+              <span className="font-vt323 text-terminal-dim text-xs">SET TARGET:</span>
+              <div className="flex flex-wrap gap-2">
+                {targetOptions.map((target) => (
+                  <button
+                    key={target}
+                    onClick={() => updateTarget(target)}
+                    className={`terminal-btn px-3 py-1 text-xs ${
+                      goal.targetWords === target
+                        ? "bg-terminal-glow/20 border-terminal-glow text-terminal-glow"
+                        : ""
+                    }`}
+                  >
+                    <span className="font-vt323">{target}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Goal Complete Celebration */}
+            {goal.isComplete && (
+              <div className="text-center py-2 border-t border-terminal-border/50">
+                <pre className="font-vt323 text-status-success text-xs leading-tight">
+{`◆◆◆ DAILY GOAL ACHIEVED ◆◆◆
+    Keep up the momentum!`}
+                </pre>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Two Column Layout */}
