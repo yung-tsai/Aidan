@@ -297,7 +297,7 @@ const TerminalIndex = () => {
       </div>
 
       {/* Entry list */}
-      <div className="space-y-2 max-h-[300px] overflow-auto terminal-scrollbar">
+      <div className="space-y-2">
         {isLoading ? (
           <AsciiEmptyState type="loading" />
         ) : filteredEntries.length === 0 ? (
