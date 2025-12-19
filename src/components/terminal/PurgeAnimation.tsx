@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import usePurgeSounds from "@/hooks/usePurgeSounds";
 
 export type PurgeMethod = "airlock" | "degauss" | "incinerate";
 
@@ -23,8 +22,6 @@ const PurgeAnimation = ({
   const [scrambledText, setScrambledText] = useState(entryContent);
   const [emberParticles, setEmberParticles] = useState<{ id: number; x: number; y: number }[]>([]);
   
-  const { playAirlock, playDegauss, playIncinerate, stopAll } = usePurgeSounds();
-
   const stripHtml = (html: string) => {
     const tmp = document.createElement("div");
     tmp.innerHTML = html;
@@ -50,11 +47,6 @@ const PurgeAnimation = ({
     if (!isActive || phase !== "idle") return;
     
     setPhase("animating");
-    
-    // Trigger sound based on method
-    if (method === "airlock") playAirlock();
-    else if (method === "degauss") playDegauss();
-    else playIncinerate();
     
     const duration = method === "degauss" ? 2000 : method === "incinerate" ? 2500 : 1800;
     const startTime = Date.now();
@@ -88,9 +80,7 @@ const PurgeAnimation = ({
     };
 
     requestAnimationFrame(animate);
-    
-    return () => stopAll();
-  }, [isActive, phase, method, plainContent, scrambleText, onComplete, playAirlock, playDegauss, playIncinerate, stopAll]);
+  }, [isActive, phase, method, plainContent, scrambleText, onComplete]);
 
   if (!isActive && phase === "idle") return null;
 

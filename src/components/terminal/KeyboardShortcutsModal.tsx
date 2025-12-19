@@ -23,11 +23,12 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }: KeyboardShortcutsModalProps
   if (!isOpen) return null;
 
   const shortcuts = [
-    { key: "F1", action: "ENTRY MODULE" },
-    { key: "F2", action: "INDEX MODULE" },
-    { key: "F3", action: "INSIGHTS MODULE" },
-    { key: "F4", action: "AIDEN MODULE" },
-    { key: "F5", action: "PURGE MODULE", danger: true },
+    { key: "F1", action: "STATUS MODULE" },
+    { key: "F2", action: "ENTRY MODULE" },
+    { key: "F3", action: "INDEX MODULE" },
+    { key: "F4", action: "INSIGHTS MODULE" },
+    { key: "F5", action: "AIDEN MODULE" },
+    { key: "F6", action: "PURGE MODULE", danger: true },
     { key: "T", action: "CYCLE THEME" },
     { key: "?", action: "SHOW THIS HELP" },
     { key: "ESC", action: "CLOSE MODAL" },

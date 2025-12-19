@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          key: string
+          name: string
+          threshold: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: string
+          key: string
+          name: string
+          threshold?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          key?: string
+          name?: string
+          threshold?: number | null
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           content: string
@@ -98,6 +128,45 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_key: string
+          id: string
+          progress: number | null
+          session_id: string | null
+          unlocked_at: string | null
+        }
+        Insert: {
+          achievement_key: string
+          id?: string
+          progress?: number | null
+          session_id?: string | null
+          unlocked_at?: string | null
+        }
+        Update: {
+          achievement_key?: string
+          id?: string
+          progress?: number | null
+          session_id?: string | null
+          unlocked_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_key_fkey"
+            columns: ["achievement_key"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["key"]
+          },
+          {
+            foreignKeyName: "user_achievements_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
