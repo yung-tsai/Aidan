@@ -11,6 +11,7 @@ import TerminalAchievements from "@/components/terminal/TerminalAchievements";
 import AsciiLogo from "@/components/AsciiLogo";
 import AsciiTypewriter from "@/components/terminal/AsciiTypewriter";
 import KeyboardShortcutsModal from "@/components/terminal/KeyboardShortcutsModal";
+import MonitorFrame from "@/components/MonitorFrame";
 import { useTheme } from "@/hooks/useTheme";
 
 type TabId = "status" | "entry" | "index" | "insights" | "aiden" | "achievements" | "purge";
@@ -158,8 +159,10 @@ const Home = () => {
         onClose={() => setShowShortcuts(false)} 
       />
 
-      {/* Terminal Container */}
-      <div className="terminal-container crt-vignette w-full max-w-4xl relative overflow-hidden">
+      {/* Monitor Frame with Terminal */}
+      <MonitorFrame>
+        {/* Terminal Container */}
+        <div className="terminal-container crt-vignette w-full max-w-4xl relative overflow-hidden">
         {/* Scanlines */}
         <div className="terminal-scanlines" />
         
@@ -273,6 +276,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+      </MonitorFrame>
     </div>
   );
 };
