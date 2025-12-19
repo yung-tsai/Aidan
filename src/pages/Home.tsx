@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import SplashScreen from "@/components/SplashScreen";
 import BootSequence from "@/components/BootSequence";
-import ThemeToggle from "@/components/ThemeToggle";
 import TerminalEntry from "@/components/terminal/TerminalEntry";
 import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
@@ -9,6 +8,7 @@ import TerminalAiden from "@/components/terminal/TerminalAiden";
 import AsciiPyramid from "@/components/AsciiCube";
 import AsciiTypewriter from "@/components/terminal/AsciiTypewriter";
 import KeyboardShortcutsModal from "@/components/terminal/KeyboardShortcutsModal";
+import { useTheme } from "@/hooks/useTheme";
 
 type TabId = "entry" | "index" | "insights" | "aiden";
 type StartupPhase = "splash" | "boot" | "ready";
@@ -18,8 +18,8 @@ const Home = () => {
   const [activeTab, setActiveTab] = useState<TabId>("entry");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [wordCount, setWordCount] = useState(0);
-  const [systemStatus, setSystemStatus] = useState("NOMINAL");
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const { cycleTheme, themeLabel } = useTheme();
 
   const handleSplashComplete = useCallback(() => {
     setStartupPhase("boot");
@@ -59,6 +59,11 @@ const Home = () => {
         return;
       }
       
+      // Don't trigger if in contenteditable
+      if ((e.target as HTMLElement)?.isContentEditable) {
+        return;
+      }
+      
       if (e.key === "F1") {
         e.preventDefault();
         setActiveTab("entry");
@@ -74,12 +79,15 @@ const Home = () => {
       } else if (e.key === "?") {
         e.preventDefault();
         setShowShortcuts(true);
+      } else if (e.key.toLowerCase() === "t") {
+        e.preventDefault();
+        cycleTheme();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [cycleTheme]);
 
   const tabs = [
     { id: "entry" as TabId, label: "ENTRY" },
@@ -121,7 +129,7 @@ const Home = () => {
         onClose={() => setShowShortcuts(false)} 
       />
 
-      {/* Terminal Container - No monitor frame */}
+      {/* Terminal Container */}
       <div className="terminal-container crt-vignette w-full max-w-4xl relative overflow-hidden">
         {/* Scanlines */}
         <div className="terminal-scanlines" />
@@ -133,22 +141,12 @@ const Home = () => {
           <div className="terminal-header">
             <div className="flex items-center gap-4">
               <AsciiPyramid />
-              <span className="font-vt323 text-terminal-dim text-sm">├──</span>
               <span className="font-vt323 text-lg text-terminal-text tracking-widest">
                 JOURNAL TERMINAL
               </span>
-              <span className="font-vt323 text-terminal-dim text-sm">v2.1</span>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-terminal-dim font-vt323 text-sm">{formatTime(currentTime)}</span>
-              <ThemeToggle />
-              <button 
-                onClick={() => setShowShortcuts(true)}
-                className="terminal-btn text-xs py-0.5 px-2"
-                title="Keyboard Shortcuts"
-              >
-                ?
-              </button>
               <div className="status-indicator" />
             </div>
           </div>
@@ -157,10 +155,6 @@ const Home = () => {
           <div className="flex flex-1 min-h-0">
             {/* Left Navigation Panel */}
             <div className="terminal-nav-panel">
-              <div className="p-3 border-b border-terminal-border">
-                <span className="text-terminal-dim text-xs font-vt323 tracking-widest">[ MODULES ]</span>
-              </div>
-              
               <nav className="flex-1 py-2">
                 {tabs.map((tab) => (
                   <button
@@ -185,22 +179,11 @@ const Home = () => {
                     <span>DATE:</span>
                     <span className="text-terminal-text">{formatDate(currentTime)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>MEM:</span>
-                    <span className="text-terminal-text">64K</span>
-                  </div>
                 </div>
                 
                 {/* ASCII Typewriter Word Count */}
                 <div className="pt-2 border-t border-terminal-border/50">
                   <AsciiTypewriter wordCount={wordCount} />
-                </div>
-                
-                {/* ASCII decoration */}
-                <div className="text-terminal-muted text-xs font-vt323 text-center pt-2 opacity-40">
-                  ┌─────────┐<br/>
-                  │ MU/TH/UR │<br/>
-                  └─────────┘
                 </div>
               </div>
             </div>
@@ -212,10 +195,7 @@ const Home = () => {
                 <div className="flex items-center gap-2">
                   <span className="text-terminal-dim font-vt323">▶</span>
                   <span className="font-vt323 text-terminal-glow terminal-glow-subtle">
-                    {tabs.find(t => t.id === activeTab)?.label} MODULE
-                  </span>
-                  <span className="text-terminal-dim font-vt323 text-xs ml-auto">
-                    ────────────────
+                    {tabs.find(t => t.id === activeTab)?.label}
                   </span>
                 </div>
               </div>
@@ -236,19 +216,25 @@ const Home = () => {
 
           {/* Status Bar */}
           <div className="terminal-status-bar">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
               <div className="terminal-status-item">
                 <span className="text-terminal-glow">●</span>
-                <span>SYS: {systemStatus}</span>
-              </div>
-              <div className="terminal-status-item">
-                <span className="text-terminal-dim">○</span>
-                <span>NET: ISOLATED</span>
+                <span>SYS: NOMINAL</span>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-terminal-dim text-xs">
-              <span>[ ? ] HELP</span>
-              <span>[ CTRL+S ] SAVE</span>
+            <div className="flex items-center gap-4 text-xs">
+              <button 
+                onClick={() => setShowShortcuts(true)}
+                className="text-terminal-dim hover:text-terminal-text transition-colors"
+              >
+                [ ? ] HELP
+              </button>
+              <button 
+                onClick={cycleTheme}
+                className="text-terminal-dim hover:text-terminal-text transition-colors"
+              >
+                [ T ] {themeLabel}
+              </button>
             </div>
           </div>
         </div>
