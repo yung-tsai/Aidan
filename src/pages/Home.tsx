@@ -73,10 +73,10 @@ const Home = () => {
   }, []);
 
   const tabs = [
-    { id: "entry" as TabId, label: "ENTRY", key: "F1" },
-    { id: "index" as TabId, label: "INDEX", key: "F2" },
-    { id: "insights" as TabId, label: "INSIGHTS", key: "F3" },
-    { id: "aiden" as TabId, label: "AIDEN", key: "F4" },
+    { id: "entry" as TabId, label: "ENTRY" },
+    { id: "index" as TabId, label: "INDEX" },
+    { id: "insights" as TabId, label: "INSIGHTS" },
+    { id: "aiden" as TabId, label: "AIDEN" },
   ];
 
   const formatTime = (date: Date) => {
@@ -151,7 +151,6 @@ const Home = () => {
                     <span className="font-vt323 text-lg w-4">
                       {activeTab === tab.id ? "▸" : " "}
                     </span>
-                    <span className="terminal-nav-key">{tab.key}</span>
                     <span>[ {tab.label} ]</span>
                   </button>
                 ))}
@@ -223,7 +222,6 @@ const Home = () => {
               </div>
             </div>
             <div className="flex items-center gap-4 text-terminal-dim text-xs">
-              <span>[ F1-F4: NAV ]</span>
               <span>[ CTRL+S: SAVE ]</span>
             </div>
           </div>

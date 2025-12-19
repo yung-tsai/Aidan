@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 
@@ -12,12 +11,12 @@ type JournalEntry = {
 };
 
 const TerminalIndex = () => {
-  const navigate = useNavigate();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<JournalEntry[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
 
   useEffect(() => {
     fetchEntries();
@@ -63,12 +62,46 @@ const TerminalIndex = () => {
   };
 
   const handleEntryClick = (entry: JournalEntry) => {
-    if (entry.session_id) {
-      navigate(`/journal/${entry.session_id}`);
-    } else {
-      navigate(`/new-entry?id=${entry.id}`);
-    }
+    setSelectedEntry(entry);
   };
+
+  const handleBack = () => {
+    setSelectedEntry(null);
+  };
+
+  // If an entry is selected, show full content
+  if (selectedEntry) {
+    return (
+      <div className="space-y-4">
+        {/* Back button */}
+        <button
+          onClick={handleBack}
+          className="terminal-btn text-xs flex items-center gap-2"
+        >
+          <span>◀</span>
+          <span>[ BACK TO INDEX ]</span>
+        </button>
+
+        {/* Entry header */}
+        <div className="terminal-box p-3">
+          <h2 className="font-vt323 text-xl text-terminal-glow terminal-glow-subtle">
+            {selectedEntry.title.toUpperCase()}
+          </h2>
+          <span className="text-terminal-dim font-vt323 text-sm">
+            {format(new Date(selectedEntry.created_at), "MMMM dd, yyyy 'at' HH:mm").toUpperCase()}
+          </span>
+        </div>
+
+        {/* Entry content */}
+        <div className="terminal-box p-4">
+          <div 
+            className="text-terminal-text font-ibm text-sm leading-relaxed prose-terminal"
+            dangerouslySetInnerHTML={{ __html: selectedEntry.content }}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
