@@ -742,48 +742,83 @@
 }
 
 /* ============================================
-   CRT MONITOR FRAME
+   CRT MONITOR FRAME (Pure CSS Recreation)
    ============================================ */
 
 .crt-monitor-wrapper {
-  position: relative;
   width: 100%;
-  max-width: 1100px;
+  max-width: 1000px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.crt-monitor-image {
+/* Outer bezel - gray plastic frame */
+.crt-outer-bezel {
   width: 100%;
-  height: auto;
-  display: block;
-  pointer-events: none;
-  user-select: none;
+  padding: 24px 28px 40px 28px;
+  background: linear-gradient(
+    180deg,
+    hsl(0 0% 55%) 0%,
+    hsl(0 0% 48%) 10%,
+    hsl(0 0% 42%) 50%,
+    hsl(0 0% 38%) 90%,
+    hsl(0 0% 32%) 100%
+  );
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.crt-monitor-screen {
-  position: absolute;
-  /* Position to fit inside the gray screen area of the monitor */
-  top: 6.5%;
-  left: 8.5%;
-  right: 8.5%;
-  bottom: 17%;
+/* Inner bezel - thick black border */
+.crt-inner-bezel {
+  padding: 12px;
+  background: linear-gradient(
+    180deg,
+    hsl(0 0% 8%) 0%,
+    hsl(0 0% 5%) 50%,
+    hsl(0 0% 3%) 100%
+  );
+  border-radius: 8px;
+  box-shadow: 
+    inset 0 2px 8px rgba(0, 0, 0, 0.8),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Screen inset - where content renders */
+.crt-screen-inset {
+  border-radius: 4px;
   overflow: hidden;
-  border-radius: 2px;
+  box-shadow: 
+    inset 0 0 20px rgba(0, 0, 0, 0.5),
+    inset 0 0 60px rgba(0, 0, 0, 0.3);
+  min-height: 500px;
+  max-height: 75vh;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .crt-monitor-wrapper {
     max-width: 100%;
+    padding: 0 8px;
   }
   
-  .crt-monitor-screen {
-    top: 6%;
-    left: 8%;
-    right: 8%;
-    bottom: 16%;
+  .crt-outer-bezel {
+    padding: 16px 18px 28px 18px;
+    border-radius: 12px;
+  }
+  
+  .crt-inner-bezel {
+    padding: 8px;
+    border-radius: 6px;
+  }
+  
+  .crt-screen-inset {
+    min-height: 400px;
+    max-height: 70vh;
   }
 }
