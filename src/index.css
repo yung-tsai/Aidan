@@ -275,6 +275,52 @@
 }
 
 /* ============================================
+   LOGO ANIMATIONS
+   ============================================ */
+
+.logo-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 28px;
+  height: 28px;
+}
+
+.logo-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: hsl(var(--terminal-glow));
+  box-shadow: 0 0 6px hsl(var(--terminal-glow)), 0 0 12px hsl(var(--terminal-glow) / 0.5);
+  animation: logo-scanline 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes logo-scanline {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Tab transition flicker */
+@keyframes tab-flicker {
+  0% { opacity: 1; }
+  20% { opacity: 0.4; }
+  40% { opacity: 0.85; }
+  60% { opacity: 0.5; }
+  80% { opacity: 0.9; }
+  100% { opacity: 1; }
+}
+
+.tab-transitioning {
+  animation: tab-flicker 150ms ease-out;
+}
+
+/* ============================================
    TERMINAL CONTAINER
    ============================================ */
 

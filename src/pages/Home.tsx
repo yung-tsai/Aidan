@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import SplashScreen from "@/components/SplashScreen";
 import BootSequence from "@/components/BootSequence";
 import TerminalEntry from "@/components/terminal/TerminalEntry";
 import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
 import TerminalAiden from "@/components/terminal/TerminalAiden";
-import AsciiPyramid from "@/components/AsciiCube";
+import AsciiLogo from "@/components/AsciiLogo";
 import AsciiTypewriter from "@/components/terminal/AsciiTypewriter";
 import KeyboardShortcutsModal from "@/components/terminal/KeyboardShortcutsModal";
 import { useTheme } from "@/hooks/useTheme";
@@ -19,7 +19,21 @@ const Home = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [wordCount, setWordCount] = useState(0);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const prevTabRef = useRef<TabId>(activeTab);
   const { cycleTheme, themeLabel } = useTheme();
+
+  // Tab transition flicker
+  useEffect(() => {
+    if (activeTab !== prevTabRef.current) {
+      setIsTransitioning(true);
+      const timeout = setTimeout(() => {
+        setIsTransitioning(false);
+        prevTabRef.current = activeTab;
+      }, 150);
+      return () => clearTimeout(timeout);
+    }
+  }, [activeTab]);
 
   const handleSplashComplete = useCallback(() => {
     setStartupPhase("boot");
@@ -139,8 +153,8 @@ const Home = () => {
           
           {/* Header */}
           <div className="terminal-header">
-            <div className="flex items-center gap-4">
-              <AsciiPyramid />
+            <div className="flex items-center gap-3">
+              <AsciiLogo />
               <span className="font-vt323 text-lg text-terminal-text tracking-widest">
                 JOURNAL TERMINAL
               </span>
@@ -201,7 +215,7 @@ const Home = () => {
               </div>
 
               {/* Content Area with transition */}
-              <div className="flex-1 overflow-auto terminal-scrollbar p-4">
+              <div className={`flex-1 overflow-auto terminal-scrollbar p-4 ${isTransitioning ? 'tab-transitioning' : ''}`}>
                 <div key={activeTab} className="h-full">
                   {activeTab === "entry" && (
                     <TerminalEntry onWordCountChange={setWordCount} />
