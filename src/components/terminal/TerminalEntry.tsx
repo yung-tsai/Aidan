@@ -41,10 +41,20 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
   useEffect(() => {
     const createEntry = async () => {
       try {
+        // First create a session
+        const { data: sessionData, error: sessionError } = await supabase
+          .from("sessions")
+          .insert({ completed: false })
+          .select()
+          .single();
+
+        if (sessionError) throw sessionError;
+
+        // Then create the journal entry with the session_id
         const { data, error } = await supabase
           .from("journal_entries")
           .insert({
-            session_id: null,
+            session_id: sessionData.id,
             title: "UNTITLED_ENTRY",
             content: "<p>> Begin your entry...</p>",
             tags: [],
@@ -56,6 +66,7 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
         setEntryId(data.id);
       } catch (error) {
         console.error("Error creating entry:", error);
+        toast.error("Failed to create entry");
       }
     };
 
