@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           id: string
           session_id: string
+          tags: string[] | null
           title: string
         }
         Insert: {
@@ -27,6 +28,7 @@ export type Database = {
           created_at?: string
           id?: string
           session_id: string
+          tags?: string[] | null
           title?: string
         }
         Update: {
@@ -34,6 +36,7 @@ export type Database = {
           created_at?: string
           id?: string
           session_id?: string
+          tags?: string[] | null
           title?: string
         }
         Relationships: [

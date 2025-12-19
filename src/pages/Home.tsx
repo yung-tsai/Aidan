@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import SplashScreen from "@/components/SplashScreen";
 import BootSequence from "@/components/BootSequence";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -8,17 +7,19 @@ import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
 import TerminalAiden from "@/components/terminal/TerminalAiden";
 import AsciiPyramid from "@/components/AsciiCube";
+import AsciiTypewriter from "@/components/terminal/AsciiTypewriter";
+import KeyboardShortcutsModal from "@/components/terminal/KeyboardShortcutsModal";
 
 type TabId = "entry" | "index" | "insights" | "aiden";
 type StartupPhase = "splash" | "boot" | "ready";
 
 const Home = () => {
-  const navigate = useNavigate();
   const [startupPhase, setStartupPhase] = useState<StartupPhase>("splash");
   const [activeTab, setActiveTab] = useState<TabId>("entry");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [wordCount, setWordCount] = useState(0);
   const [systemStatus, setSystemStatus] = useState("NOMINAL");
+  const [showShortcuts, setShowShortcuts] = useState(false);
 
   const handleSplashComplete = useCallback(() => {
     setStartupPhase("boot");
@@ -53,6 +54,11 @@ const Home = () => {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      
       if (e.key === "F1") {
         e.preventDefault();
         setActiveTab("entry");
@@ -65,6 +71,9 @@ const Home = () => {
       } else if (e.key === "F4") {
         e.preventDefault();
         setActiveTab("aiden");
+      } else if (e.key === "?") {
+        e.preventDefault();
+        setShowShortcuts(true);
       }
     };
 
@@ -106,6 +115,12 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 md:p-8">
+      {/* Keyboard Shortcuts Modal */}
+      <KeyboardShortcutsModal 
+        isOpen={showShortcuts} 
+        onClose={() => setShowShortcuts(false)} 
+      />
+
       {/* Terminal Container - No monitor frame */}
       <div className="terminal-container crt-vignette w-full max-w-4xl relative overflow-hidden">
         {/* Scanlines */}
@@ -127,6 +142,13 @@ const Home = () => {
             <div className="flex items-center gap-4">
               <span className="text-terminal-dim font-vt323 text-sm">{formatTime(currentTime)}</span>
               <ThemeToggle />
+              <button 
+                onClick={() => setShowShortcuts(true)}
+                className="terminal-btn text-xs py-0.5 px-2"
+                title="Keyboard Shortcuts"
+              >
+                ?
+              </button>
               <div className="status-indicator" />
             </div>
           </div>
@@ -164,13 +186,14 @@ const Home = () => {
                     <span className="text-terminal-text">{formatDate(currentTime)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>WORDS:</span>
-                    <span className="text-terminal-text">{wordCount}</span>
-                  </div>
-                  <div className="flex justify-between">
                     <span>MEM:</span>
                     <span className="text-terminal-text">64K</span>
                   </div>
+                </div>
+                
+                {/* ASCII Typewriter Word Count */}
+                <div className="pt-2 border-t border-terminal-border/50">
+                  <AsciiTypewriter wordCount={wordCount} />
                 </div>
                 
                 {/* ASCII decoration */}
@@ -197,14 +220,16 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Content Area */}
+              {/* Content Area with transition */}
               <div className="flex-1 overflow-auto terminal-scrollbar p-4">
-                {activeTab === "entry" && (
-                  <TerminalEntry onWordCountChange={setWordCount} />
-                )}
-                {activeTab === "index" && <TerminalIndex />}
-                {activeTab === "insights" && <TerminalInsights />}
-                {activeTab === "aiden" && <TerminalAiden />}
+                <div key={activeTab} className="h-full">
+                  {activeTab === "entry" && (
+                    <TerminalEntry onWordCountChange={setWordCount} />
+                  )}
+                  {activeTab === "index" && <TerminalIndex />}
+                  {activeTab === "insights" && <TerminalInsights />}
+                  {activeTab === "aiden" && <TerminalAiden />}
+                </div>
               </div>
             </div>
           </div>
@@ -222,7 +247,8 @@ const Home = () => {
               </div>
             </div>
             <div className="flex items-center gap-4 text-terminal-dim text-xs">
-              <span>[ CTRL+S: SAVE ]</span>
+              <span>[ ? ] HELP</span>
+              <span>[ CTRL+S ] SAVE</span>
             </div>
           </div>
         </div>
