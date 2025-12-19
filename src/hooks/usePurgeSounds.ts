@@ -4,9 +4,13 @@ const usePurgeSounds = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
   const activeNodesRef = useRef<AudioNode[]>([]);
 
-  const getAudioContext = useCallback(() => {
+  const getAudioContext = useCallback(async () => {
     if (!audioContextRef.current) {
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    // Resume if suspended (browser autoplay policy)
+    if (audioContextRef.current.state === "suspended") {
+      await audioContextRef.current.resume();
     }
     return audioContextRef.current;
   }, []);
@@ -26,8 +30,8 @@ const usePurgeSounds = () => {
   }, []);
 
   // Airlock: Swooshing vacuum whoosh with rising pitch
-  const playAirlock = useCallback(() => {
-    const ctx = getAudioContext();
+  const playAirlock = useCallback(async () => {
+    const ctx = await getAudioContext();
     const duration = 1.8;
 
     // Create white noise for the whoosh
@@ -63,8 +67,8 @@ const usePurgeSounds = () => {
   }, [getAudioContext]);
 
   // Degauss: Warbling electronic buzz with unstable frequencies
-  const playDegauss = useCallback(() => {
-    const ctx = getAudioContext();
+  const playDegauss = useCallback(async () => {
+    const ctx = await getAudioContext();
     const duration = 2.0;
 
     // Main oscillator - sawtooth for that CRT buzz
@@ -126,8 +130,8 @@ const usePurgeSounds = () => {
   }, [getAudioContext]);
 
   // Incinerate: Crackling fire with pops and low rumble
-  const playIncinerate = useCallback(() => {
-    const ctx = getAudioContext();
+  const playIncinerate = useCallback(async () => {
+    const ctx = await getAudioContext();
     const duration = 2.5;
 
     // Low rumble
