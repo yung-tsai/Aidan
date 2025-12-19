@@ -108,42 +108,13 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
         />
       </div>
 
-      {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 p-2 terminal-box">
-        <button
-          onClick={() => editor?.chain().focus().toggleBold().run()}
-          className={`terminal-btn text-xs ${editor?.isActive("bold") ? "terminal-btn-primary" : ""}`}
-        >
-          [ B ]
-        </button>
-        <button
-          onClick={() => editor?.chain().focus().toggleItalic().run()}
-          className={`terminal-btn text-xs ${editor?.isActive("italic") ? "terminal-btn-primary" : ""}`}
-        >
-          [ I ]
-        </button>
-        <button
-          onClick={() => editor?.chain().focus().toggleUnderline().run()}
-          className={`terminal-btn text-xs ${editor?.isActive("underline") ? "terminal-btn-primary" : ""}`}
-        >
-          [ U ]
-        </button>
-        
-        <span className="text-terminal-border mx-1">│</span>
-        
-        <button onClick={setLink} className="terminal-btn text-xs">[ LINK ]</button>
-        
-        <span className="text-terminal-border mx-1">│</span>
-        
-        <button
-          onClick={() => editor?.chain().focus().toggleBulletList().run()}
-          className={`terminal-btn text-xs ${editor?.isActive("bulletList") ? "terminal-btn-primary" : ""}`}
-        >
-          [ LIST ]
-        </button>
+      {/* Editor */}
+      <div className="terminal-box p-4 min-h-[200px]">
+        <EditorContent editor={editor} />
+      </div>
 
-        <div className="flex-1" />
-        
+      {/* Save Button */}
+      <div className="flex items-center justify-between">
         <button
           onClick={handleSave}
           disabled={isSaving}
@@ -151,18 +122,13 @@ const TerminalEntry = ({ onWordCountChange }: TerminalEntryProps) => {
         >
           {isSaving ? "[ SAVING... ]" : "[ SAVE ]"}
         </button>
+        
+        {lastSaved && (
+          <span className="text-terminal-dim font-vt323 text-sm">
+            LAST SAVED: {lastSaved.toLocaleTimeString()}
+          </span>
+        )}
       </div>
-
-      {/* Editor */}
-      <div className="terminal-box p-4 min-h-[200px]">
-        <EditorContent editor={editor} />
-      </div>
-
-      {lastSaved && (
-        <div className="text-terminal-dim font-vt323 text-sm text-right">
-          LAST SAVED: {lastSaved.toLocaleTimeString()}
-        </div>
-      )}
     </div>
   );
 };
