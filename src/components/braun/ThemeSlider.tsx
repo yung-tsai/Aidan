@@ -24,6 +24,7 @@ const ThemeSlider = () => {
     setTheme(newTheme);
     applyTheme(newTheme);
     localStorage.setItem("theme", newTheme);
+    if (navigator.vibrate) navigator.vibrate(3);
   };
 
   const themes: { id: Theme; label: string }[] = [
@@ -33,26 +34,23 @@ const ThemeSlider = () => {
   ];
 
   return (
-    <div className="flex items-center justify-center gap-1 py-4 px-6 bg-device-inset border-t border-control-border">
-      <div className="theme-rocker">
-        {themes.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => selectTheme(t.id)}
-            className={`theme-rocker-option ${theme === t.id ? "active" : ""}`}
-            aria-label={`Switch to ${t.label} theme`}
-          >
-            <span className="braun-label text-[10px]">{t.label}</span>
-          </button>
-        ))}
-        {/* Sliding indicator */}
-        <div 
-          className="theme-rocker-indicator"
-          style={{
-            transform: `translateX(${themes.findIndex(t => t.id === theme) * 100}%)`
-          }}
-        />
-      </div>
+    <div className="flex items-center gap-1" role="radiogroup" aria-label="Theme selection">
+      {themes.map((t) => (
+        <button
+          key={t.id}
+          onClick={() => selectTheme(t.id)}
+          className={`px-3 py-1.5 rounded-full text-[10px] tracking-wider uppercase transition-all duration-200
+            ${theme === t.id 
+              ? "bg-foreground text-background" 
+              : "text-muted-foreground hover:text-foreground"
+            }`}
+          role="radio"
+          aria-checked={theme === t.id}
+          aria-label={`${t.label} theme`}
+        >
+          {t.label}
+        </button>
+      ))}
     </div>
   );
 };
