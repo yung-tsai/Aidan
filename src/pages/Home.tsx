@@ -5,12 +5,13 @@ import TerminalEntry from "@/components/terminal/TerminalEntry";
 import TerminalIndex from "@/components/terminal/TerminalIndex";
 import TerminalInsights from "@/components/terminal/TerminalInsights";
 import TerminalAiden from "@/components/terminal/TerminalAiden";
+import TerminalPurge from "@/components/terminal/TerminalPurge";
 import AsciiLogo from "@/components/AsciiLogo";
 import AsciiTypewriter from "@/components/terminal/AsciiTypewriter";
 import KeyboardShortcutsModal from "@/components/terminal/KeyboardShortcutsModal";
 import { useTheme } from "@/hooks/useTheme";
 
-type TabId = "entry" | "index" | "insights" | "aiden";
+type TabId = "entry" | "index" | "insights" | "aiden" | "purge";
 type StartupPhase = "splash" | "boot" | "ready";
 
 const Home = () => {
@@ -90,6 +91,9 @@ const Home = () => {
       } else if (e.key === "F4") {
         e.preventDefault();
         setActiveTab("aiden");
+      } else if (e.key === "F5") {
+        e.preventDefault();
+        setActiveTab("purge");
       } else if (e.key === "?") {
         e.preventDefault();
         setShowShortcuts(true);
@@ -108,6 +112,7 @@ const Home = () => {
     { id: "index" as TabId, label: "INDEX" },
     { id: "insights" as TabId, label: "INSIGHTS" },
     { id: "aiden" as TabId, label: "AIDEN" },
+    { id: "purge" as TabId, label: "PURGE", danger: true },
   ];
 
   const formatTime = (date: Date) => {
@@ -176,7 +181,7 @@ const Home = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={`terminal-nav-item ${
                       activeTab === tab.id ? "terminal-nav-item-active" : ""
-                    }`}
+                    } ${tab.danger ? "terminal-nav-item-danger" : ""}`}
                   >
                     <span className="font-vt323 text-lg w-4">
                       {activeTab === tab.id ? "▸" : " "}
@@ -223,6 +228,7 @@ const Home = () => {
                   {activeTab === "index" && <TerminalIndex />}
                   {activeTab === "insights" && <TerminalInsights />}
                   {activeTab === "aiden" && <TerminalAiden />}
+                  {activeTab === "purge" && <TerminalPurge />}
                 </div>
               </div>
             </div>

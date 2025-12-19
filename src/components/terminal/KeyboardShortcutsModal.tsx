@@ -27,6 +27,7 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }: KeyboardShortcutsModalProps
     { key: "F2", action: "INDEX MODULE" },
     { key: "F3", action: "INSIGHTS MODULE" },
     { key: "F4", action: "AIDEN MODULE" },
+    { key: "F5", action: "PURGE MODULE", danger: true },
     { key: "T", action: "CYCLE THEME" },
     { key: "?", action: "SHOW THIS HELP" },
     { key: "ESC", action: "CLOSE MODAL" },
@@ -79,10 +80,10 @@ const KeyboardShortcutsModal = ({ isOpen, onClose }: KeyboardShortcutsModalProps
                 className="flex items-center justify-between py-2 border-b border-terminal-border/50 last:border-0"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                <span className="terminal-btn text-xs py-0.5 px-2">
+                <span className={`terminal-btn text-xs py-0.5 px-2 ${shortcut.danger ? "terminal-btn-danger" : ""}`}>
                   {shortcut.key}
                 </span>
-                <span className="font-vt323 text-terminal-text text-sm tracking-wider">
+                <span className={`font-vt323 text-sm tracking-wider ${shortcut.danger ? "text-status-error" : "text-terminal-text"}`}>
                   {shortcut.action}
                 </span>
               </div>
