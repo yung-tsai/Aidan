@@ -164,7 +164,7 @@ const Home = () => {
         <div className="terminal-scanlines" />
         
         {/* Main content with sweep effect */}
-        <div className="crt-sweep crt-flicker relative flex flex-col min-h-[600px]">
+        <div className="crt-sweep crt-flicker relative flex flex-col h-[600px] md:h-[700px]">
           
           {/* Header */}
           <div className="terminal-header">
