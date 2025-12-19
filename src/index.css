@@ -923,3 +923,190 @@
   opacity: 0.03;
   pointer-events: none;
 }
+
+/* ============================================
+   CATHARTIC PURGE MODULE
+   ============================================ */
+
+/* Danger nav item styling */
+.terminal-nav-item-danger {
+  color: hsl(var(--status-error) / 0.7);
+}
+
+.terminal-nav-item-danger:hover {
+  color: hsl(var(--status-error));
+  background: hsl(var(--status-error) / 0.1);
+}
+
+.terminal-nav-item-danger.terminal-nav-item-active {
+  color: hsl(var(--status-error));
+  background: hsl(var(--status-error) / 0.15);
+  border-left-color: hsl(var(--status-error));
+}
+
+/* Warning box with caution stripes */
+.purge-warning-box {
+  background: hsl(var(--terminal-surface));
+  border: 1px solid hsl(var(--status-error) / 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.purge-warning-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    hsl(var(--status-error)) 0px,
+    hsl(var(--status-error)) 10px,
+    hsl(var(--status-warning)) 10px,
+    hsl(var(--status-warning)) 20px
+  );
+}
+
+/* Airlock Animation */
+.purge-airlock {
+  background: linear-gradient(180deg, 
+    hsl(200 60% 8%) 0%, 
+    hsl(220 40% 4%) 100%
+  );
+  min-height: 200px;
+  position: relative;
+}
+
+.airlock-chamber {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.airlock-vacuum {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at right, 
+    transparent 0%, 
+    hsl(220 80% 10% / 0.8) 100%
+  );
+  pointer-events: none;
+}
+
+.airlock-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.airlock-stars .star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: star-twinkle 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes star-twinkle {
+  from { opacity: 0.3; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1.2); }
+}
+
+/* Degauss Animation */
+.purge-degauss {
+  background: hsl(var(--terminal-surface));
+  min-height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.degauss-container {
+  transition: filter 0.1s, transform 0.05s;
+}
+
+.degauss-warp {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at center, 
+      hsl(280 80% 50% / 0.2) 0%, 
+      transparent 50%
+    ),
+    linear-gradient(45deg, 
+      hsl(180 80% 50% / 0.1) 0%, 
+      hsl(280 80% 50% / 0.1) 50%,
+      hsl(60 80% 50% / 0.1) 100%
+    );
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: degauss-pulse 0.2s ease-in-out infinite;
+}
+
+@keyframes degauss-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Incinerate Animation */
+.purge-incinerate {
+  background: hsl(var(--terminal-surface));
+  min-height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.incinerate-container {
+  position: relative;
+}
+
+.burn-mask {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top,
+    hsl(0 0% 5%) 0%,
+    hsl(15 80% 15%) 20%,
+    hsl(30 100% 30%) 40%,
+    hsl(45 100% 50%) 60%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.fire-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: linear-gradient(to top,
+    hsl(45 100% 60%),
+    hsl(30 100% 50%),
+    transparent
+  );
+  box-shadow: 
+    0 0 20px hsl(30 100% 50% / 0.8),
+    0 0 40px hsl(45 100% 60% / 0.5);
+  pointer-events: none;
+}
+
+.ember-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: hsl(30 100% 60%);
+  border-radius: 50%;
+  animation: ember-float 1s ease-out forwards;
+  box-shadow: 0 0 4px hsl(45 100% 50%);
+}
+
+@keyframes ember-float {
+  0% { 
+    transform: translateY(0) scale(1); 
+    opacity: 1; 
+  }
+  100% { 
+    transform: translateY(-50px) translateX(var(--ember-drift, 10px)) scale(0); 
+    opacity: 0; 
+  }
+}
