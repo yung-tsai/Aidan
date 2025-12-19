@@ -180,10 +180,27 @@ const Home = () => {
             </div>
           </div>
 
+          {/* Mobile Tab Bar - Shown only on mobile */}
+          <div className="md:hidden flex overflow-x-auto border-b border-terminal-border bg-terminal-surface/30 px-2 flex-shrink-0">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-shrink-0 px-3 py-2 font-vt323 text-sm uppercase tracking-wider transition-all ${
+                  activeTab === tab.id 
+                    ? "text-terminal-glow border-b-2 border-terminal-glow" 
+                    : "text-terminal-dim"
+                } ${tab.danger ? "text-status-error" : ""}`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
           {/* Two-Column Layout */}
           <div className="flex flex-1 min-h-0">
-            {/* Left Navigation Panel */}
-            <div className="terminal-nav-panel">
+            {/* Left Navigation Panel - Hidden on mobile */}
+            <div className="terminal-nav-panel hidden md:flex">
               <nav className="flex-1 py-2">
                 {tabs.map((tab) => (
                   <button
@@ -219,8 +236,8 @@ const Home = () => {
 
             {/* Right Content Panel */}
             <div className="flex-1 flex flex-col min-w-0">
-              {/* Content Header */}
-              <div className="px-4 py-2 border-b border-terminal-border bg-terminal-surface/30">
+              {/* Content Header - Hidden on mobile since tabs are shown */}
+              <div className="hidden md:block px-4 py-2 border-b border-terminal-border bg-terminal-surface/30">
                 <div className="flex items-center gap-2">
                   <span className="text-terminal-dim font-vt323">▶</span>
                   <span className="font-vt323 text-terminal-glow terminal-glow-subtle">
@@ -230,7 +247,7 @@ const Home = () => {
               </div>
 
               {/* Content Area with transition */}
-              <div className={`flex-1 overflow-auto terminal-scrollbar p-4 ${isTransitioning ? 'tab-transitioning' : ''}`}>
+              <div className={`flex-1 overflow-auto terminal-scrollbar p-3 md:p-4 ${isTransitioning ? 'tab-transitioning' : ''}`}>
                 <div key={activeTab} className="h-full">
                   {activeTab === "status" && (
                     <TerminalStatus onNavigate={(tab) => setActiveTab(tab as TabId)} />

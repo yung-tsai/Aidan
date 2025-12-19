@@ -18,26 +18,27 @@ export const useDailyGoal = (sessionId: string | null) => {
   const [loading, setLoading] = useState(true);
 
   const fetchGoalAndProgress = useCallback(async () => {
-    if (!sessionId) return;
-
     try {
-      // Fetch goal target
-      const { data: goalData } = await supabase
-        .from("daily_goals")
-        .select("target_words")
-        .eq("session_id", sessionId)
-        .single();
+      // Fetch goal target (use localStorage key for consistency)
+      const storedSessionId = localStorage.getItem("journalSessionId");
+      
+      let targetWords = 500;
+      if (storedSessionId) {
+        const { data: goalData } = await supabase
+          .from("daily_goals")
+          .select("target_words")
+          .eq("session_id", storedSessionId)
+          .single();
+        targetWords = goalData?.target_words || 500;
+      }
 
-      const targetWords = goalData?.target_words || 500;
-
-      // Fetch today's entries and calculate words
+      // Fetch today's entries and calculate words (all entries, not session-specific)
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
       const { data: entries } = await supabase
         .from("journal_entries")
         .select("content, created_at")
-        .eq("session_id", sessionId)
         .gte("created_at", today.toISOString());
 
       const todayWords = entries?.reduce((sum, entry) => {
@@ -58,16 +59,17 @@ export const useDailyGoal = (sessionId: string | null) => {
     } finally {
       setLoading(false);
     }
-  }, [sessionId]);
+  }, []);
 
   const updateTarget = useCallback(async (newTarget: number) => {
-    if (!sessionId) return;
+    const storedSessionId = localStorage.getItem("journalSessionId");
+    if (!storedSessionId) return;
 
     try {
       const { error } = await supabase
         .from("daily_goals")
         .upsert({
-          session_id: sessionId,
+          session_id: storedSessionId,
           target_words: newTarget,
         }, {
           onConflict: "session_id",
@@ -84,13 +86,11 @@ export const useDailyGoal = (sessionId: string | null) => {
     } catch (error) {
       console.error("Error updating goal:", error);
     }
-  }, [sessionId]);
+  }, []);
 
   useEffect(() => {
-    if (sessionId) {
-      fetchGoalAndProgress();
-    }
-  }, [sessionId, fetchGoalAndProgress]);
+    fetchGoalAndProgress();
+  }, [fetchGoalAndProgress]);
 
   return {
     goal,

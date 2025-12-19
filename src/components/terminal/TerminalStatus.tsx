@@ -42,12 +42,9 @@ const TerminalStatus = ({ onNavigate }: TerminalStatusProps) => {
 
   useEffect(() => {
     const fetchRecentEntries = async () => {
-      if (!sessionId) return;
-
       const { data } = await supabase
         .from("journal_entries")
         .select("id, title, created_at")
-        .eq("session_id", sessionId)
         .order("created_at", { ascending: false })
         .limit(5);
 
@@ -55,7 +52,7 @@ const TerminalStatus = ({ onNavigate }: TerminalStatusProps) => {
     };
 
     fetchRecentEntries();
-  }, [sessionId]);
+  }, []);
 
   const unlockedCount = achievements.filter((a) => a.unlocked).length;
   const nearAchievements = achievements
