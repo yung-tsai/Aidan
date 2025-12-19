@@ -1,1 +1,10 @@
 project_id = "tsgswmcxbkutsrtchqeg"
+
+[functions.chat]
+verify_jwt = false
+
+[functions.generate-summary]
+verify_jwt = false
+
+[functions.generate-monitor-image]
+verify_jwt = false
