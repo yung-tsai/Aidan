@@ -73,14 +73,11 @@ export const useAchievements = (sessionId: string | null) => {
   }, [sessionId]);
 
   const fetchStats = useCallback(async () => {
-    if (!sessionId) return;
-
     try {
-      // Get all entries for this session
+      // Get all entries (global - no session filter for single-user app)
       const { data: entries, error } = await supabase
         .from("journal_entries")
         .select("created_at, content, tags")
-        .eq("session_id", sessionId)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -141,7 +138,7 @@ export const useAchievements = (sessionId: string | null) => {
     } finally {
       setLoading(false);
     }
-  }, [sessionId]);
+  }, []);
 
   const unlockAchievement = useCallback(
     async (achievementKey: string) => {
