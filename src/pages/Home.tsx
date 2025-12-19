@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import DeviceHeader from "@/components/braun/DeviceHeader";
 import ModeSwitch from "@/components/braun/ModeSwitch";
 import BreathingGuide from "@/components/braun/BreathingGuide";
 import FocusTimer from "@/components/braun/FocusTimer";
@@ -71,39 +70,46 @@ const Home = () => {
 
   return (
     <main 
-      className="min-h-screen min-h-[100dvh] bg-background flex items-center justify-center p-3 sm:p-4 md:p-8"
+      className="min-h-screen min-h-[100dvh] bg-background flex flex-col"
       role="main"
-      aria-label="Reflect - Personal mindfulness device"
+      aria-label="Reflect - Personal mindfulness"
     >
-      <div className="braun-device w-full max-w-md">
-        <DeviceHeader />
+      {/* Top bar with brand and theme */}
+      <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border/30">
+        <div className="flex items-center gap-3">
+          <div className="indicator-light active" aria-hidden="true" />
+          <h1 className="braun-title text-sm sm:text-base tracking-[0.2em] text-foreground uppercase">
+            REFLECT
+          </h1>
+        </div>
+        <ThemeSlider />
+      </header>
 
-        {/* Mode selector */}
-        <nav className="flex justify-center px-4 sm:px-6 py-4 sm:py-5 bg-device-face" aria-label="Mode selection">
-          <ModeSwitch
-            modes={modes}
-            activeMode={activeMode}
-            onChange={(mode) => {
-              if (navigator.vibrate) navigator.vibrate(5);
-              if (activeMode === "breathe" && isBreathing) {
-                handleBreathingToggle();
-              }
-              setActiveMode(mode as Mode);
-            }}
-          />
-        </nav>
+      {/* Mode navigation */}
+      <nav className="flex justify-center px-4 py-4 sm:py-5" aria-label="Mode selection">
+        <ModeSwitch
+          modes={modes}
+          activeMode={activeMode}
+          onChange={(mode) => {
+            if (navigator.vibrate) navigator.vibrate(5);
+            if (activeMode === "breathe" && isBreathing) {
+              handleBreathingToggle();
+            }
+            setActiveMode(mode as Mode);
+          }}
+        />
+      </nav>
 
-        <div className="braun-divider mx-4 sm:mx-6" aria-hidden="true" />
+      {/* Ambient sound player */}
+      {showAmbientSounds && (
+        <div className="px-4 sm:px-6">
+          <AmbientSoundPlayer isPlaying={isSessionActive} />
+        </div>
+      )}
 
-        {/* Ambient sound player */}
-        {showAmbientSounds && (
-          <div className="px-4 sm:px-6 py-3 sm:py-4 bg-device-face">
-            <AmbientSoundPlayer isPlaying={isSessionActive} />
-          </div>
-        )}
-
-        {/* Main display area */}
-        <div className="lcd-display mx-3 sm:mx-6 my-3 sm:my-4 min-h-[300px] sm:min-h-[340px] flex items-center justify-center overflow-hidden">
+      {/* Main content area - grows to fill space */}
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-6 sm:py-8">
+        <div className="lcd-display w-full max-w-lg min-h-[280px] sm:min-h-[320px] flex items-center justify-center">
           {activeMode === "breathe" && (
             <BreathingGuide
               isActive={isBreathing}
@@ -121,26 +127,23 @@ const Home = () => {
             <ReflectionPrompt onStartJournal={handleStartJournal} />
           )}
         </div>
-
-        {/* Contextual status - only when active */}
-        {statusText && (
-          <div 
-            className="flex justify-center pb-3 sm:pb-4 bg-device-face animate-fade-in"
-            role="status"
-            aria-live="polite"
-          >
-            <div className="flex items-center gap-2">
-              <div className="indicator-light active" aria-hidden="true" />
-              <span className="braun-mono text-xs text-foreground tracking-wider tabular-nums">
-                {statusText}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Theme rocker at bottom */}
-        <ThemeSlider />
       </div>
+
+      {/* Bottom status bar - only when active */}
+      {statusText && (
+        <footer 
+          className="flex justify-center py-4 border-t border-border/30 animate-fade-in"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-center gap-2">
+            <div className="indicator-light active" aria-hidden="true" />
+            <span className="braun-mono text-xs text-foreground tracking-wider tabular-nums">
+              {statusText}
+            </span>
+          </div>
+        </footer>
+      )}
     </main>
   );
 };
