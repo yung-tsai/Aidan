@@ -759,6 +759,11 @@
 
 .prose-terminal p {
   margin-bottom: 0.75em;
+  min-height: 1em;
+}
+
+.prose-terminal p:empty::before {
+  content: "\00a0";
 }
 
 .prose-terminal p:last-child {

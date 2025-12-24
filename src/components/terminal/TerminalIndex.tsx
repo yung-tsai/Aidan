@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
+import Underline from "@tiptap/extension-underline";
 import AsciiEmptyState from "./AsciiEmptyState";
+import TagInput from "./TagInput";
 
 type JournalEntry = {
   id: string;
@@ -25,6 +30,28 @@ const TerminalIndex = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [allTags, setAllTags] = useState<string[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Editing state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editTags, setEditTags] = useState<string[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Link.configure({
+        openOnClick: false,
+      }),
+      Underline,
+    ],
+    content: "",
+    editorProps: {
+      attributes: {
+        class: "outline-none min-h-[200px] text-terminal-text font-ibm text-sm leading-relaxed",
+      },
+    },
+  });
 
   useEffect(() => {
     fetchEntries();
@@ -89,15 +116,65 @@ const TerminalIndex = () => {
 
   const handleEntryClick = (entry: JournalEntry) => {
     setSelectedEntry(entry);
+    setIsEditing(false);
   };
 
   const handleBack = () => {
     setSelectedEntry(null);
+    setIsEditing(false);
   };
 
-  const handleOpenInEditor = () => {
-    if (!selectedEntry) return;
-    navigate(`/new-entry?id=${selectedEntry.id}`);
+  const handleStartEdit = () => {
+    if (!selectedEntry || !editor) return;
+    setEditTitle(selectedEntry.title);
+    setEditTags(selectedEntry.tags || []);
+    editor.commands.setContent(selectedEntry.content);
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!selectedEntry || !editor) return;
+    
+    setIsSaving(true);
+    try {
+      const content = editor.getHTML();
+      
+      const { error } = await supabase
+        .from("journal_entries")
+        .update({
+          title: editTitle,
+          content: content,
+          tags: editTags,
+        })
+        .eq("id", selectedEntry.id);
+
+      if (error) throw error;
+
+      // Update local state
+      const updatedEntry = {
+        ...selectedEntry,
+        title: editTitle,
+        content: content,
+        tags: editTags,
+      };
+      
+      setSelectedEntry(updatedEntry);
+      setEntries((prev) =>
+        prev.map((e) => (e.id === selectedEntry.id ? updatedEntry : e))
+      );
+      
+      setIsEditing(false);
+      toast.success("ENTRY SAVED");
+    } catch (error) {
+      console.error("Error saving entry:", error);
+      toast.error("SAVE FAILED");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -123,7 +200,7 @@ const TerminalIndex = () => {
     }
   };
 
-  // If an entry is selected, show full content
+  // If an entry is selected, show full content or edit mode
   if (selectedEntry) {
     return (
       <div className="space-y-4 animate-tab-enter">
@@ -138,32 +215,63 @@ const TerminalIndex = () => {
           </button>
           
           <div className="flex items-center gap-2">
-            <button
-              onClick={handleOpenInEditor}
-              className="terminal-btn text-xs"
-            >
-              [ OPEN ]
-            </button>
-            <button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="terminal-btn terminal-btn-danger text-xs"
-            >
-              {isDeleting ? "[ ... ]" : "[ DEL ]"}
-            </button>
+            {isEditing ? (
+              <>
+                <button
+                  onClick={handleCancelEdit}
+                  className="terminal-btn text-xs"
+                  disabled={isSaving}
+                >
+                  [ CANCEL ]
+                </button>
+                <button
+                  onClick={handleSaveEdit}
+                  className="terminal-btn terminal-btn-primary text-xs"
+                  disabled={isSaving}
+                >
+                  {isSaving ? "[ ... ]" : "[ SAVE ]"}
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={handleStartEdit}
+                  className="terminal-btn text-xs"
+                >
+                  [ EDIT ]
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="terminal-btn terminal-btn-danger text-xs"
+                >
+                  {isDeleting ? "[ ... ]" : "[ DEL ]"}
+                </button>
+              </>
+            )}
           </div>
         </div>
 
         {/* Entry header */}
         <div className="terminal-box p-3">
-          <h2 className="font-vt323 text-xl text-terminal-glow terminal-glow-subtle">
-            {selectedEntry.title.toUpperCase()}
-          </h2>
+          {isEditing ? (
+            <input
+              type="text"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              className="w-full bg-transparent font-vt323 text-xl text-terminal-glow terminal-glow-subtle outline-none uppercase tracking-wider"
+              placeholder="ENTRY TITLE..."
+            />
+          ) : (
+            <h2 className="font-vt323 text-xl text-terminal-glow terminal-glow-subtle">
+              {selectedEntry.title.toUpperCase()}
+            </h2>
+          )}
           <div className="flex items-center gap-3 mt-2">
             <span className="text-terminal-dim font-vt323 text-sm">
               {format(new Date(selectedEntry.created_at), "MMMM dd, yyyy 'at' HH:mm").toUpperCase()}
             </span>
-            {selectedEntry.tags && selectedEntry.tags.length > 0 && (
+            {!isEditing && selectedEntry.tags && selectedEntry.tags.length > 0 && (
               <div className="flex gap-1">
                 {selectedEntry.tags.map((tag) => (
                   <span key={tag} className="terminal-tag-small">
@@ -173,14 +281,23 @@ const TerminalIndex = () => {
               </div>
             )}
           </div>
+          {isEditing && (
+            <div className="mt-3">
+              <TagInput tags={editTags} onTagsChange={setEditTags} />
+            </div>
+          )}
         </div>
 
         {/* Entry content */}
         <div className="terminal-box p-4">
-          <div 
-            className="text-terminal-text font-ibm text-sm leading-relaxed prose-terminal"
-            dangerouslySetInnerHTML={{ __html: selectedEntry.content }}
-          />
+          {isEditing ? (
+            <EditorContent editor={editor} />
+          ) : (
+            <div 
+              className="text-terminal-text font-ibm text-sm leading-relaxed prose-terminal"
+              dangerouslySetInnerHTML={{ __html: selectedEntry.content }}
+            />
+          )}
         </div>
       </div>
     );
