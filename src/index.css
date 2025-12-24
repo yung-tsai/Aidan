@@ -754,6 +754,63 @@
 }
 
 /* ============================================
+   PROSE TERMINAL (Rich text content display)
+   ============================================ */
+
+.prose-terminal p {
+  margin-bottom: 0.75em;
+}
+
+.prose-terminal p:last-child {
+  margin-bottom: 0;
+}
+
+.prose-terminal ul,
+.prose-terminal ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.prose-terminal ul {
+  list-style-type: disc;
+}
+
+.prose-terminal ol {
+  list-style-type: decimal;
+}
+
+.prose-terminal li {
+  margin: 0.25rem 0;
+  padding-left: 0.25rem;
+}
+
+.prose-terminal li p {
+  margin: 0;
+}
+
+.prose-terminal strong {
+  font-weight: 600;
+  color: hsl(var(--terminal-text));
+}
+
+.prose-terminal em {
+  font-style: italic;
+}
+
+.prose-terminal u {
+  text-decoration: underline;
+}
+
+.prose-terminal a {
+  color: hsl(var(--terminal-glow));
+  text-decoration: underline;
+}
+
+.prose-terminal a:hover {
+  opacity: 0.8;
+}
+
+/* ============================================
    TAB TRANSITIONS
    ============================================ */
 
